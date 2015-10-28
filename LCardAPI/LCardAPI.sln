@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCard.API", "LCardAPI\LCard.API.csproj", "{64CECC00-5B4E-43DE-9AF1-FF3212B14C93}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetReadData", "Testing\NetReadData\NetReadData.csproj", "{DDE886B6-E5D0-4852-A9C1-12F1BF63AAD5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryUsageExample", "Testing\LibraryUsageExample\LibraryUsageExample.csproj", "{82895D6C-6746-40F5-BF49-FAF4D26D70EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCard.E2010GUI", "LCard.E2010GUI\LCard.E2010GUI.csproj", "{391024C0-38EE-4EB6-859D-393D24071EF3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,18 @@ Global
 		{82895D6C-6746-40F5-BF49-FAF4D26D70EA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{82895D6C-6746-40F5-BF49-FAF4D26D70EA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{82895D6C-6746-40F5-BF49-FAF4D26D70EA}.Release|Win32.ActiveCfg = Release|Any CPU
+		{391024C0-38EE-4EB6-859D-393D24071EF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{391024C0-38EE-4EB6-859D-393D24071EF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{391024C0-38EE-4EB6-859D-393D24071EF3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{391024C0-38EE-4EB6-859D-393D24071EF3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{391024C0-38EE-4EB6-859D-393D24071EF3}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{391024C0-38EE-4EB6-859D-393D24071EF3}.Debug|Win32.Build.0 = Debug|Any CPU
+		{391024C0-38EE-4EB6-859D-393D24071EF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{391024C0-38EE-4EB6-859D-393D24071EF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{391024C0-38EE-4EB6-859D-393D24071EF3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{391024C0-38EE-4EB6-859D-393D24071EF3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{391024C0-38EE-4EB6-859D-393D24071EF3}.Release|Win32.ActiveCfg = Release|Any CPU
+		{391024C0-38EE-4EB6-859D-393D24071EF3}.Release|Win32.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
