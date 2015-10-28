@@ -8,6 +8,8 @@ bin/
 obj/
 Debug/
 Release/
+packages/
+ipch/
 *.opensdf
 *.tlog
 *.log
