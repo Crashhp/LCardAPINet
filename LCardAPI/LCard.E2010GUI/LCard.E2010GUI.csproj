@@ -39,10 +39,39 @@
     <Reference Include="Autofac">
       <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Caliburn.Micro.Core.2.0.2\lib\net45\Caliburn.Micro.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Caliburn.Micro.2.0.2\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DynamicDataDisplay, Version=0.4.0.0, Culture=neutral, PublicKeyToken=5b7d744a7263923f, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicDataDisplayWpf.0.4.0\lib\DynamicDataDisplay.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DynamicDataDisplay.Maps, Version=0.1.0.0, Culture=neutral, PublicKeyToken=5b7d744a7263923f, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicDataDisplayWpf.0.4.0\lib\DynamicDataDisplay.Maps.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DynamicDataDisplay.Markers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5b7d744a7263923f, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicDataDisplayWpf.0.4.0\lib\DynamicDataDisplay.Markers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DynamicDataDisplay.Markers2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5b7d744a7263923f, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicDataDisplayWpf.0.4.0\lib\DynamicDataDisplay.Markers2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MahApps.Metro">
       <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
+    <Reference Include="Parser, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5b7d744a7263923f, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicDataDisplayWpf.0.4.0\lib\Parser.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -65,10 +94,36 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ViewModel\Observable.cs" />
-    <Compile Include="Wrapper\ChangeTrackingCollection.cs" />
-    <Compile Include="Wrapper\ModelWrapper.cs" />
-    <Page Include="View\MainWindow.xaml">
+    <Compile Include="Controls\IThemeManager.cs" />
+    <Compile Include="Controls\IViewLocator.cs" />
+    <Compile Include="Controls\StartupTasks.cs" />
+    <Compile Include="Controls\ThemeManager.cs" />
+    <Compile Include="Controls\ViewLocator.cs" />
+    <Compile Include="IShell.cs" />
+    <Compile Include="Services\IServiceLocator.cs" />
+    <Compile Include="Services\MefServiceLocator.cs" />
+    <Compile Include="Startup\Bootstrapper.cs" />
+    <Page Include="Resources\Theme1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Actions\DeviceInformationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Actions\DeviceSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Actions\RecordDataView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Actions\ViewDataView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MainWindowView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -77,10 +132,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Command\DelegateCommand.cs" />
-    <Compile Include="View\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Startup\Unity.cs" />
+    <Compile Include="ViewModels\Actions\DeviceInformationViewModel.cs" />
+    <Compile Include="ViewModels\Actions\DeviceSettingsViewModel.cs" />
+    <Compile Include="ViewModels\Actions\RecordDataViewModel.cs" />
+    <Compile Include="ViewModels\Actions\ViewDataViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Page Include="Resources\Icons.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -125,7 +182,29 @@
     <Resource Include="Resources\adc.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Startup\" />
+    <ProjectReference Include="..\LCard.Core\LCard.Core.csproj">
+      <Project>{f3d00a4d-8c24-472f-bb54-0e5ea032da85}</Project>
+      <Name>LCard.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LCardAPI\LCard.API.csproj">
+      <Project>{64cecc00-5b4e-43de-9af1-ff3212b14c93}</Project>
+      <Name>LCard.API</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LusbapiBridge\LusbapiBridge.vcxproj">
+      <Project>{a70e5fd5-b5c0-4c3a-a5ce-099ad64a7629}</Project>
+      <Name>LusbapiBridge</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\gear39.png" />
+    <Resource Include="Images\letteri.png" />
+    <Resource Include="Images\magnifying_glass32.png" />
+    <Resource Include="Images\record14.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Lusbapi.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

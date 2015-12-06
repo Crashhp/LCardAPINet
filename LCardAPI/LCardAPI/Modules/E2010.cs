@@ -20,7 +20,8 @@ namespace LCard.API.Modules
         private int _dataStep;
         private volatile bool _needReadData = false;
         private Task _taskReadData;
-        
+        public bool Inited { get; set; }
+
         public E2010()
         {
             _pModulE2010 = new LusbapiE2010();
@@ -94,6 +95,7 @@ namespace LCard.API.Modules
 
         public M_MODULE_DESCRIPTION_E2010? Init()
         {
+            Inited = true;
             M_MODULE_DESCRIPTION_E2010? res = null;
             OpenLDevice();
             // попробуем прочитать дескриптор устройства

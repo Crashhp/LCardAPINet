@@ -1,0 +1,108 @@
+﻿<controls:MetroWindow x:Class="LCard.E2010GUI.Views.MainWindowView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LCard.E2010GUI"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:cal="http://www.caliburnproject.org"
+        mc:Ignorable="d"
+        Title="{StaticResource MainTitle}" Height="720" Width="1280" 
+                      TitleCaps="False" 
+                      ResizeMode="CanResizeWithGrip" 
+                      GlowBrush="{StaticResource AccentColorBrush}"
+                      Icon="../Resources/adc.png"
+                      SaveWindowPosition="True">
+
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical" Grid.Column="0">
+
+                <RadioButton Style="{StaticResource {x:Type ToggleButton}}" x:Name="ViewDataChecked"  Grid.Column="1"  IsEnabled="{Binding HasValue}" Background="#FF84BED8"  BorderThickness="0" Margin="5" GroupName="ActionsMainMenu"  >
+
+                    <Grid Width="140" Height="80"
+                          Background="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:Tile}}}" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height ="*"></RowDefinition>
+                            <RowDefinition Height ="Auto" ></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Image Source="../Images/magnifying_glass32.png" Width="40px" Height="40px"></Image>
+                        <Label Grid.Row="1" Content="Просмотр" Width="100" HorizontalAlignment="Left" HorizontalContentAlignment="Left"></Label>
+                    </Grid>
+                </RadioButton>
+
+                <RadioButton Style="{StaticResource {x:Type ToggleButton}}" x:Name="RecordDataChecked"  Grid.Column="1"  IsEnabled="{Binding HasValue}" Background="#FF84BED8"  BorderThickness="0" Margin="5" GroupName="ActionsMainMenu" >
+
+                    <Grid Width="140" Height="80"
+                          Background="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:Tile}}}" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height ="*"></RowDefinition>
+                            <RowDefinition Height ="Auto" ></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Image Source="../Images/record14.png" Width="40px" Height="40px"></Image>
+                        <Label Grid.Row="1" Content="Запись" Width="100" HorizontalAlignment="Left" HorizontalContentAlignment="Left"></Label>
+                    </Grid>
+                </RadioButton>
+
+                <RadioButton Style="{StaticResource {x:Type ToggleButton}}" x:Name="DeviceSettingsChecked"  Grid.Column="1"  IsEnabled="{Binding HasValue}" Background="#FF84BED8"  BorderThickness="0" Margin="5" GroupName="ActionsMainMenu" >
+
+                    <Grid Width="140" Height="80"
+                          Background="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:Tile}}}" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height ="*"></RowDefinition>
+                            <RowDefinition Height ="Auto" ></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Image Source="../Images/gear39.png" Width="40px" Height="40px"></Image>
+                        <Label Grid.Row="1" Content="Настройки" Width="100" HorizontalAlignment="Left" HorizontalContentAlignment="Left"></Label>
+                    </Grid>
+                </RadioButton>
+
+                <RadioButton Style="{StaticResource {x:Type ToggleButton}}" x:Name="DeviceInformationChecked"  Grid.Column="1"  IsEnabled="{Binding HasValue}" Background="#FF84BED8"  BorderThickness="0" Margin="5" GroupName="ActionsMainMenu" >
+
+                    <Grid Width="140" Height="80"
+                          Background="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:Tile}}}" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height ="*"></RowDefinition>
+                            <RowDefinition Height ="Auto" ></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Image Source="../Images/letteri.png" Width="40px" Height="40px"></Image>
+                        <Label Grid.Row="1" Content="Информация" Width="100" HorizontalAlignment="Left" HorizontalContentAlignment="Left"></Label>
+                    </Grid>
+                </RadioButton>
+
+            </StackPanel>
+            <ContentControl Name="FrameMain" Grid.Column="1">
+                
+            </ContentControl>
+        </Grid>
+        <StatusBar Grid.Row="1">
+            <StatusBarItem></StatusBarItem>
+        </StatusBar>
+    </Grid>
+
+
+
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <Button Name="ButtonInformation" Content="Информация"></Button>
+            <Button Name="ButtonSettings" Content="Настройки"></Button>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+
+    <controls:MetroWindow.Flyouts>
+        <controls:FlyoutsControl>
+            <controls:Flyout Header="Flyout" Position="Right" Width="200" AreAnimationsEnabled="True">
+                <!-- Your custom content here -->
+            </controls:Flyout>
+        </controls:FlyoutsControl>
+    </controls:MetroWindow.Flyouts>
+</controls:MetroWindow>

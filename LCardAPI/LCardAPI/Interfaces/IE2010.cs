@@ -7,12 +7,16 @@ namespace LCard.API.Interfaces
 {
     public interface IE2010
     {
+        
+
         bool OpenLDevice();
         IntPtr GetModuleHandleDevice();
         string GetModuleName();
         LusbSpeed GetUsbSpeed();
         bool LOAD_MODULE();
         bool TEST_MODULE();
+
+        bool Inited { get; set; }
 
         M_MODULE_DESCRIPTION_E2010 GET_MODULE_DESCRIPTION();
 

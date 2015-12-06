@@ -48,14 +48,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\DevicePropertyGroup.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Logger\Log4NetLogger.cs" />
     <Compile Include="Logger\Logger.cs" />
+    <Compile Include="Poco\DevicePropertyPoco.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Enums\" />
-    <Folder Include="Extensions\" />
     <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
