@@ -36,20 +36,7 @@
                             <RowDefinition Height ="Auto" ></RowDefinition>
                         </Grid.RowDefinitions>
                         <Image Source="../Images/magnifying_glass32.png" Width="40px" Height="40px"></Image>
-                        <Label Grid.Row="1" Content="Просмотр" Width="100" HorizontalAlignment="Left" HorizontalContentAlignment="Left"></Label>
-                    </Grid>
-                </RadioButton>
-
-                <RadioButton Style="{StaticResource {x:Type ToggleButton}}" x:Name="RecordDataChecked"  Grid.Column="1"  IsEnabled="{Binding HasValue}" Background="#FF84BED8"  BorderThickness="0" Margin="5" GroupName="ActionsMainMenu" >
-
-                    <Grid Width="140" Height="80"
-                          Background="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:Tile}}}" >
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height ="*"></RowDefinition>
-                            <RowDefinition Height ="Auto" ></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Image Source="../Images/record14.png" Width="40px" Height="40px"></Image>
-                        <Label Grid.Row="1" Content="Запись" Width="100" HorizontalAlignment="Left" HorizontalContentAlignment="Left"></Label>
+                        <Label Grid.Row="1" FontSize="14" Content="Просмотр / Запись" Width="140" HorizontalAlignment="Center" HorizontalContentAlignment="Center"></Label>
                     </Grid>
                 </RadioButton>
 
@@ -62,7 +49,7 @@
                             <RowDefinition Height ="Auto" ></RowDefinition>
                         </Grid.RowDefinitions>
                         <Image Source="../Images/gear39.png" Width="40px" Height="40px"></Image>
-                        <Label Grid.Row="1" Content="Настройки" Width="100" HorizontalAlignment="Left" HorizontalContentAlignment="Left"></Label>
+                        <Label Grid.Row="1" Content="Настройки" Width="140" FontSize="14"  HorizontalAlignment="Center" HorizontalContentAlignment="Center"></Label>
                     </Grid>
                 </RadioButton>
 
@@ -75,7 +62,7 @@
                             <RowDefinition Height ="Auto" ></RowDefinition>
                         </Grid.RowDefinitions>
                         <Image Source="../Images/letteri.png" Width="40px" Height="40px"></Image>
-                        <Label Grid.Row="1" Content="Информация" Width="100" HorizontalAlignment="Left" HorizontalContentAlignment="Left"></Label>
+                        <Label Grid.Row="1" Content="Информация" Width="140px" FontSize="14"  HorizontalAlignment="Center" HorizontalContentAlignment="Center"></Label>
                     </Grid>
                 </RadioButton>
 

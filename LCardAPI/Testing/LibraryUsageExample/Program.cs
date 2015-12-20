@@ -108,16 +108,16 @@ namespace LibraryUsageExample
         }
 
         private static List<List<float>> Data = new List<List<float>>(); 
-        private static void OnData(float[] datas)
+        private static void OnData(float[,] datas, int numberOfChannels, int dataSize, int numberBlock)
         {
-            Console.WriteLine("count = "+ datas.Count() +" "+ datas.First());
-            for(int i = 0; i < datas.Length /4; i+= 4)
-            {
-                Data[0].Add(datas[i]);
-                Data[1].Add(datas[i+1]);
-                Data[2].Add(datas[i+2]);
-                Data[3].Add(datas[i+3]);
-            }
+            //Console.WriteLine("count = "+ datas.Count() +" "+ datas.First());
+            //for(int i = 0; i < datas.Length /4; i+= 4)
+            //{
+            //    Data[0].Add(datas[i]);
+            //    Data[1].Add(datas[i+1]);
+            //    Data[2].Add(datas[i+2]);
+            //    Data[3].Add(datas[i+3]);
+            //}
         }
     }
 }

@@ -8,26 +8,33 @@
         xmlns:d3="http://research.microsoft.com/DynamicDataDisplay/1.0"
         mc:Ignorable="d" 
         d:DesignHeight="300" d:DesignWidth="400"
-
+        xmlns:Chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart"
         >
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"> </RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="50"></RowDefinition>
         </Grid.RowDefinitions>
-        <d3:ChartPlotter Name="plotter" Margin="5">
-            <d3:ChartPlotter.MainHorizontalAxis>
-                <d3:HorizontalAxis Name="timeAxis" />
-            </d3:ChartPlotter.MainHorizontalAxis>
-            <d3:ChartPlotter.MainVerticalAxis>
-                <d3:VerticalAxis Name="accelerationAxis" />
-            </d3:ChartPlotter.MainVerticalAxis>
+
+        <d3:ChartPlotter   Margin="5" LegendVisibility="Hidden" MainHorizontalAxisVisibility="Collapsed">
+            <d3:Header>
+                <TextBlock HorizontalAlignment="Center" FontSize="20">График Данных</TextBlock>
+            </d3:Header>
+            <d3:VerticalAxisTitle>Напряжение, Вольты</d3:VerticalAxisTitle>
+            <d3:HorizontalAxisTitle>Время, секунды</d3:HorizontalAxisTitle>
+            <d3:LineGraph Margin="5" DataSource="{Binding Path=GrapDataLine1}"  Stroke="Red">
+
+            </d3:LineGraph>
+            <d3:LineGraph Margin="5" DataSource="{Binding Path=GrapDataLine2}"  Stroke="Green"/>
+            <d3:LineGraph Margin="5" DataSource="{Binding Path=GrapDataLine3}" Stroke="Blue"/>
+            <d3:LineGraph Margin="5" DataSource="{Binding Path=GrapDataLine4}" Stroke="Indigo"/>
         </d3:ChartPlotter>
+
         <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <ToggleButton x:Name="toggleButtonViewData" Height="40" Content="Просмотр" Width="100" Margin="5,0,0,0"></ToggleButton>
-            <ToggleButton x:Name="toggleButtonRecord" Height="40" Content="Запись" Width="100" Margin="5,0,0,0"></ToggleButton>
-            <ToggleButton x:Name="toggleButtonStop" Height="40" Content="Стоп" Width="100" Margin="5,0,0,0"></ToggleButton>
+            <ToggleButton x:Name="ToggleButtonViewData" Height="40" Content="Просмотр" Width="100" Margin="5,0,0,0"></ToggleButton>
+            <ToggleButton x:Name="ToggleButtonRecord" Height="40" Content="Запись" Width="100" Margin="5,0,0,0"></ToggleButton>
+            <ToggleButton x:Name="ToggleButtonStop" Height="40" Content="Стоп" Width="100" Margin="5,0,0,0"></ToggleButton>
         </StackPanel>
     </Grid>
 </UserControl>

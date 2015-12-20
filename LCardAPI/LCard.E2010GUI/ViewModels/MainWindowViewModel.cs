@@ -9,12 +9,11 @@ namespace LCard.E2010GUI.ViewModels
     [Export(typeof(IShell))]
     public class MainWindowViewModel : Screen, IShell
     {
-        private readonly IObservableCollection<PropertyChangedBase> actions =
+        private readonly IObservableCollection<PropertyChangedBase> _actions =
             new BindableCollection<PropertyChangedBase>();
 
         private bool _viewDataChecked = true;
-        private bool _recordDataChecked = false;
-        private bool _deviceSettingsChecked = false;
+        private bool _deviceSettingsChecked;
         private bool _deviceInformationChecked;
 
         private PropertyChangedBase _frameMain;
@@ -45,24 +44,10 @@ namespace LCard.E2010GUI.ViewModels
                 _viewDataChecked = value;
                 if (value)
                 {
-                    FrameMain = actions[0];
+                    FrameMain = _actions[0];
+                    //(FrameMain as ViewDataViewModel).UpdateData();
                 }
                 NotifyOfPropertyChange(() => ViewDataChecked);
-            }
-        }
-
-        public bool RecordDataChecked
-        {
-            get { return _recordDataChecked; }
-            set
-            {
-                if (value.Equals(_recordDataChecked)) return;
-                _recordDataChecked = value;
-                if (value)
-                {
-                    FrameMain = actions[1];
-                }
-                NotifyOfPropertyChange(() => RecordDataChecked);
             }
         }
 
@@ -75,7 +60,8 @@ namespace LCard.E2010GUI.ViewModels
                 _deviceSettingsChecked = value;
                 if (value)
                 {
-                    FrameMain = actions[2];
+                    FrameMain = _actions[1];
+                    
                 }
                 NotifyOfPropertyChange(() => DeviceSettingsChecked);
             }
@@ -90,7 +76,7 @@ namespace LCard.E2010GUI.ViewModels
                 _deviceInformationChecked = value;
                 if (value)
                 {
-                    FrameMain = actions[3];
+                    FrameMain = _actions[2];
                     (FrameMain as DeviceInformationViewModel).LoadDeviceInfo();
                 }
                 NotifyOfPropertyChange(() => DeviceInformationChecked);
@@ -111,11 +97,10 @@ namespace LCard.E2010GUI.ViewModels
         protected override void OnInitialize()
         {
             base.OnInitialize();
-            this.actions.Add(new ViewDataViewModel());
-            this.actions.Add(new RecordDataViewModel());
-            this.actions.Add(new DeviceSettingsViewModel());
-            this.actions.Add(new DeviceInformationViewModel());
-            FrameMain = actions[0];
+            this._actions.Add(new ViewDataViewModel());
+            this._actions.Add(new DeviceSettingsViewModel());
+            this._actions.Add(new DeviceInformationViewModel());
+            FrameMain = _actions[0];
         }
     }
 }

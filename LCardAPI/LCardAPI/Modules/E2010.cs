@@ -16,11 +16,12 @@ namespace LCard.API.Modules
         LusbapiE2010 _pModulE2010;
         private ILogger _logger;
         private M_ADC_PARS_E2010 _adcParsE2010;
-        public Action<float[]> OnData { get; set; }
+        public Action<float[,],int,int,int> OnData { get; set; }
         private int _dataStep;
         private volatile bool _needReadData = false;
         private Task _taskReadData;
         public bool Inited { get; set; }
+        private volatile int _numberBlock = 0;
 
         public E2010()
         {
@@ -169,6 +170,7 @@ namespace LCard.API.Modules
                     if (resStart > 0)
                     {
                         _needReadData = true;
+                        _numberBlock = 0;
                         while (_needReadData)
                         {
                             var resRead = _pModulE2010.ReadDataSync(ref buffers[k]);
@@ -177,7 +179,22 @@ namespace LCard.API.Modules
                                 Task.Factory.StartNew(() =>
                                 {
                                     if (OnData != null)
-                                        OnData(Array.ConvertAll(buffers[k].Buffer, x => (float) x/short.MaxValue));
+                                    {
+                                        var data = Array.ConvertAll(buffers[k].Buffer, x => (float) x/short.MaxValue);
+                                        int countData = data.Count()/2;
+                                        var datas = new float[4, countData / 4];
+                                        int j = 0;
+                                        for (var t = 0; t < countData; t+=4)
+                                        {
+                                            datas[0, j] = data[t];
+                                            datas[1, j] = data[t + 1];
+                                            datas[2, j] = data[t + 2];
+                                            datas[3, j] = data[t + 3];
+                                            j++;
+                                        }
+                                        OnData(datas,4, countData/4, _numberBlock);
+                                        _numberBlock++;
+                                    }
                                 });
 
                             }

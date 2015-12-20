@@ -7,9 +7,36 @@
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="500" d:DesignWidth="600">
     <Grid>
-        <Label x:Name="label" Content="Settings" HorizontalAlignment="Left" Margin="130,123,0,0" VerticalAlignment="Top"/>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label Content="Частота, КГц" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"></Label>
+            <TextBox Width="200" Text="5000" Grid.Row="0" Grid.Column="1" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"></TextBox>
+            <Label Content="Входной диапазон, В" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"></Label>
+            <ComboBox Name="RangeIndex" SelectedItem="{Binding SelectedRangeIndex}" SelectedIndex="0" Width="200" Text="5000" Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5">
+            </ComboBox>
+        </Grid>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5">
+            <Button x:Name="ButtonSetDeviceSettings" Width="200" Content="Задать"></Button>
+            <Button x:Name="ButtonSetDeviceSettingsDefault" Width="200" Content="Установить по умолчанию" Margin="5,0,0,0"></Button>
+        </StackPanel>
     </Grid>
+    
 </UserControl>

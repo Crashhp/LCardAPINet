@@ -59,7 +59,7 @@ namespace LCard.E2010GUI.ViewModels.Actions
 
             //interface
             var linterface = moduleDescription.Module;
-            AddParameter("Коменнатарий", linterface.Comment.FixEncoding(), DevicePropertyGroup.Interface);
+            AddParameter("Коменнатарий", linterface.Comment, DevicePropertyGroup.Interface);
             AddParameter("Имя компании", linterface.CompanyName.ToString(), DevicePropertyGroup.Interface);
 
             //Module
@@ -67,7 +67,7 @@ namespace LCard.E2010GUI.ViewModels.Actions
             AddParameter("Имя устройства", module.DeviceName, DevicePropertyGroup.Module);
             AddParameter("Имя компании", module.CompanyName, DevicePropertyGroup.Module);
 
-            AddParameter("Коменнтарий", module.Comment.FixEncoding(), DevicePropertyGroup.Module);
+            AddParameter("Коменнтарий", module.Comment, DevicePropertyGroup.Module);
             AddParameter("Ревизия", Convert.ToChar(module.Revision).ToString(), DevicePropertyGroup.Module);
             AddParameter("Серийный номер", (module.SerialNumber), DevicePropertyGroup.Module);
             AddParameter("Модификация", module.Modification.ToString(), DevicePropertyGroup.Module);

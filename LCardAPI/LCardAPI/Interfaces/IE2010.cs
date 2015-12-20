@@ -28,7 +28,7 @@ namespace LCard.API.Interfaces
 
         bool StartReadData();
 
-        Action<float[]> OnData { get; set; }
+        Action<float[,],int,int,int> OnData { get; set; }
  
         bool StopReadData();
 
