@@ -13,6 +13,7 @@ using Autofac;
 using Caliburn.Micro;
 using DynamicDataDisplay;
 using LCard.API.Interfaces;
+using LCard.Core.Poco;
 using LCard.E2010GUI.Startup;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
 
@@ -104,19 +105,13 @@ namespace LCard.E2010GUI.ViewModels.Actions
                     if (e2020.Inited)
                     {
                         if(e2020.OnData == null)
-                            e2020.OnData += OnData;
+                            e2020.OnData += UpdateData;
                         e2020.StartReadData();
                     } 
                     
                     NotifyAllToggle();
                 }
             }
-        }
-
-        private void OnData(float[,] datas, int numberOfChannels, int dataSize, int numberBlock)
-        {
-            UpdateData(datas, numberOfChannels, dataSize, numberBlock);
-            Console.WriteLine(datas.Length.ToString());
         }
 
         private bool _toggleButtonRecord = false;
@@ -161,11 +156,11 @@ namespace LCard.E2010GUI.ViewModels.Actions
 
         
 
-        public void UpdateData(float[,] datas, int numberOfChannels, int dataSize, int numberBlock)
+        public void UpdateData(DataPacketPoco dataPacket)
         {
             Task.Factory.StartNew(() =>
             {
-                Console.WriteLine("block number = " + numberBlock);
+                Console.WriteLine("block number = " + dataPacket.NumberBlock);
                 if((DateTime.Now - LastUpdateTime).TotalSeconds < 1.0)
                     return;
                 LastUpdateTime = DateTime.Now;
@@ -176,11 +171,11 @@ namespace LCard.E2010GUI.ViewModels.Actions
                     pointLists[j] = new List<Point>();
                 }
                 var stepOfPoint = 1000;
-                for (var j = 0; j < numberOfChannels; j++)
+                for (var j = 0; j < dataPacket.NumberOfChannels; j++)
                 {
-                    for (int i = 0; i < dataSize; i+= stepOfPoint)
+                    for (int i = 0; i < dataPacket.DataSize; i+= stepOfPoint)
                     {
-                        pointLists[j].Add(new Point(i, Convert.ToDouble(datas[j,i])));
+                        pointLists[j].Add(new Point(i, Convert.ToDouble(dataPacket.Datas[j,i])));
                     }
                 }
 

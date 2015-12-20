@@ -8,6 +8,7 @@ using LCard.API.Data;
 using LCard.API.Data.E2010;
 using LCard.API.Interfaces;
 using LCard.API.Modules;
+using LCard.Core.Poco;
 using LusbapiBridgeE2010;
 
 namespace LibraryUsageExample
@@ -108,7 +109,7 @@ namespace LibraryUsageExample
         }
 
         private static List<List<float>> Data = new List<List<float>>(); 
-        private static void OnData(float[,] datas, int numberOfChannels, int dataSize, int numberBlock)
+        private static void OnData(DataPacketPoco dataPacket)
         {
             //Console.WriteLine("count = "+ datas.Count() +" "+ datas.First());
             //for(int i = 0; i < datas.Length /4; i+= 4)

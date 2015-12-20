@@ -7,6 +7,7 @@ using LCard.API.Data;
 using LCard.API.Data.E2010;
 using LCard.API.Interfaces;
 using LCard.Core.Logger;
+using LCard.Core.Poco;
 using LusbapiBridgeE2010;
 
 namespace LCard.API.Modules
@@ -16,7 +17,7 @@ namespace LCard.API.Modules
         LusbapiE2010 _pModulE2010;
         private ILogger _logger;
         private M_ADC_PARS_E2010 _adcParsE2010;
-        public Action<float[,],int,int,int> OnData { get; set; }
+        public Action<DataPacketPoco> OnData { get; set; }
         private int _dataStep;
         private volatile bool _needReadData = false;
         private Task _taskReadData;
@@ -192,7 +193,14 @@ namespace LCard.API.Modules
                                             datas[3, j] = data[t + 3];
                                             j++;
                                         }
-                                        OnData(datas,4, countData/4, _numberBlock);
+                                        var dataPacket = new DataPacketPoco
+                                        {
+                                            Datas = datas,
+                                            NumberOfChannels = 4,
+                                            DataSize = countData / 4,
+                                            NumberBlock = _numberBlock
+                                        };
+                                        OnData(dataPacket);
                                         _numberBlock++;
                                     }
                                 });

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using LCard.API.Data;
+using LCard.Core.Poco;
 using LusbapiBridgeE2010;
 
 namespace LCard.API.Interfaces
@@ -28,7 +29,7 @@ namespace LCard.API.Interfaces
 
         bool StartReadData();
 
-        Action<float[,],int,int,int> OnData { get; set; }
+        Action<DataPacketPoco> OnData { get; set; }
  
         bool StopReadData();
 
