@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Autofac;
 using LCard.API.Modules;
 using LCard.API.Interfaces;
+using LCard.Core.Interfaces;
+using LCard.Core.Services;
 
 namespace LCard.E2010GUI.Startup
 {
@@ -35,6 +37,8 @@ namespace LCard.E2010GUI.Startup
         public static void RegisterTypes(ContainerBuilder container)
         {
             container.RegisterType<E2010>().As<IE2010>().SingleInstance();
+            container.RegisterType<DataService>().As<IDataService>();
+            
         }
     }
 }

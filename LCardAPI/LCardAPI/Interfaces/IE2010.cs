@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using LCard.API.Data;
+using LCard.API.Data.E2010;
 using LCard.Core.Poco;
 using LusbapiBridgeE2010;
 
@@ -8,7 +9,8 @@ namespace LCard.API.Interfaces
 {
     public interface IE2010
     {
-        
+        double AdcRateInKhz { get; set; }
+        ADC_INPUTV InputRange { get; set; }
 
         bool OpenLDevice();
         IntPtr GetModuleHandleDevice();
@@ -33,5 +35,6 @@ namespace LCard.API.Interfaces
  
         bool StopReadData();
 
+        void SetParameters();
     }
 }

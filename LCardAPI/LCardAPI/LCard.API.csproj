@@ -53,6 +53,7 @@
     <Compile Include="Data\E2010\REVISION.cs" />
     <Compile Include="Data\Lusbapi.cs" />
     <Compile Include="Data\LusbSpeed.cs" />
+    <Compile Include="Extensions\ADC_INPUTVExtension.cs" />
     <Compile Include="Interfaces\IE2010.cs" />
     <Compile Include="Modules\E2010.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

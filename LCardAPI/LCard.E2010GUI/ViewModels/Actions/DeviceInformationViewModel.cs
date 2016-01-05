@@ -52,15 +52,15 @@ namespace LCard.E2010GUI.ViewModels.Actions
             //ADC
             var adc = moduleDescription.Adc;
             AddParameter("Active", adc.Active.ToString());
-            AddParameter("Название модуля", adc.Name.ToString());
-            AddParameter("Комментарий", adc.Comment.ToString());
-            AddParameter("Калибровочные коэфициенты", String.Join(", ", adc.ScaleCalibration.Select(p => String.Format("{0:N2}", p)).ToArray()));
-            AddParameter("Коэфициенты смещения", String.Join(", ", adc.OffsetCalibration.Select(p => String.Format("{0:N2}", p)).ToArray()));
+            AddParameter("Название модуля", adc.Name);
+            AddParameter("Комментарий", adc.Comment);
+            AddParameter("Калибровочные коэфициенты", String.Join(", ", adc.ScaleCalibration.Select(p => $"{p:N2}").ToArray()));
+            AddParameter("Коэфициенты смещения", String.Join(", ", adc.OffsetCalibration.Select(p => $"{p:N2}").ToArray()));
 
             //interface
             var linterface = moduleDescription.Module;
             AddParameter("Коменнатарий", linterface.Comment, DevicePropertyGroup.Interface);
-            AddParameter("Имя компании", linterface.CompanyName.ToString(), DevicePropertyGroup.Interface);
+            AddParameter("Имя компании", linterface.CompanyName, DevicePropertyGroup.Interface);
 
             //Module
             var module = moduleDescription.Module;

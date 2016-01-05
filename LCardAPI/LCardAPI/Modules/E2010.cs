@@ -22,13 +22,19 @@ namespace LCard.API.Modules
         private volatile bool _needReadData = false;
         private Task _taskReadData;
         public bool Inited { get; set; }
-        private volatile int _numberBlock = 0;
+        private volatile int _numberBlock;
+        private volatile bool _parametersSetted;
 
         public E2010()
         {
             _pModulE2010 = new LusbapiE2010();
             _logger = Logger.Current;
+            AdcRateInKhz = 100;
+            InputRange = ADC_INPUTV.ADC_INPUT_RANGE_3000mV_E2010;
         }
+
+        public double AdcRateInKhz { get; set; }
+        public ADC_INPUTV InputRange { get; set; }
 
         public bool OpenLDevice()
         {
@@ -42,19 +48,16 @@ namespace LCard.API.Modules
                 _logger.Error(" Can't find any module E20-10 in first 127 virtual slots!");
                 return false;
             }
-            else
-            {
-                _logger.Info(String.Format(" OpenLDevice({0}) --> OK", i));
-            }
+            _logger.Info($" OpenLDevice({i}) --> OK");
             return true;
         }
 
         public IntPtr GetModuleHandleDevice()
         {
-            IntPtr ModuleHandle = _pModulE2010.GetModuleHandleDevice();
-            if (ModuleHandle.ToInt32() == Lusbapi.INVALID_HANDLE_VALUE) _logger.Error(" GetModuleHandle() --> Bad");
+            var moduleHandle = _pModulE2010.GetModuleHandleDevice();
+            if (moduleHandle.ToInt32() == Lusbapi.INVALID_HANDLE_VALUE) _logger.Error(" GetModuleHandle() --> Bad");
             else _logger.Info(" GetModuleHandle() --> OK");
-            return ModuleHandle;
+            return moduleHandle;
         }
 
         public string GetModuleName()
@@ -91,6 +94,7 @@ namespace LCard.API.Modules
 
         public void SET_ADC_PARS(M_ADC_PARS_E2010 AdcPars, int DataStep)
         {
+            _parametersSetted = true;
             _adcParsE2010 = AdcPars;
             _dataStep = DataStep;
         }
@@ -104,16 +108,16 @@ namespace LCard.API.Modules
             IntPtr handle = GetModuleHandleDevice();
 
             // прочитаем название модуля в обнаруженном виртуальном слоте
-            var ModuleName = GetModuleName();
+            var moduleName = GetModuleName();
             // проверим, что это 'E20-10'
-            if (ModuleName != "E20-10")
+            if (moduleName != "E20-10")
             {
                 _logger.Error("Incorrect Module Name");
                 return res;
             }
 
-            var UsbSpeed = GetUsbSpeed();
-            _logger.Info("UsbSpeed = " + UsbSpeed);
+            var usbSpeed = GetUsbSpeed();
+            _logger.Info("UsbSpeed = " + usbSpeed);
 
             //// Образ для ПЛИС возьмём из соответствующего ресурса штатной DLL библиотеки
             var loadModuleRes = LOAD_MODULE();
@@ -144,6 +148,9 @@ namespace LCard.API.Modules
         {
             if (!_needReadData)
             {
+                if (!_parametersSetted)
+                    SetParameters();
+                System.Threading.Thread.Sleep(500);
                 _taskReadData = Task.Factory.StartNew(() =>
                 {
                     // передадим требуемые параметры работы АЦП в модуль
@@ -214,7 +221,81 @@ namespace LCard.API.Modules
             return true;
         }
 
-        
+        public void SetParameters()
+        {
+
+            if (!Inited) Init();
+
+            var moduleDescription = GET_MODULE_DESCRIPTION();
+            var ap = GET_ADC_PARS();
+
+            int i, j;
+
+            // установим желаемые параметры работы АЦП
+            if ((char)moduleDescription.Module.Revision == 'A')
+                ap.IsAdcCorrectionEnabled = 0;		// запретим автоматическую корректировку данных на уровне модуля (для Rev.A)
+            else
+                ap.IsAdcCorrectionEnabled = 1;		// разрешим автоматическую корректировку данных на уровне модуля (для Rev.B и выше)
+            ap.SynchroPars.StartSource = (ushort)INT_ADC_START.INT_ADC_START_E2010;						// внутренний старт сбора с АЦП
+            //	ap.SynchroPars.StartSource = INT_ADC_START_WITH_TRANS_E2010;		// внутренний старт сбора с АЦП с трансляцией
+            //	ap.SynchroPars.StartSource = EXT_ADC_START_ON_RISING_EDGE_E2010;	// внешний старт сбора с АЦП по фронту 
+            ap.SynchroPars.SynhroSource = (ushort)INT_ADC_CLOCK.INT_ADC_CLOCK_E2010;						// внутренние тактовые импульсы АЦП
+            //	ap.SynchroPars.SynhroSource = INT_ADC_CLOCK_WITH_TRANS_E2010;		// внутренние тактовые импульсы АЦП с трансляцией
+            ap.SynchroPars.StartDelay = 0x0;									// задержка начала сбора данных в кадрах отсчётов (для Rev.B и выше)
+            ap.SynchroPars.StopAfterNKadrs = 0x0;							// останов сбора данных через заданное кол-во кадров отсчётов (для Rev.B и выше)
+            ap.SynchroPars.SynchroAdMode = (ushort)E2010_SYNC.NO_ANALOG_SYNCHRO_E2010;	// тип аналоговой синхронизации (для Rev.B и выше)
+            //	ap.SynchroPars.SynchroAdMode = ANALOG_SYNCHRO_ON_HIGH_LEVEL_E2010;
+            ap.SynchroPars.SynchroAdChannel = 0x0;							// канал аналоговой синхронизации (для Rev.B и выше)
+            ap.SynchroPars.SynchroAdPorog = 0;								// порог аналоговой синхронизации в кодах АЦП (для Rev.B и выше)
+            ap.SynchroPars.IsBlockDataMarkerEnabled = 0x0;				// маркирование начала блока данных (удобно, например, при аналоговой синхронизации ввода по уровню) (для Rev.B и выше)
+            ap.ChannelsQuantity = MODULE_CONSTANTS.ADC_CHANNELS_QUANTITY_E2010; 		// кол-во активных каналов
+            // формируем управляющую таблицу 
+            ap.ControlTable = new ushort[(ushort)MODULE_CONSTANTS.MAX_CONTROL_TABLE_LENGTH_E2010];
+            for (i = 0x0; i < ap.ChannelsQuantity; i++)
+            {
+                ap.ControlTable[i] = (ushort)i;
+            }
+            // частоту сбора будем устанавливать в зависимости от скорости USB
+            // частота работы АЦП в кГц
+            double AdcRate = AdcRateInKhz;
+            ap.AdcRate = AdcRate;
+            int DataStep;
+            // частота работы АЦП в кГц
+            var usbSpeed = GetUsbSpeed();
+            if (usbSpeed == LusbSpeed.USB11_LUSBAPI)
+            {
+                ap.InterKadrDelay = 0.01;		// межкадровая задержка в мс
+                DataStep = 256 * 1024;				// размер запроса
+            }
+            else
+            {
+                ap.InterKadrDelay = 0.0;		// межкадровая задержка в мс
+                DataStep = 1024 * 1024;			// размер запроса
+            }
+            // сконфигурим входные каналы
+            ap.InputRange = new ushort[MODULE_CONSTANTS.ADC_CHANNELS_QUANTITY_E2010];
+            ap.InputSwitch = new ushort[MODULE_CONSTANTS.ADC_CHANNELS_QUANTITY_E2010];
+            for (i = 0x0; i < (ushort)MODULE_CONSTANTS.ADC_CHANNELS_QUANTITY_E2010; i++)
+            {
+                ap.InputRange[i] = (ushort)InputRange;  	// входной диапазон
+                ap.InputSwitch[i] = (ushort)ADC_INPUT.ADC_INPUT_SIGNAL_E2010;			// источник входа - сигнал
+            }
+            // передаём в структуру параметров работы АЦП корректировочные коэффициенты АЦП
+            ap.AdcOffsetCoefs = new double[MODULE_CONSTANTS.ADC_INPUT_RANGES_QUANTITY_E2010, MODULE_CONSTANTS.ADC_CHANNELS_QUANTITY_E2010];
+            ap.AdcScaleCoefs = new double[MODULE_CONSTANTS.ADC_INPUT_RANGES_QUANTITY_E2010, MODULE_CONSTANTS.ADC_CHANNELS_QUANTITY_E2010];
+            for (i = 0x0; i < MODULE_CONSTANTS.ADC_INPUT_RANGES_QUANTITY_E2010; i++)
+                for (j = 0x0; j < MODULE_CONSTANTS.ADC_CHANNELS_QUANTITY_E2010; j++)
+                {
+                    // корректировка смещения
+                    ap.AdcOffsetCoefs[i, j] = moduleDescription.Adc.OffsetCalibration[j + i * MODULE_CONSTANTS.ADC_CHANNELS_QUANTITY_E2010];
+                    // корректировка масштаба
+                    ap.AdcScaleCoefs[i, j] = moduleDescription.Adc.ScaleCalibration[j + i * MODULE_CONSTANTS.ADC_CHANNELS_QUANTITY_E2010];
+                }
+
+            // передадим требуемые параметры работы АЦП в модуль
+            SET_ADC_PARS(ap, DataStep);
+        }
+
         public bool StopReadData()
         {
             _needReadData = false;

@@ -28,9 +28,9 @@
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
             <Label Content="Частота, КГц" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"></Label>
-            <TextBox Width="200" Text="5000" Grid.Row="0" Grid.Column="1" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"></TextBox>
+            <TextBox x:Name="InputRatekHz" Width="200" Text="100" Grid.Row="0" Grid.Column="1" TextAlignment="Left" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5"></TextBox>
             <Label Content="Входной диапазон, В" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"></Label>
-            <ComboBox Name="RangeIndex" SelectedItem="{Binding SelectedRangeIndex}" SelectedIndex="0" Width="200" Text="5000" Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5">
+            <ComboBox x:Name="RangeIndex" SelectedItem="{Binding SelectedRangeIndex}" SelectedIndex="0" Width="200" Text="5000" Grid.Row="1" Grid.Column="1"  VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5">
             </ComboBox>
         </Grid>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5">

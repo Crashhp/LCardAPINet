@@ -8,11 +8,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
 using Autofac;
 using Caliburn.Micro;
 using DynamicDataDisplay;
 using LCard.API.Interfaces;
+using LCard.Core.Interfaces;
 using LCard.Core.Poco;
 using LCard.E2010GUI.Startup;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
@@ -21,8 +21,14 @@ namespace LCard.E2010GUI.ViewModels.Actions
 {
     public class ViewDataViewModel : PropertyChangedBase
     {
+        public ViewDataViewModel()
+        {
+            _dataService = UnityConfig.GetConfiguredContainer().Resolve<IDataService>();
+        }
+
+        private volatile IDataService _dataService;
+
         #region Graph Data
-        private Dispatcher _dispatcherUIThread = Dispatcher.FromThread(Thread.CurrentThread);
 
         private long _lastUpdateTime;
         virtual public DateTime LastUpdateTime
@@ -39,8 +45,7 @@ namespace LCard.E2010GUI.ViewModels.Actions
         }
 
 
-        private ObservableDataSource<Point>[] grapDataLine = new ObservableDataSource<Point>[]
-        {
+        private ObservableDataSource<Point>[] _grapDataLine = {
             new ObservableDataSource<Point>(),
             new ObservableDataSource<Point>(),
             new ObservableDataSource<Point>(),
@@ -48,20 +53,20 @@ namespace LCard.E2010GUI.ViewModels.Actions
         };
         public ObservableDataSource<Point> GrapDataLine1
         {
-            get { return grapDataLine[0]; }
+            get { return _grapDataLine[0]; }
             set
             {
-                grapDataLine[0] = value;
+                _grapDataLine[0] = value;
                 NotifyOfPropertyChange(() => GrapDataLine1);
             }
         }
 
         public ObservableDataSource<Point> GrapDataLine2
         {
-            get { return grapDataLine[1]; }
+            get { return _grapDataLine[1]; }
             set
             {
-                grapDataLine[1] = value;
+                _grapDataLine[1] = value;
                 NotifyOfPropertyChange(() => GrapDataLine2);
             }
         }
@@ -69,20 +74,20 @@ namespace LCard.E2010GUI.ViewModels.Actions
         
         public ObservableDataSource<Point> GrapDataLine3
         {
-            get { return grapDataLine[2]; }
+            get { return _grapDataLine[2]; }
             set
             {
-                grapDataLine[2] = value;
+                _grapDataLine[2] = value;
                 NotifyOfPropertyChange(() => GrapDataLine3);
             }
         }
 
         public ObservableDataSource<Point> GrapDataLine4
         {
-            get { return grapDataLine[3]; }
+            get { return _grapDataLine[3]; }
             set
             {
-                grapDataLine[3] = value;
+                _grapDataLine[3] = value;
                 NotifyOfPropertyChange(() => GrapDataLine4);
             }
         }
@@ -100,16 +105,11 @@ namespace LCard.E2010GUI.ViewModels.Actions
                     _toggleButtonViewData = value;
                     _toggleButtonRecord = false;
                     _toggleButtonStop = false;
-
-                    var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
-                    if (e2020.Inited)
-                    {
-                        if(e2020.OnData == null)
-                            e2020.OnData += UpdateData;
-                        e2020.StartReadData();
-                    } 
                     
                     NotifyAllToggle();
+
+                    _dataService = null;
+                    StartReadData();
                 }
             }
         }
@@ -126,6 +126,9 @@ namespace LCard.E2010GUI.ViewModels.Actions
                     _toggleButtonRecord = value;
                     _toggleButtonStop = false;
                     NotifyAllToggle();
+
+                    _dataService = UnityConfig.GetConfiguredContainer().Resolve<IDataService>();
+                    StartReadData();
                 }
             }
         }
@@ -142,6 +145,16 @@ namespace LCard.E2010GUI.ViewModels.Actions
                     _toggleButtonViewData = false;
                     _toggleButtonRecord = false;
                     UnityConfig.GetConfiguredContainer().Resolve<IE2010>().StopReadData();
+
+                    if (_dataService != null)
+                    {
+                        _dataService.InputRateInkHz = ModuleE2010.Default.InputRateInkHz;
+                        _dataService?.WriteData();
+                    }
+                    
+                    
+                    
+                    _dataService = null;
                 }
                 NotifyAllToggle();
             }
@@ -154,10 +167,19 @@ namespace LCard.E2010GUI.ViewModels.Actions
             NotifyOfPropertyChange(() => ToggleButtonViewData);
         }
 
-        
+        private void StartReadData()
+        {
+            var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
+
+            if (e2020.OnData == null)
+                e2020.OnData += UpdateData;
+            e2020.StartReadData();
+        }
 
         public void UpdateData(DataPacketPoco dataPacket)
         {
+            _dataService?.AddPacket(dataPacket);
+
             Task.Factory.StartNew(() =>
             {
                 Console.WriteLine("block number = " + dataPacket.NumberBlock);
@@ -167,7 +189,7 @@ namespace LCard.E2010GUI.ViewModels.Actions
                 var pointLists = new List<Point>[4];
                 for (var j = 0; j < 4; j++)
                 {
-                    grapDataLine[j] = new ObservableDataSource<Point>();
+                    _grapDataLine[j] = new ObservableDataSource<Point>();
                     pointLists[j] = new List<Point>();
                 }
                 var stepOfPoint = 1000;
@@ -182,7 +204,7 @@ namespace LCard.E2010GUI.ViewModels.Actions
 
                 for (var j = 0; j < 4; j++)
                 {
-                    grapDataLine[j].AppendMany(pointLists[j]);
+                    _grapDataLine[j].AppendMany(pointLists[j]);
                 }
 
                 NotifyOfPropertyChange(() => GrapDataLine1);

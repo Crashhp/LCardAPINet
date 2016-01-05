@@ -135,6 +135,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Command\DelegateCommand.cs" />
+    <Compile Include="Startup\ModuleE2010.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>ModuleE2010.settings</DependentUpon>
+    </Compile>
     <Compile Include="Startup\Unity.cs" />
     <Compile Include="ViewModels\Actions\DeviceInformationViewModel.cs" />
     <Compile Include="ViewModels\Actions\DeviceSettingsViewModel.cs" />
@@ -169,6 +174,10 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Startup\ModuleE2010.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>ModuleE2010.Designer.cs</LastGenOutput>
+    </None>
     <Resource Include="Resources\Entypo.ttf" />
   </ItemGroup>
   <ItemGroup>
