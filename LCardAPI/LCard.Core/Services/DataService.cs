@@ -56,12 +56,12 @@ namespace LCard.Core.Services
             {
                 var orderedPackets = Packets.OrderBy(p => p.NumberBlock).ToList();
                 NumberOfChannels = orderedPackets.First().NumberOfChannels;
-                var fileStream = new StreamWriter("data.txt", false, Encoding.UTF8);
+                var fileStream = new StreamWriter("data "+ DateTime.UtcNow.ToString("yyyy ddd MMM dd hh_mm_ss") + ".txt", false, Encoding.UTF8);
                 KadrsNumber = orderedPackets.Count*orderedPackets.First().DataSize;
                 var inputRateInHz = InputRateInkHz * 1000;
                 InputTimeInSec = KadrsNumber/inputRateInHz;
                 fileStream.WriteLine("Oscilloscope Data File");
-                fileStream.WriteLine("Experiment Time : 2015 Вт янв 5 15:45:16");
+                fileStream.WriteLine("Experiment Time : {0}", ExperimentTime.ToString("yyyy ddd MMM dd hh: mm:ss"));
                 fileStream.WriteLine("Number Of Channels : {0}", NumberOfChannels);
                 fileStream.WriteLine("Kadrs Number : {0}", KadrsNumber);
                 fileStream.WriteLine("Input Rate In kHz: {0:0.0000000000}", InputRateInkHz);

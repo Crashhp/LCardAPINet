@@ -188,11 +188,12 @@ namespace LCard.API.Modules
                                 {
                                     if (OnData != null)
                                     {
-                                        var data = Array.ConvertAll(buffers[k].Buffer, x => (float) x/short.MaxValue);
-                                        int countData = data.Count()/2;
+                                        
+                                        var data = Array.ConvertAll(buffers[k].Buffer, x => (float)x / short.MaxValue);
+                                        int countData = data.Count() / 2;
                                         var datas = new float[4, countData / 4];
                                         int j = 0;
-                                        for (var t = 0; t < countData; t+=4)
+                                        for (var t = 0; t < countData; t += 4)
                                         {
                                             datas[0, j] = data[t];
                                             datas[1, j] = data[t + 1];
@@ -207,7 +208,12 @@ namespace LCard.API.Modules
                                             DataSize = countData / 4,
                                             NumberBlock = _numberBlock
                                         };
-                                        OnData(dataPacket);
+
+                                        if (_numberBlock > 0)
+                                        {
+                                            OnData(dataPacket);
+                                        }
+                                        
                                         _numberBlock++;
                                     }
                                 });
