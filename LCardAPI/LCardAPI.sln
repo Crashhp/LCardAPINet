@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryUsageExample", "Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCard.E2010GUI", "LCard.E2010GUI\LCard.E2010GUI.csproj", "{391024C0-38EE-4EB6-859D-393D24071EF3}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "LCard.Setup", "LCard.Setup\LCard.Setup.vdproj", "{742EA14D-9639-4DFD-91F5-8CE92987C459}"
+EndProject
 Global
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true
@@ -92,6 +94,12 @@ Global
 		{391024C0-38EE-4EB6-859D-393D24071EF3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{391024C0-38EE-4EB6-859D-393D24071EF3}.Release|Win32.ActiveCfg = Release|Any CPU
 		{391024C0-38EE-4EB6-859D-393D24071EF3}.Release|Win32.Build.0 = Release|Any CPU
+		{742EA14D-9639-4DFD-91F5-8CE92987C459}.Debug|Any CPU.ActiveCfg = Debug
+		{742EA14D-9639-4DFD-91F5-8CE92987C459}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{742EA14D-9639-4DFD-91F5-8CE92987C459}.Debug|Win32.ActiveCfg = Debug
+		{742EA14D-9639-4DFD-91F5-8CE92987C459}.Release|Any CPU.ActiveCfg = Release
+		{742EA14D-9639-4DFD-91F5-8CE92987C459}.Release|Mixed Platforms.ActiveCfg = Release
+		{742EA14D-9639-4DFD-91F5-8CE92987C459}.Release|Win32.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
