@@ -84,13 +84,13 @@ namespace LCard.Core.Services
                         switch (NumberOfChannels)
                         {
                             case 1:
-                                linesPacket.Add($"      {time:0.0000000000}    {dataPacketPoco.Datas[0, i]:0.0000000000}");
+                                //linesPacket.Add($"      {time:0.0000000000}    {dataPacketPoco.Datas[0, i]:0.0000000000}");
                                 break;
                             case 2:
-                                linesPacket.Add($"      {time:0.0000000000}    {dataPacketPoco.Datas[0, i]:0.0000000000}     {dataPacketPoco.Datas[1, i]:0.0000000000}");
+                                //linesPacket.Add($"      {time:0.0000000000}    {dataPacketPoco.Datas[0, i]:0.0000000000}     {dataPacketPoco.Datas[1, i]:0.0000000000}");
                                 break;
                             case 3:
-                                linesPacket.Add($"      {time:0.0000000000}    {dataPacketPoco.Datas[0, i]:0.0000000000}     {dataPacketPoco.Datas[1, i]:0.0000000000}     {dataPacketPoco.Datas[2, i]:0.0000000000}");
+                                //linesPacket.Add($"      {time:0.0000000000}    {dataPacketPoco.Datas[0, i]:0.0000000000}     {dataPacketPoco.Datas[1, i]:0.0000000000}     {dataPacketPoco.Datas[2, i]:0.0000000000}");
                                 break;
                             case 4:
                                 linesPacket.Add(String.Concat(firstPart, time.ToString(doubleFormat), delimeter, dataPacketPoco.Datas[0, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[1, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[2, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[3, i].ToString(doubleFormat)));

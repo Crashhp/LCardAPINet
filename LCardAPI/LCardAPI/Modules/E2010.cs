@@ -48,7 +48,7 @@ namespace LCard.API.Modules
                 _logger.Error(" Can't find any module E20-10 in first 127 virtual slots!");
                 return false;
             }
-            _logger.Info($" OpenLDevice({i}) --> OK");
+            _logger.Info(" OpenLDevice({0}) --> OK");
             return true;
         }
 

@@ -4,8 +4,11 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Security.Permissions;
 using System.Windows;
 using Caliburn.Micro;
+using LCard.Core.Logger;
 using LCard.E2010GUI.Controls;
 
 namespace LCard.E2010GUI.Startup
@@ -14,9 +17,28 @@ namespace LCard.E2010GUI.Startup
     {
         private CompositionContainer container;
 
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
         public AppBootstrapper()
         {
-            Initialize();
+            try
+            {
+                AppDomain currentDomain = AppDomain.CurrentDomain;
+                currentDomain.UnhandledException += new UnhandledExceptionEventHandler(ExceptionHandler);
+                Initialize();
+            }
+            catch (Exception e)
+            {
+                Logger.Current.Error("Inner", e.InnerException);
+                Logger.Current.Error("Excep", e);
+                throw;
+            }
+        }
+
+        private void ExceptionHandler(object sender, UnhandledExceptionEventArgs args)
+        {
+            Exception e = (Exception)args.ExceptionObject;
+            Logger.Current.Error("Inner", e.InnerException);
+            Logger.Current.Error("Excep", e);
         }
 
         protected override void BuildUp(object instance)
