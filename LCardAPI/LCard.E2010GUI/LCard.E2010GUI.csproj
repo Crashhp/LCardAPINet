@@ -262,6 +262,15 @@
     <Resource Include="Images\record14.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="msvcp120d.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="msvcr120.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="msvcr120d.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="adc.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

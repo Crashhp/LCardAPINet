@@ -81,6 +81,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_29372542D29A45AD8B3F79639BCEDF82"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_2EF43881ABBD40B0A5689C5F1262C043"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -399,6 +405,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_9C0C5E0D6D9CD83BBFEB8DB9E05D04B6"
+        "OwnerKey" = "8:_5AE34466CECA483F8A9BF3672CA3216D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9C0C5E0D6D9CD83BBFEB8DB9E05D04B6"
+        "OwnerKey" = "8:_A5404D56D745CB0534F4FE697D2D9AA6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_A1A63CC0B473FB54750D5A6875F74722"
         "OwnerKey" = "8:_95B4C766CB6441DC5E9B98629B3DE089"
         "MsmSig" = "8:_UNDEFINED"
@@ -406,6 +424,12 @@
         "Entry"
         {
         "MsmKey" = "8:_A1A63CC0B473FB54750D5A6875F74722"
+        "OwnerKey" = "8:_5AE34466CECA483F8A9BF3672CA3216D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A5404D56D745CB0534F4FE697D2D9AA6"
         "OwnerKey" = "8:_5AE34466CECA483F8A9BF3672CA3216D"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -453,6 +477,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B9C8591B1AF64D1B8C91E17087924D31"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C389A880C933C9F65C61AF1E96C798E7"
         "OwnerKey" = "8:_5AE34466CECA483F8A9BF3672CA3216D"
         "MsmSig" = "8:_UNDEFINED"
@@ -461,6 +491,12 @@
         {
         "MsmKey" = "8:_C45D8F9926ED2ACAFA004F279F540E68"
         "OwnerKey" = "8:_5AE34466CECA483F8A9BF3672CA3216D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C53AF9CE8D8047E2A6349B5A62AF0EC5"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -575,12 +611,6 @@
         {
         "MsmKey" = "8:_FFBC6AC5AEDCE20CE575C59CD7E3F02B"
         "OwnerKey" = "8:_5AE34466CECA483F8A9BF3672CA3216D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_686641D5C582A4F23856E4499CFB53CB"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -826,6 +856,18 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A5404D56D745CB0534F4FE697D2D9AA6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_9C0C5E0D6D9CD83BBFEB8DB9E05D04B6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_4C47FC0F82EE5294DB1D1E64BF1B621F"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -979,6 +1021,12 @@
         "OwnerKey" = "8:_F592FE82B2F1B7C899D3C20D80B284C0"
         "MsmSig" = "8:_UNDEFINED"
         }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_686641D5C582A4F23856E4499CFB53CB"
+        "MsmSig" = "8:_UNDEFINED"
+        }
     }
     "Configurations"
     {
@@ -997,6 +1045,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -1013,6 +1077,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -1294,7 +1366,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:LCard.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:LCard.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_2709F3B14614077E55CA34ACB785C52D"
@@ -1319,6 +1391,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_29372542D29A45AD8B3F79639BCEDF82"
+            {
+            "SourcePath" = "8:..\\LCard.E2010GUI\\msvcr120d.dll"
+            "TargetName" = "8:msvcr120d.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_0B669C5985814BD5929413D1BECA7EE0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2EF43881ABBD40B0A5689C5F1262C043"
@@ -1489,7 +1581,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:LCard.API, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:LCard.API, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_442A3419183967BEB343468407E5FCD7"
@@ -2477,6 +2569,37 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9C0C5E0D6D9CD83BBFEB8DB9E05D04B6"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:ZedGraph, Version=5.1.5.24775, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_9C0C5E0D6D9CD83BBFEB8DB9E05D04B6"
+                    {
+                    "Name" = "8:ZedGraph.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:ZedGraph.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_0B669C5985814BD5929413D1BECA7EE0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A1A63CC0B473FB54750D5A6875F74722"
             {
             "AssemblyRegister" = "3:1"
@@ -2491,6 +2614,37 @@
                     }
                 }
             "SourcePath" = "8:System.Threading.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_0B669C5985814BD5929413D1BECA7EE0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A5404D56D745CB0534F4FE697D2D9AA6"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:ZedGraph.Web, Version=5.1.5.24782, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_A5404D56D745CB0534F4FE697D2D9AA6"
+                    {
+                    "Name" = "8:ZedGraph.Web.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:ZedGraph.Web.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0B669C5985814BD5929413D1BECA7EE0"
@@ -3235,15 +3389,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:E2010 Manger"
-        "ProductCode" = "8:{61249411-1067-47F1-927E-0A7367E9D2D1}"
-        "PackageCode" = "8:{844C443F-FCD9-44D3-9AE6-A8FAEBFAD822}"
+        "ProductCode" = "8:{496D9CA6-CCFE-4EF5-B82F-F4A900E22605}"
+        "PackageCode" = "8:{D85480C2-5596-4037-A23B-0F0FEBA36402}"
         "UpgradeCode" = "8:{05C15534-EB1C-43F1-B32C-B0038197FE48}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.3"
+        "ProductVersion" = "8:1.0.4"
         "Manufacturer" = "8:LCardApps"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -3259,7 +3413,7 @@
         "UseSystemSearchPath" = "11:TRUE"
         "TargetPlatform" = "3:0"
         "PreBuildEvent" = "8:"
-        "PostBuildEvent" = "8:"
+        "PostBuildEvent" = "8:xcopy $(BuiltOutputPath) $(ProjectDir)$(Configuration)LCard.Setup.1.0.3.msi"
         "RunPostBuildEvent" = "3:0"
         }
         "Registry"
@@ -3780,6 +3934,34 @@
         }
         "MergeModule"
         {
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_B9C8591B1AF64D1B8C91E17087924D31"
+            {
+            "UseDynamicProperties" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
+            "SourcePath" = "8:c:\\program files (x86)\\common files\\merge modules\\microsoft_vc120_debugcrt_x86.msm"
+                "Properties"
+                {
+                }
+            "LanguageId" = "3:0"
+            "Exclude" = "11:FALSE"
+            "Folder" = "8:"
+            "Feature" = "8:"
+            "IsolateTo" = "8:"
+            }
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_C53AF9CE8D8047E2A6349B5A62AF0EC5"
+            {
+            "UseDynamicProperties" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
+            "SourcePath" = "8:c:\\program files (x86)\\common files\\merge modules\\microsoft_vc120_crt_x86.msm"
+                "Properties"
+                {
+                }
+            "LanguageId" = "3:0"
+            "Exclude" = "11:FALSE"
+            "Folder" = "8:"
+            "Feature" = "8:"
+            "IsolateTo" = "8:"
+            }
         }
         "ProjectOutput"
         {
