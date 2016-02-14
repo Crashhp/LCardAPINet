@@ -17,24 +17,27 @@ namespace LibraryUsageExample
     {
         static void Main(string[] args)
         {
+
             IE2010 mE2010 = new E2010();
-            mE2010.OnData += OnData;
-            Data.Add(new List<float>());
-            Data.Add(new List<float>());
-            Data.Add(new List<float>());
-            Data.Add(new List<float>());
-            var moduleDescription = mE2010.Init();
-            if (moduleDescription.HasValue)
-            {
-                
-                SetDefaultAdcParams(ref mE2010, moduleDescription.Value);
+            var od = mE2010.OpenLDevice();
+            //mE2010.OnData += OnData;
+            //Data.Add(new List<float>());
+            //Data.Add(new List<float>());
+            //Data.Add(new List<float>());
+            //Data.Add(new List<float>());
+            //var moduleDescription = mE2010.Init();
+            //if (moduleDescription.HasValue)
+            //{
 
-                mE2010.StartReadData();
+            //    SetDefaultAdcParams(ref mE2010, moduleDescription.Value);
 
-                Thread.Sleep(10000);
+            //    mE2010.StartReadData();
 
-                mE2010.StopReadData();
-            }
+            //    Thread.Sleep(10000);
+
+            //    mE2010.StopReadData();
+            //}
+
         }
 
         private static void SetDefaultAdcParams(ref IE2010 mE2010, M_MODULE_DESCRIPTION_E2010 moduleDescription)

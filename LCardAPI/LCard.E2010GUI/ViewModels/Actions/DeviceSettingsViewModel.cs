@@ -36,7 +36,7 @@ namespace LCard.E2010GUI.ViewModels.Actions
             set
             {
                 double rateKhz;
-                if (double.TryParse(value, out rateKhz))
+                if (double.TryParse(value, out rateKhz) || value == "")
                 {
                     _inputRatekHz = value;
                     ModuleE2010.Default.InputRateInkHz = rateKhz;

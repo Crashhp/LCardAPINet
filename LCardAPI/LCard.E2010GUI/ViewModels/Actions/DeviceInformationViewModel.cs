@@ -54,9 +54,22 @@ namespace LCard.E2010GUI.ViewModels.Actions
             AddParameter("Active", adc.Active.ToString());
             AddParameter("Название модуля", adc.Name);
             AddParameter("Комментарий", adc.Comment);
-            AddParameter("Калибровочные коэфициенты", String.Join(", ", adc.ScaleCalibration.Select(p => $"{p:N2}").ToArray()));
-            AddParameter("Коэфициенты смещения", String.Join(", ", adc.OffsetCalibration.Select(p => $"{p:N2}").ToArray()));
-
+            AddParameter("Калибровочные коэфициенты", "");
+            int i = 0;
+            foreach (var coeff in adc.ScaleCalibration)
+            {
+                AddParameter("  Калибр. коэфициент " + i, $"{coeff:N2}");
+                i++;
+                if (i > 12) break;
+            }
+            AddParameter("Коэфициенты смещения", "");
+            i = 0;
+            foreach (var coeff in adc.OffsetCalibration)
+            {
+                AddParameter("  Смещ. коэфициент " + i, $"{coeff:N2}");
+                i++;
+                if (i > 12) break;
+            }
             //interface
             var linterface = moduleDescription.Module;
             AddParameter("Коменнатарий", linterface.Comment, DevicePropertyGroup.Interface);
@@ -65,9 +78,6 @@ namespace LCard.E2010GUI.ViewModels.Actions
             //Module
             var module = moduleDescription.Module;
             AddParameter("Имя устройства", module.DeviceName, DevicePropertyGroup.Module);
-            AddParameter("Имя компании", module.CompanyName, DevicePropertyGroup.Module);
-
-            AddParameter("Коменнтарий", module.Comment, DevicePropertyGroup.Module);
             AddParameter("Ревизия", Convert.ToChar(module.Revision).ToString(), DevicePropertyGroup.Module);
             AddParameter("Серийный номер", (module.SerialNumber), DevicePropertyGroup.Module);
             AddParameter("Модификация", module.Modification.ToString(), DevicePropertyGroup.Module);

@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="LCard.Manager.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:local="clr-namespace:LCard.Manager.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             BorderBrush="{DynamicResource AccentColorBrush}"
+             BorderThickness="1">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0">Частота, кГц</Label>
+        <controls:NumericUpDown Value="5000" Grid.Column="1" Grid.Row="0" Margin="5" Interval="100"></controls:NumericUpDown>
+        <Label Grid.Row="1" Grid.Column="0">Усиление входного сигнала</Label>
+        <ComboBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top" Width="120"/>
+        <Label Grid.Row="2" Grid.Column="0">Число каналов</Label>
+        <controls:NumericUpDown Value="4" Minimum="1" Maximum="4" Grid.Column="1" Grid.Row="2" Margin="5" Interval="1"></controls:NumericUpDown>
+        <Button Command="{Binding OkCommand}" Style="{DynamicResource AccentedSquareButtonStyle}" IsDefault="True" Grid.Column="1" Grid.Row="5" Margin="5" Width="80" HorizontalAlignment="Right">OK</Button>
+    </Grid>
+</UserControl>

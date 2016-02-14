@@ -1,0 +1,50 @@
+﻿<controls:MetroWindow x:Class="LCard.Manager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:LCard.Manager.Views"
+        xmlns:local="clr-namespace:LCard.Manager"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Title="Управление L-Card E20-10 " Height="768" Width="1024" 
+                      TitleCaps="False" 
+                      ShowMaxRestoreButton="True" 
+                      ShowMinButton="True" 
+                      ShowCloseButton="True" 
+                      ShowTitleBar="True"
+                      GlowBrush="{DynamicResource AccentColorBrush}"
+                      NonActiveBorderBrush="{DynamicResource AccentColorBrush}"
+                      NonActiveWindowTitleBrush="{DynamicResource AccentColorBrush}"
+                      >
+    <controls:MetroWindow.IconTemplate>
+        <DataTemplate>
+            <Image Source="Resources/adc.ico"></Image>
+        </DataTemplate>
+    </controls:MetroWindow.IconTemplate>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <controls:MetroAnimatedTabControl TabStripPlacement="Left"
+            controls:TabControlHelper.IsUnderlined="True"
+            controls:TabControlHelper.Transition="Normal"
+            
+            SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
+            <controls:MetroTabItem Header="Просмотр/Запись данных">
+                <views:DataView x:Name="DataView" DataContext="{Binding DataViewModel}"/>
+            </controls:MetroTabItem>
+            <controls:MetroTabItem Header="Настройки" Height="44" VerticalAlignment="Bottom">
+                <views:SettingsView DataContext="{Binding SettingsViewModel}"></views:SettingsView>
+            </controls:MetroTabItem>
+            <controls:MetroTabItem Header="Информация">
+                <views:InformationView DataContext="{Binding InformationViewModel}"></views:InformationView>
+            </controls:MetroTabItem>
+        </controls:MetroAnimatedTabControl>
+        <StatusBar Grid.Row="1">
+            <StatusBarItem Content="{Binding Version}">
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</controls:MetroWindow>

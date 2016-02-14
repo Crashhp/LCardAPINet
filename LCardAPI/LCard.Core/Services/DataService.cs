@@ -71,7 +71,13 @@ namespace LCard.Core.Services
                 fileStream.WriteLine("Data as Time Sequence:");
                 fileStream.WriteLine("                    Ch  1      Ch  2      Ch  3      Ch  4  ");
                 var k = 0;
-                var doubleFormat = "0.0000000000";
+                var timeFormat = "0.0";
+                int needDigits = inputRateInHz.ToString().Length;
+                for (int i = 0; i < needDigits-1; i++)
+                {
+                    timeFormat += "0";
+                }
+                var doubleFormat = "0.000";
                 var firstPart = "      ";
                 var delimeter = "    ";
                 StringBuilder builder = new StringBuilder();
@@ -84,20 +90,16 @@ namespace LCard.Core.Services
                         switch (NumberOfChannels)
                         {
                             case 1:
-                                //linesPacket.Add($"      {time:0.0000000000}    {dataPacketPoco.Datas[0, i]:0.0000000000}");
+                                linesPacket.Add(String.Concat(firstPart, time.ToString(timeFormat), delimeter, dataPacketPoco.Datas[0, i].ToString(doubleFormat)));
                                 break;
                             case 2:
-                                //linesPacket.Add($"      {time:0.0000000000}    {dataPacketPoco.Datas[0, i]:0.0000000000}     {dataPacketPoco.Datas[1, i]:0.0000000000}");
+                                linesPacket.Add(String.Concat(firstPart, time.ToString(timeFormat), delimeter, dataPacketPoco.Datas[0, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[1, i].ToString(doubleFormat)));
                                 break;
                             case 3:
-                                //linesPacket.Add($"      {time:0.0000000000}    {dataPacketPoco.Datas[0, i]:0.0000000000}     {dataPacketPoco.Datas[1, i]:0.0000000000}     {dataPacketPoco.Datas[2, i]:0.0000000000}");
+                                linesPacket.Add(String.Concat(firstPart, time.ToString(timeFormat), delimeter, dataPacketPoco.Datas[0, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[1, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[2, i].ToString(doubleFormat)));
                                 break;
                             case 4:
-                                linesPacket.Add(String.Concat(firstPart, time.ToString(doubleFormat), delimeter, dataPacketPoco.Datas[0, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[1, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[2, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[3, i].ToString(doubleFormat)));
-                                
-
-                                //linesPacket.Add($"      {time:0.0000000000}    {dataPacketPoco.Datas[0, i]:0.0000000000}    {dataPacketPoco.Datas[1, i]:0.0000000000}    {dataPacketPoco.Datas[2, i]:0.0000000000}    {dataPacketPoco.Datas[3, i]:0.0000000000}");
-                                //linesPacket.Add(String.Format("      {0:0.0000000000}    {1:0.0000000000}    {2:0.0000000000}    {3:0.0000000000}    {4:0.0000000000}",time, dataPacketPoco.Datas[0, i], dataPacketPoco.Datas[1, i], dataPacketPoco.Datas[2, i], dataPacketPoco.Datas[3, i]));
+                                linesPacket.Add(String.Concat(firstPart, time.ToString(timeFormat), delimeter, dataPacketPoco.Datas[0, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[1, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[2, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[3, i].ToString(doubleFormat)));
                                 break;
                                 
                         }
