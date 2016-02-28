@@ -41,17 +41,21 @@ namespace LCard.Manager.ViewModels
                 {
                     InformationViewModel.LoadDeviceInfo();
                 }
+                if (SelectedTabIndex == 0)
+                {
+                    DataViewModel.PrepareGraph();
+                }
             }
         }
 
         private void Initializate()
         {
             InformationViewModel = new InformationViewModel();
-            DataViewModel = new DataViewModel(windowsFormsHostGraph);
+            DataViewModel = new DataViewModel(windowsFormsHostGraph, this.dialogService);
             SettingsViewModel = new SettingsViewModel(() =>
             {
                 
-            });
+            }, this.dialogService);
         }
     }
 }

@@ -4,32 +4,54 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:appSettings="clr-namespace:LCard.Manager.Properties"
              xmlns:local="clr-namespace:LCard.Manager.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="500" d:DesignWidth="800"
              BorderBrush="{DynamicResource AccentColorBrush}"
              BorderThickness="1">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <Label Grid.Row="0">Частота, кГц</Label>
-        <controls:NumericUpDown Value="5000" Grid.Column="1" Grid.Row="0" Margin="5" Interval="100"></controls:NumericUpDown>
-        <Label Grid.Row="1" Grid.Column="0">Усиление входного сигнала</Label>
-        <ComboBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top" Width="120"/>
-        <Label Grid.Row="2" Grid.Column="0">Число каналов</Label>
-        <controls:NumericUpDown Value="4" Minimum="1" Maximum="4" Grid.Column="1" Grid.Row="2" Margin="5" Interval="1"></controls:NumericUpDown>
-        <Button Command="{Binding OkCommand}" Style="{DynamicResource AccentedSquareButtonStyle}" IsDefault="True" Grid.Column="1" Grid.Row="5" Margin="5" Width="80" HorizontalAlignment="Right">OK</Button>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0">Частота, кГц</Label>
+            <controls:NumericUpDown Value="{Binding Frequency}" Grid.Column="1" Grid.Row="0" Margin="5" Interval="100"></controls:NumericUpDown>
+            <Label Grid.Row="1" Grid.Column="0">Усиление входного сигнала</Label>
+            <ComboBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top" Width="120" ItemsSource="{Binding IncreasedInputTypes}" SelectedItem="{Binding IncreasedInputType, Mode=TwoWay}"/>
+            <Label Grid.Row="2" Grid.Column="0">Настройка каналов</Label>
+            <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Канал 1</Label>
+            <controls:ToggleSwitchButton Grid.Column="1" Grid.Row="3" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel1}" HorizontalAlignment="Left"></controls:ToggleSwitchButton>
+            <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Канал 2</Label>
+            <controls:ToggleSwitchButton Grid.Column="1" Grid.Row="4" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel2}" HorizontalAlignment="Left"></controls:ToggleSwitchButton>
+            <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Канал 3</Label>
+            <controls:ToggleSwitchButton Grid.Column="1" Grid.Row="5" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel3}" HorizontalAlignment="Left"></controls:ToggleSwitchButton>
+            <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center">Канал 4</Label>
+            <controls:ToggleSwitchButton Grid.Column="1" Grid.Row="6" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel4}" HorizontalAlignment="Left"></controls:ToggleSwitchButton>
+        </Grid>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Button Command="{Binding SetDeviceSettingsCommand}" Style="{DynamicResource AccentedSquareButtonStyle}" IsDefault="True" Margin="5" Width="140" HorizontalAlignment="Left">Установить параметры</Button>
+            <Button Command="{Binding SetDefaultDeviceSettingsCommand}" Style="{DynamicResource AccentedSquareButtonStyle}" IsDefault="True"  Margin="5" Width="240" HorizontalAlignment="Left">Установить параметры по умолчанию</Button>
+        </StackPanel>
     </Grid>
+   
 </UserControl>

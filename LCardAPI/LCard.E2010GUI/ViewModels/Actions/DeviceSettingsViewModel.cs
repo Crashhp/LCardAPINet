@@ -18,7 +18,7 @@ namespace LCard.E2010GUI.ViewModels.Actions
     {
         private ADC_INPUTV aDC_INPUTV = ADC_INPUTV.ADC_INPUT_RANGE_300mV_E2010;
 
-        private string _selectedRangeIndex = "0.3, V";
+        
 
         public List<string> RangeIndex
         {
@@ -47,6 +47,7 @@ namespace LCard.E2010GUI.ViewModels.Actions
             }
         }
 
+        private string _selectedRangeIndex = "0.3, V";
         public string SelectedRangeIndex
         {
             get

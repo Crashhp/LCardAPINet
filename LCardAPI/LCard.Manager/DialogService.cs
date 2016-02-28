@@ -24,8 +24,8 @@ namespace LCard.Manager
         {
             var settings = new MetroDialogSettings()
             {
-                AffirmativeButtonText = "Yes",
-                NegativeButtonText = "No",
+                AffirmativeButtonText = "Да",
+                NegativeButtonText = "Нет",
             };
             return metroWindow.ShowMessageAsync(title, message, 
                 MessageDialogStyle.AffirmativeAndNegative, settings);

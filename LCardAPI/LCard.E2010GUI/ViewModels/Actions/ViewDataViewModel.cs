@@ -149,7 +149,7 @@ namespace LCard.E2010GUI.ViewModels.Actions
                     if (_dataService != null)
                     {
                         _dataService.InputRateInkHz = ModuleE2010.Default.InputRateInkHz;
-                        _dataService?.WriteData();
+                        _dataService?.WriteData(null, new []{true,true,true,true});
                     }
                     
                     

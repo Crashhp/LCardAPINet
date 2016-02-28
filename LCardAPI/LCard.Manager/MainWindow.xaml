@@ -27,7 +27,7 @@
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <controls:MetroAnimatedTabControl TabStripPlacement="Left"
+        <controls:MetroAnimatedTabControl TabStripPlacement="Top"
             controls:TabControlHelper.IsUnderlined="True"
             controls:TabControlHelper.Transition="Normal"
             

@@ -22,13 +22,13 @@
 
 
         <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <Button Command="{Binding NewMatch}"       
+            <Button Command="{Binding ViewDataCommand}"       
                     Style="{DynamicResource AccentedSquareButtonStyle}"
                     Margin="5" Width="80" Content="Просмотр"></Button>
-            <Button Command="{Binding EditMatch}" CommandParameter="{Binding SelectedMatch}" 
+            <Button Command="{Binding WriteDataCommand}"
                     Style="{DynamicResource SquareButtonStyle}"
                     Margin="5" Width="80" Content="Запись"></Button>
-            <Button Command="{Binding DeleteMatch}" CommandParameter="{Binding SelectedMatch}" 
+            <Button Command="{Binding StopCommand}" 
                     Style="{DynamicResource SquareButtonStyle}"
                     Margin="5" Width="80" Content="Стоп"></Button>
         </StackPanel>

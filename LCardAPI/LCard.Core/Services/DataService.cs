@@ -49,16 +49,15 @@ namespace LCard.Core.Services
             }
         }
 
-
-        public void WriteData()
+        public void WriteData(Action<int, int> progressAction, bool[] isChannelEnabled)
         {
             lock (this)
             {
                 var orderedPackets = Packets.OrderBy(p => p.NumberBlock).ToList();
-                NumberOfChannels = orderedPackets.First().NumberOfChannels;
+                NumberOfChannels = isChannelEnabled.Where( v => v ).Count();
                 var fileStream = new StreamWriter("data "+ DateTime.UtcNow.ToString("yyyy ddd MMM dd hh_mm_ss") + ".txt", false, Encoding.UTF8);
                 KadrsNumber = orderedPackets.Count*orderedPackets.First().DataSize;
-                var inputRateInHz = InputRateInkHz * 1000;
+                var inputRateInHz = InputRateInkHz * 1000 / 4.0;
                 InputTimeInSec = KadrsNumber/inputRateInHz;
                 fileStream.WriteLine("Oscilloscope Data File");
                 fileStream.WriteLine("Experiment Time : {0}", ExperimentTime.ToString("yyyy ddd MMM dd hh: mm:ss"));
@@ -77,9 +76,10 @@ namespace LCard.Core.Services
                 {
                     timeFormat += "0";
                 }
-                var doubleFormat = "0.000";
+                var doubleFormat = "0.0000";
                 var firstPart = "      ";
                 var delimeter = "    ";
+                
                 StringBuilder builder = new StringBuilder();
                 foreach (var dataPacketPoco in orderedPackets)
                 {
@@ -87,29 +87,24 @@ namespace LCard.Core.Services
                     for (var i = 0; i < dataPacketPoco.DataSize; i++)
                     {
                         var time = k/inputRateInHz;
-                        switch (NumberOfChannels)
+                        var linePacket = String.Concat(firstPart, time.ToString(timeFormat));
+                        for (int j =0; j < dataPacketPoco.NumberOfChannels; j++)
                         {
-                            case 1:
-                                linesPacket.Add(String.Concat(firstPart, time.ToString(timeFormat), delimeter, dataPacketPoco.Datas[0, i].ToString(doubleFormat)));
-                                break;
-                            case 2:
-                                linesPacket.Add(String.Concat(firstPart, time.ToString(timeFormat), delimeter, dataPacketPoco.Datas[0, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[1, i].ToString(doubleFormat)));
-                                break;
-                            case 3:
-                                linesPacket.Add(String.Concat(firstPart, time.ToString(timeFormat), delimeter, dataPacketPoco.Datas[0, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[1, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[2, i].ToString(doubleFormat)));
-                                break;
-                            case 4:
-                                linesPacket.Add(String.Concat(firstPart, time.ToString(timeFormat), delimeter, dataPacketPoco.Datas[0, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[1, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[2, i].ToString(doubleFormat), delimeter, dataPacketPoco.Datas[3, i].ToString(doubleFormat)));
-                                break;
-                                
+                            if(isChannelEnabled[j])
+                                linePacket += String.Concat(delimeter, dataPacketPoco.Datas[j, i].ToString(doubleFormat));
                         }
+                        linesPacket.Add(linePacket);
                         k++;
                     }
                     foreach (var linePacket in linesPacket)
                     {
                         fileStream.WriteLine(linePacket);
                     }
-
+                    if (progressAction != null)
+                    {
+                        var kThread = dataPacketPoco.NumberBlock;
+                        progressAction(kThread, orderedPackets.Count);
+                    }
                 }
                 fileStream.Flush();
                 fileStream.Close();

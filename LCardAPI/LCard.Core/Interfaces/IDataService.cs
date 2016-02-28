@@ -14,6 +14,6 @@ namespace LCard.Core.Interfaces
         DateTime ExperimentTime { get; set; }
         int Decimation { get; set; }
         void AddPacket(DataPacketPoco packetPoco);
-        void WriteData();
+        void WriteData(Action<int, int> progressAction, bool[] isChannleEnbled );
     }
 }
