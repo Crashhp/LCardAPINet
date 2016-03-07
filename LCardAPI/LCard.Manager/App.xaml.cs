@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.Remoting.Contexts;
 using System.Security.Permissions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,7 +28,6 @@ namespace LCard.Manager
             if (!module.OpenLDevice())
             {
                 MessageBox.Show("Устройство не подключено");
-                this.Shutdown();
             }
 
             this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
@@ -40,5 +41,18 @@ namespace LCard.Manager
             MessageBox.Show(e.ToString());
             args.Handled = true;
         }
+
+        private static volatile object _lockObj = new object();
+        public static bool IsDevicePluggedIn
+        {
+            get
+            {
+                lock (_lockObj)
+                {
+                    return UnityConfig.GetConfiguredContainer().Resolve<IE2010>().IsDevicePluggedIn;
+                }
+            }
+        }
+
     }
 }

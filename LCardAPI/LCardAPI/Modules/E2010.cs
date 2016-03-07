@@ -103,7 +103,7 @@ namespace LCard.API.Modules
         {
             Inited = true;
             M_MODULE_DESCRIPTION_E2010? res = null;
-            OpenLDevice();
+            if (!OpenLDevice()) return null;
             // попробуем прочитать дескриптор устройства
             IntPtr handle = GetModuleHandleDevice();
 
@@ -146,8 +146,10 @@ namespace LCard.API.Modules
 
         public bool StartReadData()
         {
+
             if (!_needReadData)
             {
+                if (!OpenLDevice()) return false;
                 if (!_parametersSetted)
                     SetParameters();
                 System.Threading.Thread.Sleep(500);
@@ -229,7 +231,7 @@ namespace LCard.API.Modules
 
         public void SetParameters()
         {
-
+            if (!OpenLDevice()) return;
             if (!Inited) Init();
 
             var moduleDescription = GET_MODULE_DESCRIPTION();
@@ -302,8 +304,14 @@ namespace LCard.API.Modules
             SET_ADC_PARS(ap, DataStep);
         }
 
+        public bool IsDevicePluggedIn
+        {
+            get { return OpenLDevice(); }
+        }
+
         public bool StopReadData()
         {
+            if (!OpenLDevice()) return false;
             _needReadData = false;
             if (_taskReadData != null)
                 _taskReadData.Wait();

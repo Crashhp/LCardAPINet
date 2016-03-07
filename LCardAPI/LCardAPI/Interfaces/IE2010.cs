@@ -36,5 +36,7 @@ namespace LCard.API.Interfaces
         bool StopReadData();
 
         void SetParameters();
+
+        bool IsDevicePluggedIn { get; }
     }
 }
