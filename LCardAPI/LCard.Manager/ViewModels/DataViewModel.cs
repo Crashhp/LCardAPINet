@@ -75,7 +75,7 @@ namespace LCard.Manager.ViewModels
             }
         }
 
-        private async void ViewData()
+        private void ViewData()
         {
             if (CheckSettings())
             {
@@ -87,7 +87,7 @@ namespace LCard.Manager.ViewModels
             }
         }
 
-        private  void WriteData()
+        private void WriteData()
         {
             if (CheckSettings())
             {
@@ -102,7 +102,7 @@ namespace LCard.Manager.ViewModels
 
         private async void Stop()
         {
-            if (CheckSettings())
+            //if (CheckSettings())
             {
                 {
                     UnityConfig.GetConfiguredContainer().Resolve<IE2010>().StopReadData();
@@ -269,7 +269,6 @@ namespace LCard.Manager.ViewModels
                 this.dialogService.ShowMessage("",
                     "Для отображение и записи данных включите хотя бы один канал");
             }
-            zedGraphControlData.Show();
             return true;
         }
 

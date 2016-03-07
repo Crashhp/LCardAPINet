@@ -7,6 +7,7 @@ using System.Windows.Forms.Integration;
 using Autofac;
 using LCard.API.Interfaces;
 using LCard.Manager.Enums;
+using LCard.Manager.Properties;
 using LCard.Manager.Startup;
 
 namespace LCard.Manager.ViewModels
@@ -48,10 +49,12 @@ namespace LCard.Manager.ViewModels
                 OnPropertyChanged();
                 if ((SelectedMainTabItem)SelectedTabIndex == SelectedMainTabItem.InformationView)
                 {
+                    Settings.Default.Reload();
                     InformationViewModel.LoadDeviceInfo();
                 }
                 if ((SelectedMainTabItem)SelectedTabIndex == SelectedMainTabItem.DataView)
                 {
+                    Settings.Default.Reload();
                     DataViewModel.PrepareGraph();
                 }
             }

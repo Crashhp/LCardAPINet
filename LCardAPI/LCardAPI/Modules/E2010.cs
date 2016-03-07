@@ -24,6 +24,7 @@ namespace LCard.API.Modules
         public bool Inited { get; set; }
         private volatile int _numberBlock;
         private volatile bool _parametersSetted;
+        private bool _deviceOpened = false;
 
         public E2010()
         {
@@ -38,18 +39,22 @@ namespace LCard.API.Modules
 
         public bool OpenLDevice()
         {
-            ushort i;
-            // попробуем обнаружить модуль E20-10 в первых MAX_VIRTUAL_SLOtS_QUANTITY_LUSBAPI виртуальных слотах
-            for (i = 0; i < Lusbapi.MAX_VIRTUAL_SLOTS_QUANTITY_LUSBAPI; i++)
-                if (_pModulE2010.OpenLDevice(i) > 0) break;
-            // что-нибудь обнаружили?
-            if (i == Lusbapi.MAX_VIRTUAL_SLOTS_QUANTITY_LUSBAPI)
+            if (_deviceOpened == false)
             {
-                _logger.Error(" Can't find any module E20-10 in first 127 virtual slots!");
-                return false;
+                ushort i;
+                // попробуем обнаружить модуль E20-10 в первых MAX_VIRTUAL_SLOtS_QUANTITY_LUSBAPI виртуальных слотах
+                for (i = 0; i < Lusbapi.MAX_VIRTUAL_SLOTS_QUANTITY_LUSBAPI; i++)
+                    if (_pModulE2010.OpenLDevice(i) > 0) break;
+                // что-нибудь обнаружили?
+                if (i == Lusbapi.MAX_VIRTUAL_SLOTS_QUANTITY_LUSBAPI)
+                {
+                    _logger.Error(" Can't find any module E20-10 in first 127 virtual slots!");
+                    return _deviceOpened;
+                }
+                _deviceOpened = true;
+                _logger.Info(" OpenLDevice({0}) --> OK");
             }
-            _logger.Info(" OpenLDevice({0}) --> OK");
-            return true;
+            return _deviceOpened;
         }
 
         public IntPtr GetModuleHandleDevice()
@@ -313,9 +318,13 @@ namespace LCard.API.Modules
         {
             if (!OpenLDevice()) return false;
             _needReadData = false;
+            
             if (_taskReadData != null)
                 _taskReadData.Wait();
             _pModulE2010.STOP_ADC();
+            _deviceOpened = false;
+            Inited = false;
+            //_pModulE2010 = new LusbapiE2010();
             return true;
         }
     }
