@@ -4,6 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.Integration;
+using Autofac;
+using LCard.API.Interfaces;
+using LCard.Manager.Enums;
+using LCard.Manager.Startup;
 
 namespace LCard.Manager.ViewModels
 {
@@ -11,7 +15,7 @@ namespace LCard.Manager.ViewModels
     {
         private readonly IDialogService dialogService;
         private readonly WindowsFormsHost windowsFormsHostGraph;
-        private int selectedTabIndex = 0;
+        private SelectedMainTabItem selectedTabIndex = SelectedMainTabItem.DataView;
 
         public InformationViewModel InformationViewModel { get; set; }
         public DataViewModel DataViewModel { get; set; }
@@ -22,6 +26,11 @@ namespace LCard.Manager.ViewModels
             this.dialogService = dialogService;
             this.windowsFormsHostGraph = windowsFormsHostGraph;
             Initializate();
+            var module = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
+            if (!module.OpenLDevice())
+            {
+                this.dialogService.ShowMessage("","Устройство не подключено");
+            }
         }
 
         public string Version
@@ -31,17 +40,17 @@ namespace LCard.Manager.ViewModels
 
         public int SelectedTabIndex
         {
-            get { return selectedTabIndex; }
+            get { return (int)selectedTabIndex; }
             set
             {
-                if (value == selectedTabIndex) return;
-                selectedTabIndex = value;
+                if (value == (int)selectedTabIndex) return;
+                selectedTabIndex = (SelectedMainTabItem)value;
                 OnPropertyChanged();
-                if (SelectedTabIndex == 2)
+                if ((SelectedMainTabItem)SelectedTabIndex == SelectedMainTabItem.InformationView)
                 {
                     InformationViewModel.LoadDeviceInfo();
                 }
-                if (SelectedTabIndex == 0)
+                if ((SelectedMainTabItem)SelectedTabIndex == SelectedMainTabItem.DataView)
                 {
                     DataViewModel.PrepareGraph();
                 }

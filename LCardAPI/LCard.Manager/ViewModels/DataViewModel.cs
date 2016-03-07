@@ -56,6 +56,7 @@ namespace LCard.Manager.ViewModels
             this.windowsFormsHostGrapData.Child = zedGraphControlData;
             Capacity = Convert.ToInt16(windowsFormsHostGrapData.ActualWidth)-1;
             PrepareGraph();
+            CheckSettings();
         }
 
         #region Graph Data
@@ -74,48 +75,65 @@ namespace LCard.Manager.ViewModels
             }
         }
 
-        private void ViewData()
+        private async void ViewData()
         {
-            var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
-            this.dataService = null;
-            if (e2020.OnData == null)
-                e2020.OnData += UpdateData;
-            e2020.StartReadData();
+            if (CheckSettings())
+            {
+                var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
+                this.dataService = null;
+                if (e2020.OnData == null)
+                    e2020.OnData += UpdateData;
+                e2020.StartReadData();
+            }
         }
 
-        private void WriteData()
+        private  void WriteData()
         {
-            this.dataService = UnityConfig.GetConfiguredContainer().Resolve<IDataService>();
-            var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
+            if (CheckSettings())
+            {
+                this.dataService = UnityConfig.GetConfiguredContainer().Resolve<IDataService>();
+                var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
 
-            if (e2020.OnData == null)
-                e2020.OnData += UpdateData;
-            e2020.StartReadData();
+                if (e2020.OnData == null)
+                    e2020.OnData += UpdateData;
+                e2020.StartReadData();
+            }
         }
 
         private async void Stop()
         {
-            UnityConfig.GetConfiguredContainer().Resolve<IE2010>().StopReadData();
-
-            if (this.dataService != null)
+            if (CheckSettings())
             {
-                this.windowsFormsHostGrapData.Visibility = Visibility.Hidden;
-                var controller = await this.dialogService.ShowProgressAsync("Запись данных", String.Format("Частота {0}, кГц; Число каналов: 4", Settings.Default.InputRateInkHz));
-
-                controller.SetCancelable(false);
-                this.dataService.InputRateInkHz = Settings.Default.InputRateInkHz;
-                await HotFixTask();
-                var action = new Action<int, int> (delegate (int progressValue, int maxProgress)
                 {
-                    controller.SetProgress(Convert.ToDouble(progressValue) / Convert.ToDouble(maxProgress));
-                });
-                dataService?.WriteData(action, new []{ Settings.Default.IsChannel1, Settings.Default.IsChannel2, Settings.Default.IsChannel3, Settings.Default.IsChannel4 });
-                await controller.CloseAsync();
-                this.windowsFormsHostGrapData.Visibility = Visibility.Visible;
+                    UnityConfig.GetConfiguredContainer().Resolve<IE2010>().StopReadData();
 
+                    if (this.dataService != null)
+                    {
+                        this.windowsFormsHostGrapData.Visibility = Visibility.Hidden;
+                        var controller =
+                            await
+                                this.dialogService.ShowProgressAsync("Запись данных",
+                                    String.Format("Частота {0}, кГц; Число каналов: 4", Settings.Default.InputRateInkHz));
+
+                        controller.SetCancelable(false);
+                        this.dataService.InputRateInkHz = Settings.Default.InputRateInkHz;
+                        await HotFixTask();
+                        var action = new Action<int, int>(delegate(int progressValue, int maxProgress)
+                        {
+                            controller.SetProgress(Convert.ToDouble(progressValue)/Convert.ToDouble(maxProgress));
+                        });
+                        dataService?.WriteData(action,
+                            new[]
+                            {
+                                Settings.Default.IsChannel1, Settings.Default.IsChannel2, Settings.Default.IsChannel3,
+                                Settings.Default.IsChannel4
+                            });
+                        await controller.CloseAsync();
+                        this.windowsFormsHostGrapData.Visibility = Visibility.Visible;
+
+                    }
+                }
             }
-
-            //this.dataService = null;
         }
         private Task HotFixTask()
         {
@@ -202,27 +220,30 @@ namespace LCard.Manager.ViewModels
         /// </summary>
         public void PrepareGraph()
         {
+            windowsFormsHostGrapData.Visibility = SettingsViewModel.NumberSelectedChannels > 0 ? Visibility.Visible : Visibility.Hidden;
             // Получим панель для рисования
             var pane = zedGraphControlData.GraphPane;
-            pane.Title.Text = "";
-            pane.YAxis.Title.Text = "Напряжение, вольты";
-            pane.XAxis.Title.Text = "Время, с";
-            // Очистим список кривых на тот случай, если до этого сигналы уже были нарисованы
-            pane.CurveList.Clear();
-            if(IsChannelEnabled(0))
-                pane.AddCurve("Канал " + 1, datas[0], Color.Red, SymbolType.None);
-            if (IsChannelEnabled(1))
-                pane.AddCurve("Канал " + 2, datas[1], Color.Green, SymbolType.None);
-            if (IsChannelEnabled(2))
-                pane.AddCurve("Канал " + 3, datas[2], Color.Blue, SymbolType.None);
-            if (IsChannelEnabled(3))
-                pane.AddCurve("Канал " + 4, datas[3], Color.Indigo, SymbolType.None);
+                pane.Title.Text = "";
+                pane.YAxis.Title.Text = "Напряжение, вольты";
+                pane.XAxis.Title.Text = "Время, с";
+                // Очистим список кривых на тот случай, если до этого сигналы уже были нарисованы
+                pane.CurveList.Clear();
+                if (IsChannelEnabled(0))
+                    pane.AddCurve("Канал " + 1, datas[0], Color.Red, SymbolType.None);
+                if (IsChannelEnabled(1))
+                    pane.AddCurve("Канал " + 2, datas[1], Color.Green, SymbolType.None);
+                if (IsChannelEnabled(2))
+                    pane.AddCurve("Канал " + 3, datas[2], Color.Blue, SymbolType.None);
+                if (IsChannelEnabled(3))
+                    pane.AddCurve("Канал " + 4, datas[3], Color.Indigo, SymbolType.None);
 
-            // Вызываем метод AxisChange (), чтобы обновить данные об осях. 
-            zedGraphControlData.AxisChange();
+                // Вызываем метод AxisChange (), чтобы обновить данные об осях. 
+                zedGraphControlData.AxisChange();
 
-            // Обновляем график
-            zedGraphControlData.Invalidate();
+                // Обновляем график
+                zedGraphControlData.Invalidate();
+
+
         }
 
         private bool IsChannelEnabled(int nChannel)
@@ -241,6 +262,16 @@ namespace LCard.Manager.ViewModels
             return false;
         }
 
+        private bool CheckSettings()
+        {
+            if (SettingsViewModel.NumberSelectedChannels == 0)
+            {
+                this.dialogService.ShowMessage("",
+                    "Для отображение и записи данных включите хотя бы один канал");
+            }
+            zedGraphControlData.Show();
+            return true;
+        }
 
         #endregion
     }

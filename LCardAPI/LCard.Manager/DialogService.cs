@@ -8,6 +8,7 @@ namespace LCard.Manager
     {
         Task<MessageDialogResult> AskQuestionAsync(string title, string message);
         Task<ProgressDialogController> ShowProgressAsync(string title, string message);
+        void ShowMessage(string title, string message);
         Task ShowMessageAsync(string title, string message);
     }
 
@@ -39,6 +40,11 @@ namespace LCard.Manager
         public Task ShowMessageAsync(string title, string message)
         {
             return metroWindow.ShowMessageAsync(title, message);
+        }
+
+        public async void ShowMessage(string title, string message)
+        {
+            var taskDialog = await metroWindow.ShowMessageAsync(title, message);
         }
     }
 }

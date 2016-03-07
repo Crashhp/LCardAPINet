@@ -35,7 +35,7 @@
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
             <Label Grid.Row="0">Частота, кГц</Label>
-            <controls:NumericUpDown Value="{Binding Frequency}" Grid.Column="1" Grid.Row="0" Margin="5" Interval="100"></controls:NumericUpDown>
+            <controls:NumericUpDown Value="{Binding Frequency}" Grid.Column="1" Grid.Row="0" Margin="5" Interval="100" Minimum="100" Maximum="5000"></controls:NumericUpDown>
             <Label Grid.Row="1" Grid.Column="0">Усиление входного сигнала</Label>
             <ComboBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top" Width="120" ItemsSource="{Binding IncreasedInputTypes}" SelectedItem="{Binding IncreasedInputType, Mode=TwoWay}"/>
             <Label Grid.Row="2" Grid.Column="0">Настройка каналов</Label>

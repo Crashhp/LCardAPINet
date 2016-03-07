@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Autofac;
 using LCard.API.Data.E2010;
 using LCard.API.Interfaces;
@@ -27,7 +28,6 @@ namespace LCard.Manager.ViewModels
                 if (value == frequency) return;
                 frequency = value;
                 Settings.Default.InputRateInkHz = value;
-                Settings.Default.Save();
                 OnPropertyChanged();
             }
         }
@@ -105,5 +105,21 @@ namespace LCard.Manager.ViewModels
             }
             
         }
+
+        public static int NumberSelectedChannels
+        {
+            get
+            {
+                return new[]
+                {
+                    Settings.Default.IsChannel1,
+                    Settings.Default.IsChannel2,
+                    Settings.Default.IsChannel3,
+                    Settings.Default.IsChannel4
+                }.Where(v => v).Count();
+            }
+        }
+
+
     }
 }

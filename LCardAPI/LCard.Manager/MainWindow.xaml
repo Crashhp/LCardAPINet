@@ -30,12 +30,11 @@
         <controls:MetroAnimatedTabControl TabStripPlacement="Top"
             controls:TabControlHelper.IsUnderlined="True"
             controls:TabControlHelper.Transition="Normal"
-            
             SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
             <controls:MetroTabItem Header="Просмотр/Запись данных">
                 <views:DataView x:Name="DataView" DataContext="{Binding DataViewModel}"/>
             </controls:MetroTabItem>
-            <controls:MetroTabItem Header="Настройки" Height="44" VerticalAlignment="Bottom">
+            <controls:MetroTabItem Header="Настройки" Height="44" VerticalAlignment="Bottom" >
                 <views:SettingsView DataContext="{Binding SettingsViewModel}"></views:SettingsView>
             </controls:MetroTabItem>
             <controls:MetroTabItem Header="Информация">

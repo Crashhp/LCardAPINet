@@ -24,12 +24,6 @@ namespace LCard.Manager
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            var module = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
-            if (!module.OpenLDevice())
-            {
-                MessageBox.Show("Устройство не подключено");
-            }
-
             this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
         }
 
