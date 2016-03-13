@@ -322,9 +322,8 @@ namespace LCard.API.Modules
             if (_taskReadData != null)
                 _taskReadData.Wait();
             _pModulE2010.STOP_ADC();
-            _deviceOpened = false;
-            Inited = false;
-            //_pModulE2010 = new LusbapiE2010();
+            //_deviceOpened = false;
+            //Inited = false;
             return true;
         }
     }

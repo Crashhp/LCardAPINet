@@ -460,6 +460,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_C0F2A0ABC5E34C1C90960A2773EF1823"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_F20A33BA415D7778BAAD64D73F35F7DE"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -835,12 +841,6 @@
         "OwnerKey" = "8:_ACBA0C4DF4655CA74C17C01BA88B09CE"
         "MsmSig" = "8:_UNDEFINED"
         }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C0F2A0ABC5E34C1C90960A2773EF1823"
-        "MsmSig" = "8:_UNDEFINED"
-        }
     }
     "Configurations"
     {
@@ -866,6 +866,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
             }
         }
         "Release"
@@ -890,6 +898,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
             }
         }
     }
@@ -2714,15 +2730,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:LCard.Manager.Setup"
-        "ProductCode" = "8:{39A4CD90-34EB-4EF2-B982-AD65FFF955E9}"
-        "PackageCode" = "8:{97908C9D-5D80-4F45-8DB3-B196867F4861}"
+        "ProductCode" = "8:{CE47005B-4D40-4149-BC2F-3201D8DAA7A7}"
+        "PackageCode" = "8:{DE0E1CF2-0EFD-481E-A147-E0A822F40725}"
         "UpgradeCode" = "8:{AC7B8985-4F1E-4C25-BA4C-909FA1F503A0}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.2"
+        "ProductVersion" = "8:1.0.4"
         "Manufacturer" = "8:LCardApps"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
