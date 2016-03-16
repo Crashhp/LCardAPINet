@@ -12,5 +12,7 @@ namespace LCard.Core.Poco
         public int NumberOfChannels { get; set; }
         public int DataSize { get; set; }
         public int NumberBlock { get; set; }
+        public uint NumberOfWordsPassed { get; set; }
+        public uint Timeout { get; set; }
     }
 }

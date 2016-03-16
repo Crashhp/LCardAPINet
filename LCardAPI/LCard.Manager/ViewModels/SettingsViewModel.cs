@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Forms;
 using Autofac;
 using LCard.API.Data.E2010;
 using LCard.API.Interfaces;
@@ -18,6 +19,7 @@ namespace LCard.Manager.ViewModels
 
         public RelayCommand SetDeviceSettingsCommand { get; private set; }
         public RelayCommand SetDefaultDeviceSettingsCommand { get; private set; }
+        public RelayCommand SetSaveResultPathCommand { get; private set; }
         public string[] IncreasedInputTypes { get; set; }
         public ADC_INPUTV ADC_INPUTV { get; set; }
         public double Frequency
@@ -32,7 +34,7 @@ namespace LCard.Manager.ViewModels
             }
         }
 
-        private string increasedInputType = "0.3, V";
+        private string increasedInputType = "0.3";
         public string IncreasedInputType
         {
             get
@@ -67,7 +69,18 @@ namespace LCard.Manager.ViewModels
             this.dialogService = dialogService;
             SetDeviceSettingsCommand = new RelayCommand(_ => SetNewDevSettings());
             SetDefaultDeviceSettingsCommand = new RelayCommand(_ => SetDefaultSettings());
-            IncreasedInputTypes = new[] { "0.3, V", "1.0, V", "3.0, V"};
+            SetSaveResultPathCommand = new RelayCommand(_ => SelectNewSaveResultPath());
+            IncreasedInputTypes = new[] { "0.3", "1.0", "3.0"};
+        }
+
+        protected void SelectNewSaveResultPath()
+        {
+            var folderDialog = new FolderBrowserDialog();
+            DialogResult result = folderDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                Settings.Default.SaveResultPath = folderDialog.SelectedPath;
+            }
         }
 
         protected async void SetNewDevSettings()

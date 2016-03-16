@@ -25,12 +25,19 @@ namespace LCard.API.Modules
         private volatile int _numberBlock;
         private volatile bool _parametersSetted;
         private bool _deviceOpened = false;
+        public int DataStep { get; set; }
+
+        public double InterKadrDelay
+        {
+            get { return (DataStep/_adcParsE2010.AdcRate + 1000); }
+        }
 
         public E2010()
         {
             _pModulE2010 = new LusbapiE2010();
             _logger = Logger.Current;
             AdcRateInKhz = 100;
+            DataStep = 1024*1024;
             InputRange = ADC_INPUTV.ADC_INPUT_RANGE_3000mV_E2010;
         }
 
@@ -213,7 +220,9 @@ namespace LCard.API.Modules
                                             Datas = datas,
                                             NumberOfChannels = 4,
                                             DataSize = countData / 4,
-                                            NumberBlock = _numberBlock
+                                            NumberBlock = _numberBlock,
+                                            NumberOfWordsPassed = buffers[k].NumberOfWordsPassed,
+                                            Timeout = buffers[k].TimeOut
                                         };
 
                                         if (_numberBlock > 0)
@@ -272,7 +281,6 @@ namespace LCard.API.Modules
             // частота работы АЦП в кГц
             double AdcRate = AdcRateInKhz;
             ap.AdcRate = AdcRate;
-            int DataStep;
             // частота работы АЦП в кГц
             var usbSpeed = GetUsbSpeed();
             if (usbSpeed == LusbSpeed.USB11_LUSBAPI)

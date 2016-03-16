@@ -49,15 +49,33 @@ namespace LCard.Core.Services
             }
         }
 
-        public void WriteData(Action<int, int> progressAction, bool[] isChannelEnabled)
+        public void WriteData(Action<int, int> progressAction, bool[] isChannelEnabled, string path)
         {
             lock (this)
             {
                 var orderedPackets = Packets.OrderBy(p => p.NumberBlock).ToList();
                 NumberOfChannels = isChannelEnabled.Where( v => v ).Count();
-                var fileStream = new StreamWriter("data "+ DateTime.UtcNow.ToString("yyyy ddd MMM dd hh_mm_ss") + ".txt", false, Encoding.UTF8);
+                var fileName = "data " + DateTime.UtcNow.ToString("yyyy ddd MMM dd hh_mm_ss") + ".txt";
+                if (!System.IO.Directory.Exists(path))
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Logger.Current.Error("Create folder", e);
+                    }
+                }
+
+                if (System.IO.Directory.Exists(path))
+                {
+                    fileName = path + "\\" + fileName;
+                }
+                var fileStream = new StreamWriter(fileName, false, Encoding.UTF8);
                 KadrsNumber = orderedPackets.Count*orderedPackets.First().DataSize;
-                var inputRateInHz = InputRateInkHz * 1000 / 4.0;
+                var inputRateInHz = InputRateInkHz * 1000;
+                var interCadrDelay = (double)1024 * 1024 / (inputRateInHz * 1000.0);
                 InputTimeInSec = KadrsNumber/inputRateInHz;
                 fileStream.WriteLine("Oscilloscope Data File");
                 fileStream.WriteLine("Experiment Time : {0}", ExperimentTime.ToString("yyyy ddd MMM dd hh: mm:ss"));
@@ -86,7 +104,7 @@ namespace LCard.Core.Services
                     IList<string> linesPacket = new List<string>();
                     for (var i = 0; i < dataPacketPoco.DataSize; i++)
                     {
-                        var time = k/inputRateInHz;
+                        var time = Convert.ToDouble((double)i / dataPacketPoco.DataSize + dataPacketPoco.NumberBlock) * interCadrDelay;
                         var linePacket = String.Concat(firstPart, time.ToString(timeFormat));
                         for (int j =0; j < dataPacketPoco.NumberOfChannels; j++)
                         {

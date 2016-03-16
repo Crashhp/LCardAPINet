@@ -20,5 +20,8 @@
     <Setting Name="IsChannel4" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="SaveResultPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Data</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

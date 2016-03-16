@@ -33,6 +33,7 @@ namespace LCard.Manager.ViewModels
         /// </summary>
         private int Capacity = 300;
         private const int NumberOfCahnnels = 4;
+
         /// <summary>
         /// Здесь храним данные
         /// </summary>
@@ -83,6 +84,7 @@ namespace LCard.Manager.ViewModels
                 this.dataService = null;
                 if (e2020.OnData == null)
                     e2020.OnData += UpdateData;
+                StartDate = DateTime.UtcNow;
                 e2020.StartReadData();
             }
         }
@@ -127,7 +129,8 @@ namespace LCard.Manager.ViewModels
                             {
                                 Settings.Default.IsChannel1, Settings.Default.IsChannel2, Settings.Default.IsChannel3,
                                 Settings.Default.IsChannel4
-                            });
+                            },
+                            Settings.Default.SaveResultPath);
                         await controller.CloseAsync();
                         this.windowsFormsHostGrapData.Visibility = Visibility.Visible;
 
@@ -167,6 +170,7 @@ namespace LCard.Manager.ViewModels
             return Task.Delay(1250);
         }
 
+        private DateTime StartDate = DateTime.UtcNow;
         public void UpdateData(DataPacketPoco dataPacket)
         {
             dataService?.AddPacket(dataPacket);
@@ -174,12 +178,15 @@ namespace LCard.Manager.ViewModels
             Task.Factory.StartNew(() =>
             {
                 Console.WriteLine("block number = " + dataPacket.NumberBlock);
-                if ((DateTime.Now - LastUpdateTime).TotalSeconds < 0.1)
-                    return;
-
+                //if ((DateTime.Now - LastUpdateTime).TotalSeconds < 0.1)
+                //    return;
+                Console.WriteLine("Timeout = " + dataPacket.Timeout);
+                Console.WriteLine("Timeout = " + (DateTime.UtcNow - StartDate).TotalMilliseconds);
+                Console.WriteLine("DataSize = " + dataPacket.DataSize);
+                StartDate = DateTime.UtcNow;
                 LastUpdateTime = DateTime.Now;
-                var rate = Settings.Default.InputRateInkHz * 1000 / 4;
-                var stepOfPoint = 1000;
+                var interCadrDelay = (double)1024 * 1024 / (Settings.Default.InputRateInkHz * 1000.0) ;
+                var stepOfPoint = 2000;
                 var maxY = Double.MinValue;
                 var minY = Double.MaxValue;
                 var firstEnabledIndex = 3;
@@ -190,7 +197,7 @@ namespace LCard.Manager.ViewModels
                         for (int i = 0; i < dataPacket.DataSize; i += stepOfPoint)
                         {
                             var value = dataPacket.Datas[j, i];
-                            datas[j].Add(Convert.ToDouble(dataPacket.DataSize*dataPacket.NumberBlock + i)/rate,
+                            datas[j].Add( Convert.ToDouble((double)i / dataPacket.DataSize + dataPacket.NumberBlock) * interCadrDelay,
                                 dataPacket.Datas[j, i]);
                             maxY = Math.Max(value, maxY);
                             minY = Math.Min(value, minY);
@@ -224,7 +231,7 @@ namespace LCard.Manager.ViewModels
             // Получим панель для рисования
             var pane = zedGraphControlData.GraphPane;
                 pane.Title.Text = "";
-                pane.YAxis.Title.Text = "Напряжение, вольты";
+                pane.YAxis.Title.Text = "Напряжение, В";
                 pane.XAxis.Title.Text = "Время, с";
                 // Очистим список кривых на тот случай, если до этого сигналы уже были нарисованы
                 pane.CurveList.Clear();

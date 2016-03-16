@@ -94,5 +94,17 @@ namespace LCard.Manager.Properties {
                 this["IsChannel4"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data")]
+        public string SaveResultPath {
+            get {
+                return ((string)(this["SaveResultPath"]));
+            }
+            set {
+                this["SaveResultPath"] = value;
+            }
+        }
     }
 }

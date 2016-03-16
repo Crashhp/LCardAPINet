@@ -38,5 +38,9 @@ namespace LCard.API.Interfaces
         void SetParameters();
 
         bool IsDevicePluggedIn { get; }
+
+        int DataStep { get; set; }
+
+        double InterKadrDelay { get; }
     }
 }
