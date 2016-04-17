@@ -58,6 +58,11 @@ namespace LusbapiBridgeE2010 {
 		BOOL WINAPI InitReading();
 		BOOL WINAPI ReadDataSync(M_IO_REQUEST_LUSBAPI % ReadRequest);
 
+		// работа с цифровыми линиями
+		BOOL WINAPI ENABLE_TTL_OUT(BOOL EnableTtlOut) ;
+		BOOL WINAPI TTL_IN(WORD ^% const TtlIn) ;
+		BOOL WINAPI TTL_OUT(WORD TtlOut);
+
 		// однократная синхронная работа с ЦАП
 		BOOL WINAPI DAC_SAMPLE(SHORT * const DacData, WORD DacChannel);
 
