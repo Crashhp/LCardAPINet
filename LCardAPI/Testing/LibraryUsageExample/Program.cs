@@ -20,23 +20,38 @@ namespace LibraryUsageExample
 
             IE2010 mE2010 = new E2010();
             var od = mE2010.OpenLDevice();
-            //mE2010.OnData += OnData;
-            //Data.Add(new List<float>());
-            //Data.Add(new List<float>());
-            //Data.Add(new List<float>());
-            //Data.Add(new List<float>());
-            //var moduleDescription = mE2010.Init();
-            //if (moduleDescription.HasValue)
-            //{
+            mE2010.OnData += OnData;
+            var moduleDescription = mE2010.Init();
+            if (moduleDescription.HasValue)
+            {
 
-            //    SetDefaultAdcParams(ref mE2010, moduleDescription.Value);
+                SetDefaultAdcParams(ref mE2010, moduleDescription.Value);
+                int index = 0;
+                while (true)
+                {
+                    mE2010.ENABLE_TTL_OUT(true);
+                    Thread.Sleep(100);
+                    mE2010.SetDigitalIn(
+                        new[] {
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        // D9   D10
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false });
+                    Thread.Sleep(100);
+                    mE2010.StartReadData();
 
-            //    mE2010.StartReadData();
+                    Thread.Sleep(3000);
 
-            //    Thread.Sleep(10000);
+                    mE2010.StopReadData();
 
-            //    mE2010.StopReadData();
-            //}
+                    index++;
+                }
+            }
 
         }
 
@@ -114,14 +129,8 @@ namespace LibraryUsageExample
         private static List<List<float>> Data = new List<List<float>>(); 
         private static void OnData(DataPacketPoco dataPacket)
         {
-            //Console.WriteLine("count = "+ datas.Count() +" "+ datas.First());
-            //for(int i = 0; i < datas.Length /4; i+= 4)
-            //{
-            //    Data[0].Add(datas[i]);
-            //    Data[1].Add(datas[i+1]);
-            //    Data[2].Add(datas[i+2]);
-            //    Data[3].Add(datas[i+3]);
-            //}
+            Console.WriteLine("count = "+ dataPacket.DataSize);
+            Console.WriteLine(dataPacket.Datas[0,0]);
         }
     }
 }

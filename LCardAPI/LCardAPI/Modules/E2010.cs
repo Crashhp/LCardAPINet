@@ -32,6 +32,42 @@ namespace LCard.API.Modules
             get { return (DataStep/_adcParsE2010.AdcRate + 1000); }
         }
 
+        public void SetDigitalIn(bool[] values)
+        {
+            ushort ttl = 0x0;
+            for (int bitIndex = 0; bitIndex < values.Length; bitIndex++)
+            {
+                int value=0;
+                if (values[bitIndex])
+                {
+                    int mask = 1 << bitIndex;
+                    value &= ~mask;
+                    
+                    value |= mask;
+                    ttl |= (ushort)value;
+                }
+            }
+            _pModulE2010.TTL_OUT(ttl);
+        }
+
+        public bool[] GetDigitalOut()
+        {
+            var res = new bool[16];
+            ushort ttl = 0x0;
+            _pModulE2010.TTL_IN(ref ttl);
+            for (int bitIndex = 0; bitIndex < 16; bitIndex++)
+            {
+                var bit = (ttl & (1 << bitIndex)) != 0;
+                res[bitIndex] = bit;
+            }
+            return res;
+        }
+
+        public void ENABLE_TTL_OUT(bool value)
+        {
+            _pModulE2010.ENABLE_TTL_OUT(Convert.ToInt32(value));
+        }
+
         public E2010()
         {
             _pModulE2010 = new LusbapiE2010();

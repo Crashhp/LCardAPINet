@@ -206,12 +206,14 @@ namespace LusbapiBridgeE2010 {
 		return pModule->ENABLE_TTL_OUT(EnableTtlOut);
 	}
 
-	BOOL WINAPI LusbapiE2010::TTL_IN(WORD ^% const TtlIn){
+	BOOL WINAPI LusbapiE2010::TTL_IN(WORD % const TtlIn){
 		WORD ttlInRes;
 		BOOL res = pModule->TTL_IN(&ttlInRes);
 		TtlIn = ttlInRes;
 		return res;
 	}
+
+
 
 	BOOL WINAPI LusbapiE2010::TTL_OUT(WORD TtlOut){
 		return pModule->TTL_OUT(TtlOut);

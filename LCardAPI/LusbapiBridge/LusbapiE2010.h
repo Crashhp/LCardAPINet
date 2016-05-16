@@ -60,7 +60,7 @@ namespace LusbapiBridgeE2010 {
 
 		// работа с цифровыми линиями
 		BOOL WINAPI ENABLE_TTL_OUT(BOOL EnableTtlOut) ;
-		BOOL WINAPI TTL_IN(WORD ^% const TtlIn) ;
+		BOOL WINAPI TTL_IN(WORD % const TtlIn) ;
 		BOOL WINAPI TTL_OUT(WORD TtlOut);
 
 		// однократная синхронная работа с ЦАП

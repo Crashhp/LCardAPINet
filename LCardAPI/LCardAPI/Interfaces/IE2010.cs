@@ -42,5 +42,10 @@ namespace LCard.API.Interfaces
         int DataStep { get; set; }
 
         double InterKadrDelay { get; }
+
+        void SetDigitalIn(bool[] values);
+        bool[] GetDigitalOut();
+
+        void ENABLE_TTL_OUT(bool value);
     }
 }
