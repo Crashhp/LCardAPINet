@@ -1,0 +1,26 @@
+[
+{
+Name: 'Датчик давления 1',
+ValueIdentification: 0.25,
+ValueConvert: 1.2,
+ValueDiff: 0.0
+},
+{
+Name: 'Датчик давления 2',
+ValueIdentification: 0.5,
+ValueConvert: 1.2,
+ValueDiff: 0.0
+},
+{
+Name: 'Датчик давления 3',
+ValueIdentification: 0.75,
+ValueConvert: 1.2,
+ValueDiff: 0.0
+},
+{
+Name: 'Датчик давления 4',
+ValueIdentification: 1.0,
+ValueConvert: 1.2,
+ValueDiff: 0.0
+}
+]
