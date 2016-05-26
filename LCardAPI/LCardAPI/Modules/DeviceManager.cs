@@ -7,63 +7,82 @@ using System.Threading.Tasks;
 using LCard.API.Data;
 using LCard.API.Data.E2010;
 using LCard.API.Interfaces;
-using LCard.API.Modules;
 using LCard.Core.Poco;
 using LusbapiBridgeE2010;
 
-namespace LibraryUsageExample
+namespace LCard.API.Modules
 {
-    class Program
+    public class DeviceManager : IDeviceManager, IDisposable
     {
-        static void Main(string[] args)
+        private IE2010 mE2010;
+        private volatile bool _runDetectionLoop = false;
+        private bool bit0, bit1;
+        public DeviceManager()
         {
-            IDeviceManager deviceManager = new DeviceManager();
-            deviceManager.RunDetectionLoop();
-            Thread.Sleep(20000);
-            deviceManager.StopDetectionLoop();
-            Thread.Sleep(1000);
-            //IE2010 mE2010 = new E2010();
-            //var od = mE2010.OpenLDevice();
-            //mE2010.OnData += OnData;
-            //var moduleDescription = mE2010.Init();
-            //if (moduleDescription.HasValue)
-            //{
+            Sensors = new List<SensorPoco>();
+            mE2010 = new E2010();
+            var od = mE2010.OpenLDevice();
+            mE2010.OnData += OnData;
+            var moduleDescription = mE2010.Init();
+            if (moduleDescription.HasValue)
+            {
+                SetDefaultAdcParams(ref mE2010, moduleDescription.Value);
+            }
+        }
 
-            //    SetDefaultAdcParams(ref mE2010, moduleDescription.Value);
-            //    int index = 0;
-            //    while (true)
-            //    {
-            //        mE2010.ENABLE_TTL_OUT(true);
-            //        Thread.Sleep(100);
+        public List<SensorPoco> Sensors { get; set; }
+         
+        public void RunDetectionLoop()
+        {
+            long index = 0;
+            _runDetectionLoop = true;
+            while (_runDetectionLoop)
+            {
+                mE2010.ENABLE_TTL_OUT(true);
+                Thread.Sleep(100);
+                bit0 = (index%4) > 1;
+                bit1 = (index % 4) % 2 == 1;
+                mE2010.SetDigitalIn(
+                    new[] {
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        // D9   D10
+                        bit0, bit1,
+                        bit0, bit1,
+                        bit0, bit1,
+                        bit0, bit1 });
+                Thread.Sleep(100);
+                mE2010.StartReadData();
 
-            //        mE2010.SetDigitalIn(
-            //            new[] {
-            //            false, false,
-            //            false, false,
-            //            false, false,
-            //            false, false,
-            //            // D9   D10
-            //            false, index % 2 == 0,
-            //            false, false,
-            //            false, false,
-            //            false, false });
-            //        Thread.Sleep(100);
-            //        mE2010.StartReadData();
+                Thread.Sleep(3000);
 
-            //        Thread.Sleep(3000);
+                mE2010.StopReadData();
 
-            //        mE2010.StopReadData();
+                index++;
+            }
+        }
 
-            //        index++;
-            //    }
-            //}
+        public void StopDetectionLoop()
+        {
+            _runDetectionLoop = false;
+        }
 
+        public List<SensorPoco> GetAllSensorsFromConfig()
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<List<SensorPoco>>(System.IO.File.ReadAllText("sensors.txt"));
+        }
+
+        public void GetAllLCardSensors()
+        {
+            
         }
 
         private static void SetDefaultAdcParams(ref IE2010 mE2010, M_MODULE_DESCRIPTION_E2010 moduleDescription)
         {
             var ap = mE2010.GET_ADC_PARS();
-            
+
             int i, j;
 
             // установим желаемые параметры работы АЦП
@@ -131,11 +150,33 @@ namespace LibraryUsageExample
             mE2010.SET_ADC_PARS(ap, DataStep);
         }
 
-        private static List<List<float>> Data = new List<List<float>>(); 
-        private static void OnData(DataPacketPoco dataPacket)
+        private void OnData(DataPacketPoco dataPacket)
         {
-            Console.WriteLine("count = "+ dataPacket.DataSize);
-            Console.WriteLine(dataPacket.Datas[0,0]);
+            Console.WriteLine("count = " + dataPacket.DataSize);
+            Console.WriteLine(dataPacket.Datas[0, 0]);
+            if (bit0 == false && bit1 == true)
+            {
+                var fileSensors = GetAllSensorsFromConfig();
+                var sensors = new List<SensorPoco>();
+                for (int nChannel = 0; nChannel < 4; nChannel++)
+                {
+                    var valueChannel = dataPacket.Datas[nChannel, 0];
+                    if (fileSensors.Any(s => Math.Abs(s.ValueConvert - Convert.ToDecimal(valueChannel)) < 0.008m))
+                    {
+                        sensors.Add(fileSensors.First(s => Math.Abs(s.ValueConvert - Convert.ToDecimal(valueChannel)) < 0.008m));
+                    }
+                    else
+                    {
+                        sensors.Add(new SensorPoco());
+                    }
+                }
+                this.Sensors = sensors;
+            }
+        }
+
+        public void Dispose()
+        {
+            mE2010.OnData -= OnData;
         }
     }
 }

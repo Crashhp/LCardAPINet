@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\DevicePropertyGroup.cs" />
+    <Compile Include="Poco\SensorPoco.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Interfaces\IDataService.cs" />
     <Compile Include="Logger\ILogger.cs" />
