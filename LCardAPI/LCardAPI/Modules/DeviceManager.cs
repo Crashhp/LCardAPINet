@@ -9,6 +9,7 @@ using LCard.API.Data.E2010;
 using LCard.API.Interfaces;
 using LCard.Core.Poco;
 using LusbapiBridgeE2010;
+using LCard.Core.Extensions;
 
 namespace LCard.API.Modules
 {
@@ -19,7 +20,7 @@ namespace LCard.API.Modules
         private bool bit0, bit1;
         public DeviceManager()
         {
-            Sensors = new List<SensorPoco>();
+            Sensors = new SensorPoco[4];
             mE2010 = new E2010();
             var od = mE2010.OpenLDevice();
             mE2010.OnData += OnData;
@@ -30,7 +31,7 @@ namespace LCard.API.Modules
             }
         }
 
-        public List<SensorPoco> Sensors { get; set; }
+        public SensorPoco[] Sensors { get; set; }
          
         public void RunDetectionLoop()
         {
@@ -157,17 +158,18 @@ namespace LCard.API.Modules
             if (bit0 == false && bit1 == true)
             {
                 var fileSensors = GetAllSensorsFromConfig();
-                var sensors = new List<SensorPoco>();
+                var sensors = new SensorPoco[4];
                 for (int nChannel = 0; nChannel < 4; nChannel++)
                 {
                     var valueChannel = dataPacket.Datas[nChannel, 0];
-                    if (fileSensors.Any(s => Math.Abs(s.ValueConvert - Convert.ToDecimal(valueChannel)) < 0.008m))
+                    if (fileSensors.Any(s => Math.Abs(s.ValueConvert - Convert.ToDecimal(valueChannel)) < 0.068m))
                     {
-                        sensors.Add(fileSensors.First(s => Math.Abs(s.ValueConvert - Convert.ToDecimal(valueChannel)) < 0.008m));
+                        sensors[nChannel] = fileSensors.First(s => Math.Abs(s.ValueConvert - Convert.ToDecimal(valueChannel)) < 0.068m);
+                        sensors[nChannel].Name = sensors[nChannel].Name.DecodeFromUtf8();
                     }
                     else
                     {
-                        sensors.Add(new SensorPoco());
+                        sensors[nChannel] = new SensorPoco();
                     }
                 }
                 this.Sensors = sensors;
