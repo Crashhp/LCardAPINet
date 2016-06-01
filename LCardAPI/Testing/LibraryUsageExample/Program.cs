@@ -18,7 +18,7 @@ namespace LibraryUsageExample
         static void Main(string[] args)
         {
             IDeviceManager deviceManager = new DeviceManager();
-            deviceManager.RunDetectionLoop();
+            deviceManager.StartDetectionLoop();
             Thread.Sleep(20000);
             deviceManager.StopDetectionLoop();
             Thread.Sleep(1000);

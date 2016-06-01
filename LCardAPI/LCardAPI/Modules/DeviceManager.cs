@@ -15,38 +15,41 @@ namespace LCard.API.Modules
 {
     public class DeviceManager : IDeviceManager, IDisposable
     {
-        private IE2010 mE2010;
+        public IE2010 mE2010 { get; set; }
         private volatile bool _runDetectionLoop = false;
         private bool bit0, bit1;
         SensorPoco[]  fileSensorPocos;
         public DeviceManager()
         {
             Sensors = new SensorPoco[4];
-            mE2010 = new E2010();
-            var od = mE2010.OpenLDevice();
-            mE2010.OnData += OnData;
-            var moduleDescription = mE2010.Init();
-            if (moduleDescription.HasValue)
-            {
-                SetDefaultAdcParams(ref mE2010, moduleDescription.Value);
-            }
         }
 
         public SensorPoco[] Sensors { get; set; }
          
-        public void RunDetectionLoop()
+        public void StartDetectionLoop()
         {
+            mE2010.OpenLDevice();
+            var moduleDescription = mE2010.Init();
+            if (moduleDescription.HasValue)
+            {
+                SetDefaultAdcParams(mE2010, moduleDescription.Value);
+            }
             fileSensorPocos = GetAllSensorsFromConfig().ToArray();
             long index = 0;
             _runDetectionLoop = true;
-            while (_runDetectionLoop)
+            Task.Factory.StartNew(() =>
             {
+                mE2010.StartReadData();
                 mE2010.ENABLE_TTL_OUT(true);
-                Thread.Sleep(100);
-                bit0 = (index%4) > 1;
-                bit1 = (index % 4) % 2 == 1;
-                mE2010.SetDigitalIn(
-                    new[] {
+                mE2010.OnData += OnData;
+                while (_runDetectionLoop)
+                {
+                    
+                    Thread.Sleep(100);
+                    bit0 = (index % 4) > 1;
+                    bit1 = (index % 4) % 2 == 1;
+                    mE2010.SetDigitalIn(
+                        new[] {
                         false, false,
                         false, false,
                         false, false,
@@ -56,15 +59,18 @@ namespace LCard.API.Modules
                         bit0, bit1,
                         bit0, bit1,
                         bit0, bit1 });
-                Thread.Sleep(100);
-                mE2010.StartReadData();
+                    Thread.Sleep(100);
+                    
 
-                Thread.Sleep(3000);
+                    Thread.Sleep(3000);
 
+                    
+
+                    index++;
+                }
                 mE2010.StopReadData();
-
-                index++;
-            }
+            });
+            
         }
 
         public void StopDetectionLoop()
@@ -82,7 +88,7 @@ namespace LCard.API.Modules
             
         }
 
-        private static void SetDefaultAdcParams(ref IE2010 mE2010, M_MODULE_DESCRIPTION_E2010 moduleDescription)
+        private static void SetDefaultAdcParams(IE2010 mE2010, M_MODULE_DESCRIPTION_E2010 moduleDescription)
         {
             var ap = mE2010.GET_ADC_PARS();
 
@@ -164,10 +170,17 @@ namespace LCard.API.Modules
                     SensorPoco[] sensors = new SensorPoco[4];
                     for (int nChannel = 0; nChannel < 4; nChannel++)
                     {
-                        var valueChannel = dataPacket.Datas[nChannel, 0];
+
+                        var valueChannel = 0f;
+                        for (int dataN = 0; dataN < dataPacket.DataSize/10; dataN++)
+                        {
+                            valueChannel += dataPacket.Datas[nChannel, dataN];
+                        }
+                        valueChannel = valueChannel/(float) (dataPacket.DataSize/10);
+
                         if (fileSensorPocos.Any(s => Math.Abs(s.ValueConvert - Convert.ToDecimal(valueChannel)) < 0.068m))
                         {
-                            sensors[nChannel] = fileSensorPocos.First(s => Math.Abs(s.ValueConvert - Convert.ToDecimal(valueChannel)) < 0.068m);
+                            sensors[nChannel] = fileSensorPocos.First(s => Math.Abs(s.ValueIdentification - Convert.ToDecimal(valueChannel)) < 0.068m);
                         }
                         else
                         {

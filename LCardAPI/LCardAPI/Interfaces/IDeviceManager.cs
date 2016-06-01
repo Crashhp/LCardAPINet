@@ -9,9 +9,11 @@ namespace LCard.API.Interfaces
 {
     public interface IDeviceManager
     {
-        void RunDetectionLoop();
+        IE2010 mE2010 { get; set; }
+        void StartDetectionLoop();
         void StopDetectionLoop();
         List<SensorPoco> GetAllSensorsFromConfig();
         void GetAllLCardSensors();
+        SensorPoco[] Sensors { get; set; }
     }
 }

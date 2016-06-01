@@ -9,7 +9,9 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using Autofac;
+using LCard.API.Data.E2010;
 using LCard.API.Interfaces;
+using LCard.API.Modules;
 using LCard.Core.Interfaces;
 using LCard.Core.Poco;
 using LCard.Manager.Properties;
@@ -39,6 +41,9 @@ namespace LCard.Manager.ViewModels
         /// </summary>
         private IList<RollingPointPairList> datas = new List<RollingPointPairList>();
 
+        private IDeviceManager _deviceManager;
+
+
         public DataViewModel(WindowsFormsHost windowsFormsHostGrapData, IDialogService dialogService)
         {
             ViewDataCommand = new RelayCommand(_ => ViewData());
@@ -58,6 +63,16 @@ namespace LCard.Manager.ViewModels
             Capacity = Convert.ToInt16(windowsFormsHostGrapData.ActualWidth)-1;
             PrepareGraph();
             CheckSettings();
+
+            var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
+            this.dataService = null;
+            if (e2020.OnData == null)
+                e2020.OnData += UpdateData;
+            StartDate = DateTime.UtcNow;
+
+            _deviceManager = new DeviceManager();
+            _deviceManager.mE2010 = e2020;
+            _deviceManager.StartDetectionLoop();
         }
 
         #region Graph Data
@@ -80,7 +95,14 @@ namespace LCard.Manager.ViewModels
         {
             if (CheckSettings())
             {
+                _deviceManager.StopDetectionLoop();
+                Thread.Sleep(3000);
                 var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
+                if (e2020.Inited == false) e2020.Init();
+                e2020.AdcRateInKhz = Settings.Default.InputRateInkHz;
+                e2020.InputRange = (ADC_INPUTV)Settings.Default.InputRange;
+                e2020.SetParameters();
+                e2020.SetDigitalIn(new bool[16]);
                 this.dataService = null;
                 if (e2020.OnData == null)
                     e2020.OnData += UpdateData;
@@ -93,9 +115,14 @@ namespace LCard.Manager.ViewModels
         {
             if (CheckSettings())
             {
+                _deviceManager.StopDetectionLoop();
                 this.dataService = UnityConfig.GetConfiguredContainer().Resolve<IDataService>();
                 var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
-
+                if (e2020.Inited == false) e2020.Init();
+                e2020.AdcRateInKhz = Settings.Default.InputRateInkHz;
+                e2020.InputRange = (ADC_INPUTV)Settings.Default.InputRange;
+                e2020.SetParameters();
+                e2020.SetDigitalIn(new bool[16]);
                 if (e2020.OnData == null)
                     e2020.OnData += UpdateData;
                 e2020.StartReadData();
@@ -107,6 +134,7 @@ namespace LCard.Manager.ViewModels
             //if (CheckSettings())
             {
                 {
+                    
                     UnityConfig.GetConfiguredContainer().Resolve<IE2010>().StopReadData();
 
                     if (this.dataService != null)
@@ -137,6 +165,8 @@ namespace LCard.Manager.ViewModels
                         this.windowsFormsHostGrapData.Visibility = Visibility.Visible;
 
                     }
+                    this.dataService = null;
+                    _deviceManager.StartDetectionLoop();
                 }
             }
         }
@@ -187,7 +217,7 @@ namespace LCard.Manager.ViewModels
                 Console.WriteLine("DataSize = " + dataPacket.DataSize);
                 StartDate = DateTime.UtcNow;
                 LastUpdateTime = DateTime.Now;
-                var interCadrDelay = (double)1024 * 1024 / (Settings.Default.InputRateInkHz * 1000.0) ;
+                var interCadrDelay = (double)1024 * 1024 / (_deviceManager.mE2010.InputRateInKhz * 1000.0) ;
                 var stepOfPoint = 2000;
                 var maxY = Double.MinValue;
                 var minY = Double.MaxValue;
@@ -216,6 +246,17 @@ namespace LCard.Manager.ViewModels
                 // Устанавливаем интересующий нас интервал по оси Y
                 graphPane.YAxis.Scale.Min = minY - (maxY - minY) * 0.1;
                 graphPane.YAxis.Scale.Max = maxY + (maxY - minY) * 0.1;
+
+                int nChannel = 1;
+                foreach (var pane in zedGraphControlData.GraphPane.CurveList)
+                {
+                    if (_deviceManager.Sensors[nChannel - 1] != null)
+                    {
+                        pane.Label.Text = nChannel + " " + _deviceManager.Sensors[nChannel - 1].Name;
+                        nChannel++;
+                    }
+                }
+
                 // Обновим оси
                 zedGraphControlData.AxisChange();
 

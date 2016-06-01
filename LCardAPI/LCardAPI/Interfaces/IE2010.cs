@@ -46,6 +46,8 @@ namespace LCard.API.Interfaces
         void SetDigitalIn(bool[] values);
         bool[] GetDigitalOut();
 
+        double InputRateInKhz { get; }
+
         void ENABLE_TTL_OUT(bool value);
     }
 }

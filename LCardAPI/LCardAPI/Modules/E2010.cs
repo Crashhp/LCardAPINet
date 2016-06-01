@@ -147,6 +147,12 @@ namespace LCard.API.Modules
             _dataStep = DataStep;
         }
 
+
+        public double InputRateInKhz
+        {
+            get { return _adcParsE2010.AdcRate; }
+        }
+
         public M_MODULE_DESCRIPTION_E2010? Init()
         {
             Inited = true;
