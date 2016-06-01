@@ -35,6 +35,7 @@ namespace LCard.Manager.Startup
             container.RegisterType<E2010>().As<IE2010>().SingleInstance();
             container.RegisterType<DataService>().As<IDataService>();
             container.RegisterType<DialogService>().As<IDialogService>();
+            container.RegisterType<DeviceManager>().As<IDeviceManager>().SingleInstance();
         }
     }
 }

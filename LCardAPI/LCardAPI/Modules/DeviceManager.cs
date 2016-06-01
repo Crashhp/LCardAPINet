@@ -18,6 +18,7 @@ namespace LCard.API.Modules
         private IE2010 mE2010;
         private volatile bool _runDetectionLoop = false;
         private bool bit0, bit1;
+        SensorPoco[]  fileSensorPocos;
         public DeviceManager()
         {
             Sensors = new SensorPoco[4];
@@ -35,6 +36,7 @@ namespace LCard.API.Modules
          
         public void RunDetectionLoop()
         {
+            fileSensorPocos = GetAllSensorsFromConfig().ToArray();
             long index = 0;
             _runDetectionLoop = true;
             while (_runDetectionLoop)
@@ -72,7 +74,7 @@ namespace LCard.API.Modules
 
         public List<SensorPoco> GetAllSensorsFromConfig()
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<List<SensorPoco>>(System.IO.File.ReadAllText("sensors.txt"));
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<List<SensorPoco>>(System.IO.File.ReadAllText("sensors.txt", Encoding.UTF8));
         }
 
         public void GetAllLCardSensors()
@@ -157,22 +159,23 @@ namespace LCard.API.Modules
             Console.WriteLine(dataPacket.Datas[0, 0]);
             if (bit0 == false && bit1 == true)
             {
-                var fileSensors = GetAllSensorsFromConfig();
-                var sensors = new SensorPoco[4];
-                for (int nChannel = 0; nChannel < 4; nChannel++)
+                lock (this)
                 {
-                    var valueChannel = dataPacket.Datas[nChannel, 0];
-                    if (fileSensors.Any(s => Math.Abs(s.ValueConvert - Convert.ToDecimal(valueChannel)) < 0.068m))
+                    SensorPoco[] sensors = new SensorPoco[4];
+                    for (int nChannel = 0; nChannel < 4; nChannel++)
                     {
-                        sensors[nChannel] = fileSensors.First(s => Math.Abs(s.ValueConvert - Convert.ToDecimal(valueChannel)) < 0.068m);
-                        sensors[nChannel].Name = sensors[nChannel].Name.DecodeFromUtf8();
+                        var valueChannel = dataPacket.Datas[nChannel, 0];
+                        if (fileSensorPocos.Any(s => Math.Abs(s.ValueConvert - Convert.ToDecimal(valueChannel)) < 0.068m))
+                        {
+                            sensors[nChannel] = fileSensorPocos.First(s => Math.Abs(s.ValueConvert - Convert.ToDecimal(valueChannel)) < 0.068m);
+                        }
+                        else
+                        {
+                            sensors[nChannel] = new SensorPoco();
+                        }
                     }
-                    else
-                    {
-                        sensors[nChannel] = new SensorPoco();
-                    }
+                    this.Sensors = sensors;
                 }
-                this.Sensors = sensors;
             }
         }
 

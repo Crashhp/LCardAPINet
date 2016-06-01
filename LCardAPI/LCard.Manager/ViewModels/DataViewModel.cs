@@ -127,7 +127,9 @@ namespace LCard.Manager.ViewModels
                         dataService?.WriteData(action,
                             new[]
                             {
-                                Settings.Default.IsChannel1, Settings.Default.IsChannel2, Settings.Default.IsChannel3,
+                                Settings.Default.IsChannel1,
+                                Settings.Default.IsChannel2,
+                                Settings.Default.IsChannel3,
                                 Settings.Default.IsChannel4
                             },
                             Settings.Default.SaveResultPath);
