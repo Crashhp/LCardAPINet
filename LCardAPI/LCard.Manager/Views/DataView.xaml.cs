@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using LCard.Manager.Properties;
 using LCard.Manager.ViewModels;
 
 namespace LCard.Manager.Views
@@ -24,6 +25,18 @@ namespace LCard.Manager.Views
         public DataView()
         {
             InitializeComponent();
+        }
+
+        private void ChannelEnabled_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (
+                Settings.Default.IsChannel1 == false &&
+                Settings.Default.IsChannel2 == false &&
+                Settings.Default.IsChannel3 == false &&
+                Settings.Default.IsChannel4 == false)
+            {
+                
+            }
         }
     }
 }

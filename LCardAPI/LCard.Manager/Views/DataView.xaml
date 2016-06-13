@@ -39,7 +39,7 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" VerticalAlignment="Center">Канал 1</Label>
-                <controls:ToggleSwitchButton Grid.Row="1" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel1}" HorizontalAlignment="Left"></controls:ToggleSwitchButton>
+                <controls:ToggleSwitchButton Grid.Row="1" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel1}" HorizontalAlignment="Left" Click="ChannelEnabled_OnClick"></controls:ToggleSwitchButton>
                 <Label Grid.Row="2" VerticalAlignment="Center">Канал 2</Label>
                 <controls:ToggleSwitchButton Grid.Row="3" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel2}" HorizontalAlignment="Left"></controls:ToggleSwitchButton>
                 <Label Grid.Row="4" VerticalAlignment="Center">Канал 3</Label>

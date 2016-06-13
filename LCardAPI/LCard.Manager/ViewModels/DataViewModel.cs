@@ -209,7 +209,7 @@ namespace LCard.Manager.ViewModels
 
             dataService?.AddPacket(dataPacket);
 
-            if ((DateTime.UtcNow - LastUpdateTime).TotalSeconds > 5)
+            //if ((DateTime.UtcNow - LastUpdateTime).TotalSeconds > 5)
             {
                 Task.Factory.StartNew(() =>
                 {
@@ -313,26 +313,32 @@ namespace LCard.Manager.ViewModels
 
         private bool IsChannelEnabled(int nChannel)
         {
+            CheckSettings();
+            bool res = false;
             switch (nChannel)
             {
                 case 0:
-                    return Settings.Default.IsChannel1;
+                    res = Settings.Default.IsChannel1;
+                    break;
                 case 1:
-                    return Settings.Default.IsChannel2;
+                    res = Settings.Default.IsChannel2;
+                    break;
                 case 2:
-                    return Settings.Default.IsChannel3;
+                    res = Settings.Default.IsChannel3;
+                    break;
                 case 3:
-                    return Settings.Default.IsChannel4;
+                    res = Settings.Default.IsChannel4;
+                    break;
             }
-            return false;
+            return res;
         }
 
         private bool CheckSettings()
         {
             if (SettingsViewModel.NumberSelectedChannels == 0)
             {
-                this.dialogService.ShowMessage("",
-                    "Для отображение и записи данных включите хотя бы один канал");
+                Settings.Default.IsChannel1 = true;
+                Settings.Default.Save();
             }
             return true;
         }

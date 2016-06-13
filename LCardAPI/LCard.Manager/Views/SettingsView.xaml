@@ -38,15 +38,6 @@
             <controls:NumericUpDown Value="{Binding Frequency}" Grid.Column="1" Grid.Row="0" Margin="5" Interval="100" Minimum="100" Maximum="5000"></controls:NumericUpDown>
             <Label Grid.Row="1" Grid.Column="0">Диапазон входного напряжения, В</Label>
             <ComboBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top" Width="120" ItemsSource="{Binding IncreasedInputTypes}" SelectedItem="{Binding IncreasedInputType, Mode=TwoWay}"/>
-            <Label Grid.Row="2" Grid.Column="0">Настройка каналов</Label>
-            <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Канал 1</Label>
-            <controls:ToggleSwitchButton Grid.Column="1" Grid.Row="3" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel1}" HorizontalAlignment="Left"></controls:ToggleSwitchButton>
-            <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Канал 2</Label>
-            <controls:ToggleSwitchButton Grid.Column="1" Grid.Row="4" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel2}" HorizontalAlignment="Left"></controls:ToggleSwitchButton>
-            <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Канал 3</Label>
-            <controls:ToggleSwitchButton Grid.Column="1" Grid.Row="5" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel3}" HorizontalAlignment="Left"></controls:ToggleSwitchButton>
-            <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center">Канал 4</Label>
-            <controls:ToggleSwitchButton Grid.Column="1" Grid.Row="6" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel4}" HorizontalAlignment="Left"></controls:ToggleSwitchButton>
             <Label Grid.Row="7" Grid.Column="0">Путь к папке с записями:</Label>
             <Label Grid.Row="8" Grid.Column="0" Content="{Binding Source={x:Static appSettings:Settings.Default}, Path=SaveResultPath}"></Label>
             <Button Grid.Row="8" Grid.Column="1" Command="{Binding SetSaveResultPathCommand}" Style="{DynamicResource AccentedSquareButtonStyle}" Width="140" HorizontalAlignment="Left">Выбрать</Button>
