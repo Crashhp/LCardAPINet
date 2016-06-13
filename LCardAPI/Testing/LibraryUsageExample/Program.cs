@@ -17,46 +17,46 @@ namespace LibraryUsageExample
     {
         static void Main(string[] args)
         {
-            IDeviceManager deviceManager = new DeviceManager();
-            deviceManager.StartDetectionLoop();
-            Thread.Sleep(20000);
-            deviceManager.StopDetectionLoop();
-            Thread.Sleep(1000);
-            //IE2010 mE2010 = new E2010();
-            //var od = mE2010.OpenLDevice();
-            //mE2010.OnData += OnData;
-            //var moduleDescription = mE2010.Init();
-            //if (moduleDescription.HasValue)
-            //{
+            //IDeviceManager deviceManager = new DeviceManager();
+            //deviceManager.StartDetectionLoop();
+            //Thread.Sleep(20000);
+            //deviceManager.StopDetectionLoop();
+            //Thread.Sleep(1000);
+            IE2010 mE2010 = new E2010();
+            var od = mE2010.OpenLDevice();
+            mE2010.OnData += OnData;
+            var moduleDescription = mE2010.Init();
+            if (moduleDescription.HasValue)
+            {
 
-            //    SetDefaultAdcParams(ref mE2010, moduleDescription.Value);
-            //    int index = 0;
-            //    while (true)
-            //    {
-            //        mE2010.ENABLE_TTL_OUT(true);
-            //        Thread.Sleep(100);
+                SetDefaultAdcParams(ref mE2010, moduleDescription.Value);
+                int index = 0;
+                while (true)
+                {
+                    mE2010.ENABLE_TTL_OUT(true);
+                    Thread.Sleep(100);
 
-            //        mE2010.SetDigitalIn(
-            //            new[] {
-            //            false, false,
-            //            false, false,
-            //            false, false,
-            //            false, false,
-            //            // D9   D10
-            //            false, index % 2 == 0,
-            //            false, false,
-            //            false, false,
-            //            false, false });
-            //        Thread.Sleep(100);
-            //        mE2010.StartReadData();
+                    mE2010.SetDigitalIn(
+                        new[] {
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        // D9   D10
+                        false, index % 2 == 0,
+                        false, false,
+                        false, false,
+                        false, false });
+                    Thread.Sleep(100);
+                    mE2010.StartReadData();
 
-            //        Thread.Sleep(3000);
+                    Thread.Sleep(3000);
 
-            //        mE2010.StopReadData();
+                    mE2010.StopReadData();
 
-            //        index++;
-            //    }
-            //}
+                    index++;
+                }
+            }
 
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -19,13 +20,24 @@ namespace LCard.API.Modules
         private volatile bool _runDetectionLoop = false;
         private bool bit0, bit1;
         SensorPoco[]  fileSensorPocos;
+        private bool _isCheckingBlockAdapter;
+        private bool _isBlockAdapter;
+        private static bool _isFirstStart = true;
+        private double[] _convertValues = new[] {1.0, 1.8, 1.9, 4.9};
+        private double[] _blockAdapterValues = new[] {0, -4.963, 5.164, 12.234};
+
         public DeviceManager()
         {
             Sensors = new SensorPoco[4];
         }
 
         public SensorPoco[] Sensors { get; set; }
-         
+
+        public bool IsBlockAdapter
+        {
+            get { return _isBlockAdapter; }
+        }
+
         public void StartDetectionLoop()
         {
             mE2010.OpenLDevice();
@@ -39,6 +51,8 @@ namespace LCard.API.Modules
             _runDetectionLoop = true;
             Task.Factory.StartNew(() =>
             {
+                CheckBlockAdapter();
+
                 mE2010.StartReadData();
                 mE2010.ENABLE_TTL_OUT(true);
                 mE2010.OnData += OnData;
@@ -62,7 +76,7 @@ namespace LCard.API.Modules
                     Thread.Sleep(100);
                     
 
-                    Thread.Sleep(3000);
+                    Thread.Sleep(5000);
 
                     
 
@@ -71,6 +85,45 @@ namespace LCard.API.Modules
                 mE2010.StopReadData();
             });
             
+        }
+
+        public void CheckBlockAdapter()
+        {
+            if (_isFirstStart)
+            {
+                _isCheckingBlockAdapter = true;
+                long index = 0;
+                _runDetectionLoop = true;
+
+                mE2010.StartReadData();
+                mE2010.ENABLE_TTL_OUT(true);
+                mE2010.OnData += OnData;
+                Thread.Sleep(100);
+                bit0 = true;
+                bit1 = true;
+                mE2010.SetDigitalIn(
+                    new[]
+                    {
+                        false, false,
+                        false, false,
+                        false, false,
+                        false, false,
+                        // D9   D10
+                        bit0, bit1,
+                        bit0, bit1,
+                        bit0, bit1,
+                        bit0, bit1
+                    });
+                Thread.Sleep(100);
+
+
+                Thread.Sleep(5000);
+                mE2010.StopReadData();
+                _isCheckingBlockAdapter = false;
+                _isFirstStart = false;
+            }
+
+
         }
 
         public void StopDetectionLoop()
@@ -120,7 +173,7 @@ namespace LCard.API.Modules
             }
             // частоту сбора будем устанавливать в зависимости от скорости USB
             // частота работы АЦП в кГц
-            const double AdcRate = 5000.0;
+            const double AdcRate = 1000.0;
             ap.AdcRate = AdcRate;
             int DataStep;
             // частота работы АЦП в кГц
@@ -163,11 +216,14 @@ namespace LCard.API.Modules
         {
             Console.WriteLine("count = " + dataPacket.DataSize);
             Console.WriteLine(dataPacket.Datas[0, 0]);
-            if (bit0 == false && bit1 == true)
+            if (bit0 == false && bit1 == true || _isCheckingBlockAdapter)
             {
                 lock (this)
                 {
-                    SensorPoco[] sensors = new SensorPoco[4];
+                    if (_isCheckingBlockAdapter)
+                        _isBlockAdapter = true;
+
+
                     for (int nChannel = 0; nChannel < 4; nChannel++)
                     {
 
@@ -178,16 +234,40 @@ namespace LCard.API.Modules
                         }
                         valueChannel = valueChannel/(float) (dataPacket.DataSize/10);
 
-                        if (fileSensorPocos.Any(s => Math.Abs(s.ValueConvert - Convert.ToDecimal(valueChannel)) < 0.068m))
+                        if (!_isCheckingBlockAdapter)
                         {
-                            sensors[nChannel] = fileSensorPocos.First(s => Math.Abs(s.ValueIdentification - Convert.ToDecimal(valueChannel)) < 0.068m);
+                            SensorPoco[] sensors = new SensorPoco[4];
+                            if (
+                                fileSensorPocos.Any(
+                                    s => Math.Abs(s.ValueIdentification - Convert.ToDecimal(valueChannel)) < 0.068m))
+                            {
+                                sensors[nChannel] =
+                                    fileSensorPocos.First(
+                                        s =>
+                                            Math.Abs(s.ValueIdentification - Convert.ToDecimal(valueChannel)) <
+                                            0.068m);
+                            }
+                            else
+                            {
+                                sensors[nChannel] = new SensorPoco();
+                            }
+                            this.Sensors = sensors;
                         }
                         else
                         {
-                            sensors[nChannel] = new SensorPoco();
+                            var percison = 0.005;
+                                
+                            var newValue = valueChannel*_convertValues[nChannel];
+                            Debug.WriteLine(nChannel + " Adapter Value = "+ newValue);
+                            _isBlockAdapter = _isBlockAdapter &&
+                                              (Math.Abs(newValue - _blockAdapterValues[nChannel]) < percison);
+
+
                         }
                     }
-                    this.Sensors = sensors;
+                        
+                    
+
                 }
             }
         }

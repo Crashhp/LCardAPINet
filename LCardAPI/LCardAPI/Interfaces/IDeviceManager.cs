@@ -15,5 +15,7 @@ namespace LCard.API.Interfaces
         List<SensorPoco> GetAllSensorsFromConfig();
         void GetAllLCardSensors();
         SensorPoco[] Sensors { get; set; }
+
+        bool IsBlockAdapter { get; }
     }
 }

@@ -33,7 +33,7 @@ namespace LCard.Manager.ViewModels
         /// <summary>
         /// Количество отображаемых точек
         /// </summary>
-        private int Capacity = 300;
+        private int Capacity = 500;
         private const int NumberOfCahnnels = 4;
 
         /// <summary>
@@ -73,6 +73,7 @@ namespace LCard.Manager.ViewModels
             _deviceManager = new DeviceManager();
             _deviceManager.mE2010 = e2020;
             _deviceManager.StartDetectionLoop();
+            LastUpdateTime = DateTime.MinValue;
         }
 
         #region Graph Data
@@ -205,64 +206,78 @@ namespace LCard.Manager.ViewModels
         private DateTime StartDate = DateTime.UtcNow;
         public void UpdateData(DataPacketPoco dataPacket)
         {
+
             dataService?.AddPacket(dataPacket);
 
-            Task.Factory.StartNew(() =>
+            if ((DateTime.UtcNow - LastUpdateTime).TotalSeconds > 5)
             {
-                Console.WriteLine("block number = " + dataPacket.NumberBlock);
-                //if ((DateTime.Now - LastUpdateTime).TotalSeconds < 0.1)
-                //    return;
-                Console.WriteLine("Timeout = " + dataPacket.Timeout);
-                Console.WriteLine("Timeout = " + (DateTime.UtcNow - StartDate).TotalMilliseconds);
-                Console.WriteLine("DataSize = " + dataPacket.DataSize);
-                StartDate = DateTime.UtcNow;
-                LastUpdateTime = DateTime.Now;
-                var interCadrDelay = (double)1024 * 1024 / (_deviceManager.mE2010.InputRateInKhz * 1000.0) ;
-                var stepOfPoint = 2000;
-                var maxY = Double.MinValue;
-                var minY = Double.MaxValue;
-                var firstEnabledIndex = 3;
-                for (var j = 0; j < dataPacket.NumberOfChannels; j++)
+                Task.Factory.StartNew(() =>
                 {
-                    if (IsChannelEnabled(j))
+                    Console.WriteLine("block number = " + dataPacket.NumberBlock);
+                    //if ((DateTime.Now - LastUpdateTime).TotalSeconds < 0.1)
+                    //    return;
+                    Console.WriteLine("Timeout = " + dataPacket.Timeout);
+                    Console.WriteLine("Timeout = " + (DateTime.UtcNow - StartDate).TotalMilliseconds);
+                    Console.WriteLine("DataSize = " + dataPacket.DataSize);
+                    StartDate = DateTime.UtcNow;
+                    LastUpdateTime = DateTime.Now;
+                    var interCadrDelay = (double) 1024*1024/(_deviceManager.mE2010.InputRateInKhz*1000.0);
+                    var stepOfPoint = 2000;
+                    var maxY = Double.MinValue;
+                    var minY = Double.MaxValue;
+                    var firstEnabledIndex = 3;
+                    for (var j = 0; j < dataPacket.NumberOfChannels; j++)
                     {
-                        for (int i = 0; i < dataPacket.DataSize; i += stepOfPoint)
+                        if (IsChannelEnabled(j))
                         {
-                            var value = dataPacket.Datas[j, i];
-                            datas[j].Add( Convert.ToDouble((double)i / dataPacket.DataSize + dataPacket.NumberBlock) * interCadrDelay,
-                                dataPacket.Datas[j, i]);
-                            maxY = Math.Max(value, maxY);
-                            minY = Math.Min(value, minY);
+                            for (int i = 0; i < dataPacket.DataSize; i += stepOfPoint)
+                            {
+                                var value = dataPacket.Datas[j, i];
+                                datas[j].Add(
+                                    Convert.ToDouble((double) i/dataPacket.DataSize + dataPacket.NumberBlock)*
+                                    interCadrDelay,
+                                    dataPacket.Datas[j, i]);
+                                maxY = Math.Max(value, maxY);
+                                minY = Math.Min(value, minY);
+                            }
+                            firstEnabledIndex = Math.Min(firstEnabledIndex, j);
                         }
-                        firstEnabledIndex = Math.Min(firstEnabledIndex, j);
                     }
-                }
-                var graphPane = zedGraphControlData.GraphPane;
-                // Устанавливаем интересующий нас интервал по оси X
-                
-                graphPane.XAxis.Scale.Min = datas[firstEnabledIndex][0].X;
-                graphPane.XAxis.Scale.Max = datas[firstEnabledIndex][datas[firstEnabledIndex].Count - 1].X + (graphPane.XAxis.Scale.Max - graphPane.XAxis.Scale.Min)/5.0;
+                    var graphPane = zedGraphControlData.GraphPane;
+                    // Устанавливаем интересующий нас интервал по оси X
 
-                // Устанавливаем интересующий нас интервал по оси Y
-                graphPane.YAxis.Scale.Min = minY - (maxY - minY) * 0.1;
-                graphPane.YAxis.Scale.Max = maxY + (maxY - minY) * 0.1;
+                    graphPane.XAxis.Scale.Min = datas[firstEnabledIndex][0].X;
+                    graphPane.XAxis.Scale.Max = datas[firstEnabledIndex][datas[firstEnabledIndex].Count - 1].X +
+                                                (graphPane.XAxis.Scale.Max - graphPane.XAxis.Scale.Min)/5.0;
 
-                int nChannel = 1;
-                foreach (var pane in zedGraphControlData.GraphPane.CurveList)
-                {
-                    if (_deviceManager.Sensors[nChannel - 1] != null)
+                    // Устанавливаем интересующий нас интервал по оси Y
+                    graphPane.YAxis.Scale.Min = minY - ((maxY - minY)*0.1 + 0.03);
+                    graphPane.YAxis.Scale.Max = maxY + ((maxY - minY)*0.1 + 0.03);
+
+                    int nChannel = 1;
+                    foreach (var pane in zedGraphControlData.GraphPane.CurveList)
                     {
-                        pane.Label.Text = nChannel + " " + _deviceManager.Sensors[nChannel - 1].Name;
+                        if (_deviceManager.Sensors[nChannel - 1] != null && _deviceManager.IsBlockAdapter)
+                        {
+                            pane.Label.Text = nChannel + " " + _deviceManager.Sensors[nChannel - 1].Name;
+                            
+                        }
+                        else
+                        {
+                            pane.Label.Text = "Канал - " + (nChannel);
+                        }
                         nChannel++;
                     }
-                }
 
-                // Обновим оси
-                zedGraphControlData.AxisChange();
+                    // Обновим оси
+                    zedGraphControlData.AxisChange();
 
-                // Обновим сам график
-                zedGraphControlData.Invalidate();
-            });
+                    // Обновим сам график
+                    zedGraphControlData.Invalidate();
+                });
+
+                LastUpdateTime = DateTime.UtcNow;
+            }
         }
 
         /// <summary>
@@ -321,6 +336,7 @@ namespace LCard.Manager.ViewModels
             }
             return true;
         }
+
 
         #endregion
     }

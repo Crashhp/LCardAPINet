@@ -111,6 +111,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_331E449A6AAA0505E99C56D82C79DB11"
+        "OwnerKey" = "8:_05982724FBB08047855A8BFCDA5E461E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_331E449A6AAA0505E99C56D82C79DB11"
+        "OwnerKey" = "8:_C0F2A0ABC5E34C1C90960A2773EF1823"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_3343CAA45DD58967FAC83CC13301AD7C"
         "OwnerKey" = "8:_C0F2A0ABC5E34C1C90960A2773EF1823"
         "MsmSig" = "8:_UNDEFINED"
@@ -281,6 +293,12 @@
         {
         "MsmKey" = "8:_8A0C75FDE41E4410AC2F178DFBDC9C7A"
         "OwnerKey" = "8:_C0F2A0ABC5E34C1C90960A2773EF1823"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_96E45765A4614C949E843C3FC55A333D"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -821,6 +839,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_05982724FBB08047855A8BFCDA5E461E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_331E449A6AAA0505E99C56D82C79DB11"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1393,6 +1417,37 @@
                     }
                 }
             "SourcePath" = "8:System.Threading.Timer.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_61F1D12EE1F94F21AE338786AC280522"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_331E449A6AAA0505E99C56D82C79DB11"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_331E449A6AAA0505E99C56D82C79DB11"
+                    {
+                    "Name" = "8:Newtonsoft.Json.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Newtonsoft.Json.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_61F1D12EE1F94F21AE338786AC280522"
@@ -2203,6 +2258,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_96E45765A4614C949E843C3FC55A333D"
+            {
+            "SourcePath" = "8:..\\..\\docs\\Sensors.txt"
+            "TargetName" = "8:Sensors.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_61F1D12EE1F94F21AE338786AC280522"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A063ED6779A8EC047BB1AB2369552BF9"
@@ -3045,15 +3120,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:LCard.Manager.Setup"
-        "ProductCode" = "8:{F232089F-66F4-48B1-8C7F-E4692F582FD2}"
-        "PackageCode" = "8:{448FC350-561C-4441-BE0D-473C49D3B101}"
+        "ProductCode" = "8:{6D9C10B8-6F6D-446D-A9EA-FF2C40A6A06D}"
+        "PackageCode" = "8:{A8230FB7-7A26-47B5-91A7-8814D09E048A}"
         "UpgradeCode" = "8:{AC7B8985-4F1E-4C25-BA4C-909FA1F503A0}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.5"
+        "ProductVersion" = "8:1.0.7"
         "Manufacturer" = "8:LCardApps"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

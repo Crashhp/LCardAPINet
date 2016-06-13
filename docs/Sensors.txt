@@ -1,66 +1,66 @@
 [
 {
-Name: "Угловые метки",
+Name: "РЈРіР»РѕРІС‹Рµ РјРµС‚РєРё",
 ValueIdentification: 0.27,
 ValueConvert: 360.0,
 ValueDiff: 0.0
 },
 {
-Name: "ВМТ оптический",
+Name: "Р’РњРў РѕРїС‚РёС‡РµСЃРєРёР№",
 ValueIdentification: 0.54,
 ValueConvert: 0.0,
 ValueDiff: 0.0
 },
 {
-Name: "ВМТ Холла",
+Name: "Р’РњРў РҐРѕР»Р»Р°",
 ValueIdentification: 0.80,
 ValueConvert: 0.0,
 ValueDiff: 0.0
 },
 {
-Name: "Датчик",
+Name: "Р”Р°С‚С‡РёРє",
 ValueIdentification: 1.08,
 ValueConvert: 0.0,
 ValueDiff: 0.0
 },
 {
-Name: "Давление масла honeywell",
+Name: "Р”Р°РІР»РµРЅРёРµ РјР°СЃР»Р° honeywell",
 ValueIdentification: 1.36,
 ValueConvert: 634.5,
 ValueDiff: 0.8
 },
 {
-Name: "Датчик",
+Name: "Р”Р°С‚С‡РёРє",
 ValueIdentification: 1.63,
 ValueConvert: 0.0,
 ValueDiff: 0.0
 },
 {
-Name: "Датчик",
+Name: "Р”Р°С‚С‡РёРє",
 ValueIdentification: 1.90,
 ValueConvert: 0.0,
 ValueDiff: 0.0
 },
 {
-Name: "Датчик",
+Name: "Р”Р°С‚С‡РёРє",
 ValueIdentification: 2.17,
 ValueConvert: 0.0,
 ValueDiff: 0.0
 },
 {
-Name: "Датчик",
+Name: "Р”Р°С‚С‡РёРє",
 ValueIdentification: 2.44,
 ValueConvert: 0.0,
 ValueDiff: 0.0
 },
 {
-Name: "Датчик",
+Name: "Р”Р°С‚С‡РёРє",
 ValueIdentification: 2.71,
 ValueConvert: 0.0,
 ValueDiff: 0.0
 },
 {
-Name: "Датчик",
+Name: "Р”Р°С‚С‡РёРє",
 ValueIdentification: 2.98,
 ValueConvert: 0.0,
 ValueDiff: 0.0
