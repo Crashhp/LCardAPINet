@@ -36,55 +36,63 @@ namespace LCard.API.Modules
         public bool IsBlockAdapter
         {
             get { return _isBlockAdapter; }
+            set { _isBlockAdapter = value;  }
         }
 
         public void StartDetectionLoop()
         {
-            mE2010.OpenLDevice();
-            var moduleDescription = mE2010.Init();
-            if (moduleDescription.HasValue)
+            if (IsBlockAdapter)
             {
-                SetDefaultAdcParams(mE2010, moduleDescription.Value);
-            }
-            fileSensorPocos = GetAllSensorsFromConfig().ToArray();
-            long index = 0;
-            _runDetectionLoop = true;
-            Task.Factory.StartNew(() =>
-            {
-                CheckBlockAdapter();
-
-                mE2010.StartReadData();
-                mE2010.ENABLE_TTL_OUT(true);
-                mE2010.OnData += OnData;
-                while (_runDetectionLoop)
+                lock (this)
                 {
-                    
-                    Thread.Sleep(100);
-                    bit0 = (index % 4) > 1;
-                    bit1 = (index % 4) % 2 == 1;
-                    mE2010.SetDigitalIn(
-                        new[] {
-                        false, false,
-                        false, false,
-                        false, false,
-                        false, false,
-                        // D9   D10
-                        bit0, bit1,
-                        bit0, bit1,
-                        bit0, bit1,
-                        bit0, bit1 });
-                    Thread.Sleep(100);
-                    
+                    mE2010.OpenLDevice();
+                    var moduleDescription = mE2010.Init();
+                    if (moduleDescription.HasValue)
+                    {
+                        SetDefaultAdcParams(mE2010, moduleDescription.Value);
+                    }
+                    fileSensorPocos = GetAllSensorsFromConfig().ToArray();
+                    long index = 0;
+                    _runDetectionLoop = true;
+                    Task.Factory.StartNew(() =>
+                    {
+                        //CheckBlockAdapter();
 
-                    Thread.Sleep(5000);
+                        mE2010.StartReadData();
+                        mE2010.ENABLE_TTL_OUT(true);
+                        mE2010.OnData += OnData;
+                        while (_runDetectionLoop)
+                        {
 
-                    
+                            Thread.Sleep(100);
+                            bit0 = (index%4) > 1;
+                            bit1 = (index%4)%2 == 1;
+                            mE2010.SetDigitalIn(
+                                new[]
+                                {
+                                    false, false,
+                                    false, false,
+                                    false, false,
+                                    false, false,
+                                    // D9   D10
+                                    bit0, bit1,
+                                    bit0, bit1,
+                                    bit0, bit1,
+                                    bit0, bit1
+                                });
+                            Thread.Sleep(100);
 
-                    index++;
+
+                            Thread.Sleep(5000);
+
+
+
+                            index++;
+                        }
+                        mE2010.StopReadData();
+                    });
                 }
-                mE2010.StopReadData();
-            });
-            
+            }
         }
 
         public void CheckBlockAdapter()
@@ -118,6 +126,7 @@ namespace LCard.API.Modules
 
 
                 Thread.Sleep(5000);
+                mE2010.OnData -= OnData;
                 mE2010.StopReadData();
                 _isCheckingBlockAdapter = false;
                 _isFirstStart = false;

@@ -106,5 +106,17 @@ namespace LCard.Manager.Properties {
                 this["SaveResultPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsBlockAdapter {
+            get {
+                return ((bool)(this["IsBlockAdapter"]));
+            }
+            set {
+                this["IsBlockAdapter"] = value;
+            }
+        }
     }
 }

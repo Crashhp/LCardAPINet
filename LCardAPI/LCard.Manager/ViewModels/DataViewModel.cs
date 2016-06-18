@@ -71,8 +71,9 @@ namespace LCard.Manager.ViewModels
             StartDate = DateTime.UtcNow;
 
             _deviceManager = new DeviceManager();
+            _deviceManager.IsBlockAdapter = Settings.Default.IsBlockAdapter;
             _deviceManager.mE2010 = e2020;
-            _deviceManager.StartDetectionLoop();
+            _deviceManager.StopDetectionLoop();
             LastUpdateTime = DateTime.MinValue;
         }
 

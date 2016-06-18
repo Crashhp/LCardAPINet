@@ -71,6 +71,7 @@ namespace LCard.Manager.ViewModels
             SetDefaultDeviceSettingsCommand = new RelayCommand(_ => SetDefaultSettings());
             SetSaveResultPathCommand = new RelayCommand(_ => SelectNewSaveResultPath());
             IncreasedInputTypes = new[] { "3.0", "1.0", "0.3"};
+            IncreasedInputType = increasedInputType;
         }
 
         protected void SelectNewSaveResultPath()

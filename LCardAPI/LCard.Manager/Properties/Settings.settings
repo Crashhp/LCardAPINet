@@ -23,5 +23,8 @@
     <Setting Name="SaveResultPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">Data</Value>
     </Setting>
+    <Setting Name="IsBlockAdapter" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
