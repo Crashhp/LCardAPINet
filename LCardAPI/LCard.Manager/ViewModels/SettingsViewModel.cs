@@ -34,7 +34,7 @@ namespace LCard.Manager.ViewModels
             }
         }
 
-        private string increasedInputType = "0.3";
+        private string increasedInputType = "3.0";
         public string IncreasedInputType
         {
             get
@@ -46,7 +46,7 @@ namespace LCard.Manager.ViewModels
                 increasedInputType = value;
                 if (increasedInputType == IncreasedInputTypes[0])
                 {
-                    ADC_INPUTV = ADC_INPUTV.ADC_INPUT_RANGE_300mV_E2010;
+                    ADC_INPUTV = ADC_INPUTV.ADC_INPUT_RANGE_3000mV_E2010;
                     Settings.Default.InputRange = 0;
                 }
                 if (increasedInputType == IncreasedInputTypes[1])
@@ -56,7 +56,7 @@ namespace LCard.Manager.ViewModels
                 }
                 if (increasedInputType == IncreasedInputTypes[2])
                 {
-                    ADC_INPUTV = ADC_INPUTV.ADC_INPUT_RANGE_3000mV_E2010;
+                    ADC_INPUTV = ADC_INPUTV.ADC_INPUT_RANGE_300mV_E2010;
                     Settings.Default.InputRange = 2;
                 }
                 OnPropertyChanged();
@@ -70,7 +70,7 @@ namespace LCard.Manager.ViewModels
             SetDeviceSettingsCommand = new RelayCommand(_ => SetNewDevSettings());
             SetDefaultDeviceSettingsCommand = new RelayCommand(_ => SetDefaultSettings());
             SetSaveResultPathCommand = new RelayCommand(_ => SelectNewSaveResultPath());
-            IncreasedInputTypes = new[] { "0.3", "1.0", "3.0"};
+            IncreasedInputTypes = new[] { "3.0", "1.0", "0.3"};
         }
 
         protected void SelectNewSaveResultPath()

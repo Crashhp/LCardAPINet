@@ -30,9 +30,11 @@ namespace LibraryUsageExample
             {
 
                 SetDefaultAdcParams(ref mE2010, moduleDescription.Value);
+                
                 int index = 0;
                 while (true)
                 {
+                    mE2010.StartReadData();
                     mE2010.ENABLE_TTL_OUT(true);
                     Thread.Sleep(100);
 
@@ -43,26 +45,29 @@ namespace LibraryUsageExample
                         false, false,
                         false, false,
                         // D9   D10
-                        false, index % 2 == 0,
+                        false, false,
                         false, false,
                         false, false,
                         false, false });
                     Thread.Sleep(100);
-                    mE2010.StartReadData();
+                    
 
                     Thread.Sleep(3000);
-
                     mE2010.StopReadData();
+
 
                     index++;
                 }
+                
             }
 
         }
 
+        private static M_ADC_PARS_E2010 ap = new M_ADC_PARS_E2010();
+
         private static void SetDefaultAdcParams(ref IE2010 mE2010, M_MODULE_DESCRIPTION_E2010 moduleDescription)
         {
-            var ap = mE2010.GET_ADC_PARS();
+            ap = mE2010.GET_ADC_PARS();
             
             int i, j;
 
@@ -92,7 +97,7 @@ namespace LibraryUsageExample
             }
             // частоту сбора будем устанавливать в зависимости от скорости USB
             // частота работы АЦП в кГц
-            const double AdcRate = 5000.0;
+            const double AdcRate = 1000.0;
             ap.AdcRate = AdcRate;
             int DataStep;
             // частота работы АЦП в кГц

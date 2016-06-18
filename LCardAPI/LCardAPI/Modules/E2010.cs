@@ -245,16 +245,19 @@ namespace LCard.API.Modules
                                     if (OnData != null)
                                     {
                                         
-                                        var data = Array.ConvertAll(buffers[k].Buffer, x => (float)x / short.MaxValue);
+                                        var data = Array.ConvertAll(buffers[k].Buffer, x => (float)x);
                                         int countData = data.Count() / 2;
                                         var datas = new float[4, countData / 4];
                                         int j = 0;
+                                        int rangeIndex = (ushort)this.InputRange;
+                                        double[] A = new[] {_adcParsE2010.AdcOffsetCoefs[rangeIndex, 0], _adcParsE2010.AdcOffsetCoefs[rangeIndex, 1], _adcParsE2010.AdcOffsetCoefs[rangeIndex, 2], _adcParsE2010.AdcOffsetCoefs[rangeIndex, 3] };
+                                        double[] B = new[] { _adcParsE2010.AdcScaleCoefs[rangeIndex, 0], _adcParsE2010.AdcScaleCoefs[rangeIndex, 1], _adcParsE2010.AdcScaleCoefs[rangeIndex, 2], _adcParsE2010.AdcScaleCoefs[rangeIndex, 3] };
                                         for (var t = 0; t < countData; t += 4)
                                         {
-                                            datas[0, j] = data[t];
-                                            datas[1, j] = data[t + 1];
-                                            datas[2, j] = data[t + 2];
-                                            datas[3, j] = data[t + 3];
+                                            datas[0, j] = (float)((data[t] + A[0]) * B[0])/ 8192 * 3.0f;
+                                            datas[1, j] = (float)((data[t+1] + A[1]) * B[1]) / 8192* 3.0f;
+                                            datas[2, j] = (float)((data[t+2] + A[2]) * B[2]) / 8192 * 3.0f;
+                                            datas[3, j] = (float)((data[t+3] + A[3]) * B[3]) / 8192 * 3.0f;
                                             j++;
                                         }
                                         var dataPacket = new DataPacketPoco

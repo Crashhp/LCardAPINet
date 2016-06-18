@@ -145,12 +145,12 @@ namespace NetReadData
             int k = 0;
             if (resStart > 0)
             {
-                for (i = 0; i < 10; i++)
+                for (i = 0; i < 100; i++)
                 {
                     var resRead = instanceE2010.ReadDataSync(ref buffers[k]);
                     if (resRead == 1)
                     {
-                        Console.WriteLine("Good Data "+ buffers[k].NumberOfWordsPassed + " " + buffers[k].Buffer[0]);
+                        Console.WriteLine("Good Data "+ buffers[k].NumberOfWordsPassed + " " + buffers[k].Buffer[10]);
                         for (index = 0; index < DataStep; index+=4)
                         {
                             arrayData.Add(buffers[k].Buffer[index]);
