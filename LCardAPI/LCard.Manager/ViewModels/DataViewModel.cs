@@ -73,8 +73,18 @@ namespace LCard.Manager.ViewModels
             _deviceManager = new DeviceManager();
             _deviceManager.IsBlockAdapter = Settings.Default.IsBlockAdapter;
             _deviceManager.mE2010 = e2020;
+
+            if (!_deviceManager.mE2010.OpenLDevice())
+            {
+                this.windowsFormsHostGrapData.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                this.windowsFormsHostGrapData.Visibility = Visibility.Visible;
+            }
             _deviceManager.StopDetectionLoop();
             LastUpdateTime = DateTime.MinValue;
+            
         }
 
         #region Graph Data
@@ -261,7 +271,6 @@ namespace LCard.Manager.ViewModels
                         if (_deviceManager.Sensors[nChannel - 1] != null && _deviceManager.IsBlockAdapter)
                         {
                             pane.Label.Text = nChannel + " " + _deviceManager.Sensors[nChannel - 1].Name;
-                            
                         }
                         else
                         {
