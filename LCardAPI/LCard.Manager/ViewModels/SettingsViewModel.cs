@@ -34,7 +34,7 @@ namespace LCard.Manager.ViewModels
             }
         }
 
-        private string increasedInputType = "3.0";
+        private string increasedInputType = "±3.0";
         public string IncreasedInputType
         {
             get
@@ -70,7 +70,7 @@ namespace LCard.Manager.ViewModels
             SetDeviceSettingsCommand = new RelayCommand(_ => SetNewDevSettings());
             SetDefaultDeviceSettingsCommand = new RelayCommand(_ => SetDefaultSettings());
             SetSaveResultPathCommand = new RelayCommand(_ => SelectNewSaveResultPath());
-            IncreasedInputTypes = new[] { "3.0", "1.0", "0.3"};
+            IncreasedInputTypes = new[] { "±3.0", "±1.0", "±0.3" };
             IncreasedInputType = increasedInputType;
         }
 

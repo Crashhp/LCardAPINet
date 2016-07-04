@@ -49,7 +49,7 @@ namespace LCard.Manager.ViewModels
             ViewDataCommand = new RelayCommand(_ => ViewData());
             WriteDataCommand = new RelayCommand(_ => WriteData());
             StopCommand = new RelayCommand(_ => Stop());
-
+            Capacity = Settings.Default.BufferDisplayLength;
             for (int i = 0; i < NumberOfCahnnels; i++)
             {
                 datas.Add(new RollingPointPairList(Capacity));

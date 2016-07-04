@@ -43,8 +43,9 @@
             
             <Label Grid.Row="7" Grid.Column="0">Путь к папке с записями:</Label>
             <Label Grid.Row="8" Grid.Column="0" Content="{Binding Source={x:Static appSettings:Settings.Default}, Path=SaveResultPath}"></Label>
-            <Button Grid.Row="8" Grid.Column="1" Command="{Binding SetSaveResultPathCommand}" Style="{DynamicResource AccentedSquareButtonStyle}" Width="140" HorizontalAlignment="Left">Выбрать</Button>
-            
+            <Button Grid.Row="8" Grid.Column="1" Command="{Binding SetSaveResultPathCommand}" Style="{DynamicResource AccentedSquareButtonStyle}" Margin="5,0,0,0"  Width="140" HorizontalAlignment="Left">Выбрать</Button>
+            <Label Grid.Row="9">Длина буфера отображения</Label>
+            <controls:NumericUpDown Value="{Binding Source={x:Static appSettings:Settings.Default}, Path=BufferDisplayLength}" Grid.Column="1" Grid.Row="9" Margin="5" Interval="100" Minimum="1000" Maximum="5000"></controls:NumericUpDown>
         </Grid>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <Button Command="{Binding SetDeviceSettingsCommand}" Style="{DynamicResource AccentedSquareButtonStyle}" IsDefault="True" Margin="5" Width="140" HorizontalAlignment="Left">Установить параметры</Button>

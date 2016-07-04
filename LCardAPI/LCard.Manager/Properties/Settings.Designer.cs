@@ -118,5 +118,17 @@ namespace LCard.Manager.Properties {
                 this["IsBlockAdapter"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int BufferDisplayLength {
+            get {
+                return ((int)(this["BufferDisplayLength"]));
+            }
+            set {
+                this["BufferDisplayLength"] = value;
+            }
+        }
     }
 }

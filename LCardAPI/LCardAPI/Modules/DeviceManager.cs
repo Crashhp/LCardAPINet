@@ -67,19 +67,23 @@ namespace LCard.API.Modules
                             Thread.Sleep(100);
                             bit0 = (index%4) > 1;
                             bit1 = (index%4)%2 == 1;
-                            mE2010.SetDigitalIn(
-                                new[]
-                                {
-                                    false, false,
-                                    false, false,
-                                    false, false,
-                                    false, false,
-                                    // D9   D10
-                                    bit0, bit1,
-                                    bit0, bit1,
-                                    bit0, bit1,
-                                    bit0, bit1
-                                });
+                            //remove splitter for channel
+                            if (bit0 != true || bit1 != false)
+                            {
+                                mE2010.SetDigitalIn(
+                                    new[]
+                                    {
+                                        false, false,
+                                        false, false,
+                                        false, false,
+                                        false, false,
+                                        // D9   D10
+                                        bit0, bit1,
+                                        bit0, bit1,
+                                        bit0, bit1,
+                                        bit0, bit1
+                                    });
+                            }
                             Thread.Sleep(100);
 
 
