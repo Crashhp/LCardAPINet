@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -86,7 +87,15 @@ namespace LCard.Manager.ViewModels
             }
             _deviceManager.StopDetectionLoop();
             LastUpdateTime = DateTime.MinValue;
-            
+            Settings.Default.PropertyChanged += DefaultOnPropertyChanged;
+        }
+
+        private void DefaultOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (propertyChangedEventArgs.PropertyName.Contains("IsChannel"))
+            {
+                UpdateCurveList();
+            }
         }
 
         #region Graph Data
@@ -300,27 +309,41 @@ namespace LCard.Manager.ViewModels
             windowsFormsHostGrapData.Visibility = SettingsViewModel.NumberSelectedChannels > 0 ? Visibility.Visible : Visibility.Hidden;
             // Получим панель для рисования
             var pane = zedGraphControlData.GraphPane;
-                pane.Title.Text = "";
-                pane.YAxis.Title.Text = "Напряжение, В";
-                pane.XAxis.Title.Text = "Время, с";
-                // Очистим список кривых на тот случай, если до этого сигналы уже были нарисованы
-                pane.CurveList.Clear();
-                if (IsChannelEnabled(0))
-                    pane.AddCurve("Канал " + 1, datas[0], Color.Red, SymbolType.None);
-                if (IsChannelEnabled(1))
-                    pane.AddCurve("Канал " + 2, datas[1], Color.Green, SymbolType.None);
-                if (IsChannelEnabled(2))
-                    pane.AddCurve("Канал " + 3, datas[2], Color.Blue, SymbolType.None);
-                if (IsChannelEnabled(3))
-                    pane.AddCurve("Канал " + 4, datas[3], Color.Indigo, SymbolType.None);
+            pane.Title.Text = "";
+            pane.YAxis.Title.Text = "Напряжение, В";
+            pane.XAxis.Title.Text = "Время, с";
+            // Очистим список кривых на тот случай, если до этого сигналы уже были нарисованы
+            pane.CurveList.Clear();
+            pane.AddCurve("Канал " + 1, datas[0], Color.Red, SymbolType.None);
+            pane.AddCurve("Канал " + 2, datas[1], Color.Green, SymbolType.None);
+            pane.AddCurve("Канал " + 3, datas[2], Color.Blue, SymbolType.None);
+            pane.AddCurve("Канал " + 4, datas[3], Color.Indigo, SymbolType.None);
+            UpdateCurveList();
+            // Вызываем метод AxisChange (), чтобы обновить данные об осях. 
+            zedGraphControlData.AxisChange();
 
-                // Вызываем метод AxisChange (), чтобы обновить данные об осях. 
-                zedGraphControlData.AxisChange();
-
-                // Обновляем график
-                zedGraphControlData.Invalidate();
+            // Обновляем график
+            zedGraphControlData.Invalidate();
 
 
+        }
+
+        private void UpdateCurveList()
+        {
+            int j = 0;
+            foreach (var curve in zedGraphControlData.GraphPane.CurveList)
+            {
+                if (IsChannelEnabled(j))
+                {
+                    curve.IsVisible = true;
+                }
+                else
+                {
+                    curve.IsVisible = false;
+                }
+                j++;
+            }
+            
         }
 
         private bool IsChannelEnabled(int nChannel)
