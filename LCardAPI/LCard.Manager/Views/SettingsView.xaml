@@ -38,8 +38,8 @@
             <controls:NumericUpDown Value="{Binding Frequency}" Grid.Column="1" Grid.Row="0" Margin="5" Interval="100" Minimum="100" Maximum="5000"></controls:NumericUpDown>
             <Label Grid.Row="1" Grid.Column="0">Диапазон входного напряжения, В</Label>
             <ComboBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top" Width="120" ItemsSource="{Binding IncreasedInputTypes}" SelectedItem="{Binding IncreasedInputType, Mode=TwoWay}"/>
-            <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Блок адаптер</Label>
-            <controls:ToggleSwitchButton Grid.Column="1" Grid.Row="3" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsBlockAdapter}" HorizontalAlignment="Left"></controls:ToggleSwitchButton>
+            <Label Name="LabelBlockAdapter" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Блок адаптер</Label>
+            <controls:ToggleSwitchButton Grid.Column="1" Grid.Row="3" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsBlockAdapter}" Checked="ToggleButton_OnChecked" Unchecked="ToggleButton_OnUnchecked" HorizontalAlignment="Left"></controls:ToggleSwitchButton>
             
             <Label Grid.Row="7" Grid.Column="0">Путь к папке с записями:</Label>
             <Label Grid.Row="8" Grid.Column="0" Content="{Binding Source={x:Static appSettings:Settings.Default}, Path=SaveResultPath}"></Label>

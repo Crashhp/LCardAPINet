@@ -25,6 +25,7 @@ namespace LCard.Manager.ViewModels
         public RelayCommand ViewDataCommand { get; private set; }
         public RelayCommand WriteDataCommand { get; private set; }
         public RelayCommand StopCommand { get; private set; }
+        public RelayCommand ChannelEnabledCommand { get; private set; }
 
         private readonly WindowsFormsHost windowsFormsHostGrapData;
         private readonly IDialogService dialogService;
@@ -49,6 +50,7 @@ namespace LCard.Manager.ViewModels
             ViewDataCommand = new RelayCommand(_ => ViewData());
             WriteDataCommand = new RelayCommand(_ => WriteData());
             StopCommand = new RelayCommand(_ => Stop());
+            ChannelEnabledCommand = new RelayCommand(_ => ChannelEnabled());
             Capacity = Settings.Default.BufferDisplayLength;
             for (int i = 0; i < NumberOfCahnnels; i++)
             {
@@ -353,6 +355,24 @@ namespace LCard.Manager.ViewModels
             return true;
         }
 
+
+        private void ChannelEnabled_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (
+                Settings.Default.IsChannel1 == false &&
+                Settings.Default.IsChannel2 == false &&
+                Settings.Default.IsChannel3 == false &&
+                Settings.Default.IsChannel4 == false)
+            {
+
+            }
+            Settings.Default.Save();
+        }
+
+        private void ChannelEnabled()
+        {
+            Settings.Default.Save();
+        }
 
         #endregion
     }

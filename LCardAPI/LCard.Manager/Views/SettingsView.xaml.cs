@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using LCard.Manager.Properties;
 using LCard.Manager.ViewModels;
 
 namespace LCard.Manager.Views
@@ -24,7 +25,29 @@ namespace LCard.Manager.Views
         public SettingsView()
         {
             InitializeComponent();
+            UpdateAdapterValue();
         }
 
+        private void ToggleButton_OnChecked(object sender, RoutedEventArgs e)
+        {
+            LabelBlockAdapter.Content = "Блок адаптера присутствует";
+        }
+
+        private void ToggleButton_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            LabelBlockAdapter.Content = "Блок адаптера отсутствует";
+        }
+
+        private void UpdateAdapterValue()
+        {
+            if (Settings.Default.IsBlockAdapter)
+            {
+                LabelBlockAdapter.Content = "Блок адаптера присутствует";
+            }
+            else
+            {
+                LabelBlockAdapter.Content = "Блок адаптера отсутствует";
+            }
+        }
     }
 }

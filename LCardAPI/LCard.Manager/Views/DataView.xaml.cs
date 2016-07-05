@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using LCard.Manager.Properties;
 using LCard.Manager.ViewModels;
+using static LCard.Manager.Properties.Settings;
 
 namespace LCard.Manager.Views
 {
@@ -30,13 +31,91 @@ namespace LCard.Manager.Views
         private void ChannelEnabled_OnClick(object sender, RoutedEventArgs e)
         {
             if (
-                Settings.Default.IsChannel1 == false &&
-                Settings.Default.IsChannel2 == false &&
-                Settings.Default.IsChannel3 == false &&
-                Settings.Default.IsChannel4 == false)
+                Default.IsChannel1 == false &&
+                Default.IsChannel2 == false &&
+                Default.IsChannel3 == false &&
+                Default.IsChannel4 == false)
             {
                 
             }
+            Default.Save();
+        }
+
+        private void ToggleButton_OnChecked(object sender, RoutedEventArgs e)
+        {
+            Default.Save();
+        }
+
+        private void ToggleButton_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            Default.Save();
+        }
+
+        private int GetNumberOfActiveChannles()
+        {
+            return new[]
+            {
+                Settings.Default.IsChannel1,
+                Settings.Default.IsChannel2,
+                Settings.Default.IsChannel3,
+                Settings.Default.IsChannel4
+            }.Where(v => v == true).Count();
+        }
+
+        private void ToggleButton_OnChecked1(object sender, RoutedEventArgs e)
+        {
+            Default.Save();
+        }
+
+        private void ToggleButton_OnChecked2(object sender, RoutedEventArgs e)
+        {
+            Default.Save();
+        }
+
+        private void ToggleButton_OnChecked3(object sender, RoutedEventArgs e)
+        {
+            Default.Save();
+        }
+
+        private void ToggleButton_OnChecked4(object sender, RoutedEventArgs e)
+        {
+            Default.Save();
+        }
+
+        private void ToggleButton_OnUnchecked1(object sender, RoutedEventArgs e)
+        {
+            if (GetNumberOfActiveChannles() == 0)
+            {
+                Settings.Default.IsChannel1 = true;
+            }
+            Default.Save();
+        }
+
+        private void ToggleButton_OnUnchecked2(object sender, RoutedEventArgs e)
+        {
+            if (GetNumberOfActiveChannles() == 0)
+            {
+                Settings.Default.IsChannel2 = true;
+            }
+            Default.Save();
+        }
+
+        private void ToggleButton_OnUnchecked3(object sender, RoutedEventArgs e)
+        {
+            if (GetNumberOfActiveChannles() == 0)
+            {
+                Settings.Default.IsChannel3 = true;
+            }
+            Default.Save();
+        }
+
+        private void ToggleButton_OnUnchecked4(object sender, RoutedEventArgs e)
+        {
+            if (GetNumberOfActiveChannles() == 0)
+            {
+                Settings.Default.IsChannel4 = true;
+            }
+            Default.Save();
         }
     }
 }

@@ -39,13 +39,13 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" VerticalAlignment="Center">Канал 1</Label>
-                <controls:ToggleSwitchButton Grid.Row="1" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel1}" HorizontalAlignment="Left" Click="ChannelEnabled_OnClick"></controls:ToggleSwitchButton>
+                <controls:ToggleSwitchButton Command="{Binding ChannelEnabledCommand}" Grid.Row="1" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel1, Mode=TwoWay}" HorizontalAlignment="Left" Click="ChannelEnabled_OnClick" Checked="ToggleButton_OnChecked1" Unchecked="ToggleButton_OnUnchecked1"></controls:ToggleSwitchButton>
                 <Label Grid.Row="2" VerticalAlignment="Center">Канал 2</Label>
-                <controls:ToggleSwitchButton Grid.Row="3" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel2}" HorizontalAlignment="Left"></controls:ToggleSwitchButton>
+                <controls:ToggleSwitchButton Command="{Binding ChannelEnabledCommand}" Grid.Row="3" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel2, Mode=TwoWay}" HorizontalAlignment="Left" Click="ChannelEnabled_OnClick" Checked="ToggleButton_OnChecked2" Unchecked="ToggleButton_OnUnchecked2"></controls:ToggleSwitchButton>
                 <Label Grid.Row="4" VerticalAlignment="Center">Канал 3</Label>
-                <controls:ToggleSwitchButton Grid.Row="5" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel3}" HorizontalAlignment="Left"></controls:ToggleSwitchButton>
+                <controls:ToggleSwitchButton Command="{Binding ChannelEnabledCommand}" Grid.Row="5" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel3, Mode=TwoWay}" HorizontalAlignment="Left" Click="ChannelEnabled_OnClick" Checked="ToggleButton_OnChecked3" Unchecked="ToggleButton_OnUnchecked3"></controls:ToggleSwitchButton>
                 <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center">Канал 4</Label>
-                <controls:ToggleSwitchButton Grid.Row="7" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel4}" HorizontalAlignment="Left"></controls:ToggleSwitchButton>
+                <controls:ToggleSwitchButton Command="{Binding ChannelEnabledCommand}" Grid.Row="7" Margin="5" IsChecked="{Binding Source={x:Static appSettings:Settings.Default}, Path=IsChannel4, Mode=TwoWay}" HorizontalAlignment="Left" Click="ChannelEnabled_OnClick" Checked="ToggleButton_OnChecked4" Unchecked="ToggleButton_OnUnchecked4"></controls:ToggleSwitchButton>
 
             </Grid>
             </Grid>
