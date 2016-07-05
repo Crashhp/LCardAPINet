@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:LCard.Manager"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
-        Title="Управление L-Card E20-10 - 1.0.11" Height="768" Width="1024" 
+        Title="Управление L-Card E20-10 - 1.0.12" Height="768" Width="1024" 
                       TitleCaps="False" 
                       ShowMaxRestoreButton="True" 
                       ShowMinButton="True" 
