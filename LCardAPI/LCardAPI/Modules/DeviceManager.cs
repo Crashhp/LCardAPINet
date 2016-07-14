@@ -20,8 +20,8 @@ namespace LCard.API.Modules
         private volatile bool _runDetectionLoop = false;
         private bool bit0, bit1;
         SensorPoco[]  fileSensorPocos;
-        private bool _isCheckingBlockAdapter;
-        private bool _isBlockAdapter;
+        private volatile bool _isCheckingBlockAdapter;
+        private volatile bool _isBlockAdapter;
         private static bool _isFirstStart = true;
         private double[] _convertValues = new[] {4.9, 1.9, 1.8, 1.0};
         private double[] _blockAdapterExpectedValues = new[] { 12.234, 5.164, -4.963,  0};
@@ -48,8 +48,11 @@ namespace LCard.API.Modules
         public void StartDetectionLoop()
         {
 
-                lock (this)
+            lock (this)
+            {
+                if (!_runDetectionLoop)
                 {
+                    _runDetectionLoop = true;
                     mE2010.OpenLDevice();
                     var moduleDescription = mE2010.Init();
                     if (moduleDescription.HasValue)
@@ -58,7 +61,7 @@ namespace LCard.API.Modules
                     }
                     fileSensorPocos = GetAllSensorsFromConfig().ToArray();
                     long index = 0;
-                    _runDetectionLoop = true;
+
                     Task.Factory.StartNew(() =>
                     {
                         CheckBlockAdapter();
@@ -104,6 +107,7 @@ namespace LCard.API.Modules
                         }
                     });
                 }
+            }
         }
 
         public void CheckBlockAdapter()
@@ -143,6 +147,11 @@ namespace LCard.API.Modules
             }
 
 
+        }
+
+        public bool IsCheckingBlockAdapter
+        {
+            get { return _isCheckingBlockAdapter; }
         }
 
         public void StopDetectionLoop()

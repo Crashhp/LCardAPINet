@@ -17,5 +17,6 @@ namespace LCard.API.Interfaces
         SensorPoco[] Sensors { get; set; }
         double[] BlockAdapterValues { get; }
         bool IsBlockAdapter { get; set; }
+        bool IsCheckingBlockAdapter { get; }
     }
 }
