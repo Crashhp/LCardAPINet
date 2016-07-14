@@ -45,10 +45,10 @@ namespace LibraryUsageExample
                         false, false,
                         false, false,
                         // D9   D10
-                        false, false,
-                        false, false,
-                        false, false,
-                        false, false });
+                        true, true,
+                        true, true,
+                        true, true,
+                        true, true });
                     Thread.Sleep(100);
                     
 
@@ -140,7 +140,11 @@ namespace LibraryUsageExample
         private static void OnData(DataPacketPoco dataPacket)
         {
             Console.WriteLine("count = "+ dataPacket.DataSize);
-            Console.WriteLine(dataPacket.Datas[0,0]);
+            Console.WriteLine("Напряжение питания");
+            Console.WriteLine("канал 1 = " + dataPacket.Datas[0, 0]*4.9);
+            Console.WriteLine("канал 2 = " + dataPacket.Datas[1, 0]*1.9);
+            Console.WriteLine("канал 3 = " + dataPacket.Datas[2, 0]*1.8);
+            Console.WriteLine("канал 4 = " + dataPacket.Datas[3, 0]);
         }
     }
 }

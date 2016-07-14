@@ -107,6 +107,13 @@ namespace LCard.Manager.ViewModels
             //Module
             var mcu = moduleDescription.Mcu;
 
+            AddParameter("Напряжение питания", "");
+            var deviceManager = UnityConfig.GetConfiguredContainer().Resolve<IDeviceManager>();
+            for (i = 0; i < 4; i++)
+            {
+                AddParameter("Напряжение питания "+ (i + 1), deviceManager.BlockAdapterValues[i].ToString("N5"));
+            }
+
         }
 
         private void AddParameter(string name, string value, DevicePropertyGroup group = DevicePropertyGroup.Adc)

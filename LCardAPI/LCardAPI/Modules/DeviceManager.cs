@@ -23,8 +23,9 @@ namespace LCard.API.Modules
         private bool _isCheckingBlockAdapter;
         private bool _isBlockAdapter;
         private static bool _isFirstStart = true;
-        private double[] _convertValues = new[] {1.0, 1.8, 1.9, 4.9};
-        private double[] _blockAdapterValues = new[] {0, -4.963, 5.164, 12.234};
+        private double[] _convertValues = new[] {4.9, 1.9, 1.8, 1.0};
+        private double[] _blockAdapterExpectedValues = new[] { 12.234, 5.164, -4.963,  0};
+        private readonly double[] blockAdapterValues = new double[4];
 
         public DeviceManager()
         {
@@ -32,6 +33,11 @@ namespace LCard.API.Modules
         }
 
         public SensorPoco[] Sensors { get; set; }
+
+        public double[] BlockAdapterValues
+        {
+            get { return blockAdapterValues; }
+        }
 
         public bool IsBlockAdapter
         {
@@ -41,8 +47,7 @@ namespace LCard.API.Modules
 
         public void StartDetectionLoop()
         {
-            if (IsBlockAdapter)
-            {
+
                 lock (this)
                 {
                     mE2010.OpenLDevice();
@@ -56,47 +61,49 @@ namespace LCard.API.Modules
                     _runDetectionLoop = true;
                     Task.Factory.StartNew(() =>
                     {
-                        //CheckBlockAdapter();
+                        CheckBlockAdapter();
 
-                        mE2010.StartReadData();
-                        mE2010.ENABLE_TTL_OUT(true);
-                        mE2010.OnData += OnData;
-                        while (_runDetectionLoop)
+                        if (IsBlockAdapter)
                         {
-
-                            Thread.Sleep(100);
-                            bit0 = (index%4) > 1;
-                            bit1 = (index%4)%2 == 1;
-                            //remove splitter for channel
-                            if (bit0 != true || bit1 != false)
+                            mE2010.StartReadData();
+                            mE2010.ENABLE_TTL_OUT(true);
+                            mE2010.OnData += OnData;
+                            while (_runDetectionLoop)
                             {
-                                mE2010.SetDigitalIn(
-                                    new[]
-                                    {
-                                        false, false,
-                                        false, false,
-                                        false, false,
-                                        false, false,
-                                        // D9   D10
-                                        bit0, bit1,
-                                        bit0, bit1,
-                                        bit0, bit1,
-                                        bit0, bit1
-                                    });
+
+                                Thread.Sleep(100);
+                                bit0 = (index%4) > 1;
+                                bit1 = (index%4)%2 == 1;
+                                //remove splitter for channel
+                                if (bit0 != true || bit1 != false)
+                                {
+                                    mE2010.SetDigitalIn(
+                                        new[]
+                                        {
+                                            false, false,
+                                            false, false,
+                                            false, false,
+                                            false, false,
+                                            // D9   D10
+                                            bit0, bit1,
+                                            bit0, bit1,
+                                            bit0, bit1,
+                                            bit0, bit1
+                                        });
+                                }
+                                Thread.Sleep(100);
+
+
+                                Thread.Sleep(5000);
+
+
+
+                                index++;
                             }
-                            Thread.Sleep(100);
-
-
-                            Thread.Sleep(5000);
-
-
-
-                            index++;
+                            mE2010.StopReadData();
                         }
-                        mE2010.StopReadData();
                     });
                 }
-            }
         }
 
         public void CheckBlockAdapter()
@@ -105,14 +112,14 @@ namespace LCard.API.Modules
             {
                 _isCheckingBlockAdapter = true;
                 long index = 0;
-                _runDetectionLoop = true;
-
-                mE2010.StartReadData();
-                mE2010.ENABLE_TTL_OUT(true);
-                mE2010.OnData += OnData;
-                Thread.Sleep(100);
                 bit0 = true;
                 bit1 = true;
+
+                _runDetectionLoop = true;
+
+                mE2010.ENABLE_TTL_OUT(true);
+                mE2010.OnData += OnData;
+
                 mE2010.SetDigitalIn(
                     new[]
                     {
@@ -126,9 +133,8 @@ namespace LCard.API.Modules
                         bit0, bit1,
                         bit0, bit1
                     });
-                Thread.Sleep(100);
 
-
+                mE2010.StartReadData();
                 Thread.Sleep(5000);
                 mE2010.OnData -= OnData;
                 mE2010.StopReadData();
@@ -227,10 +233,6 @@ namespace LCard.API.Modules
 
         private void OnData(DataPacketPoco dataPacket)
         {
-            Console.WriteLine("count = " + dataPacket.DataSize);
-            Console.WriteLine(dataPacket.Datas[0, 0]);
-            if (bit0 == false && bit1 == true || _isCheckingBlockAdapter)
-            {
                 lock (this)
                 {
                     if (_isCheckingBlockAdapter)
@@ -239,15 +241,14 @@ namespace LCard.API.Modules
 
                     for (int nChannel = 0; nChannel < 4; nChannel++)
                     {
-
                         var valueChannel = 0f;
-                        for (int dataN = 0; dataN < dataPacket.DataSize/10; dataN++)
+                        for (int dataN = 0; dataN < dataPacket.DataSize / 10; dataN++)
                         {
                             valueChannel += dataPacket.Datas[nChannel, dataN];
                         }
-                        valueChannel = valueChannel/(float) (dataPacket.DataSize/10);
+                        valueChannel = valueChannel / (float)(dataPacket.DataSize / 10);
 
-                        if (!_isCheckingBlockAdapter)
+                        if (bit0 == false && bit1 == true)
                         {
                             SensorPoco[] sensors = new SensorPoco[4];
                             if (
@@ -266,28 +267,26 @@ namespace LCard.API.Modules
                             }
                             this.Sensors = sensors;
                         }
-                        else
+
+                        if (bit0 == true && bit1 == true)
                         {
-                            var percison = 0.005;
-                                
-                            var newValue = valueChannel*_convertValues[nChannel];
-                            Debug.WriteLine(nChannel + " Adapter Value = "+ newValue);
-                            _isBlockAdapter = _isBlockAdapter &&
-                                              (Math.Abs(newValue - _blockAdapterValues[nChannel]) < percison);
-
-
+                            var percison = 0.5;
+                             
+                            this.BlockAdapterValues[nChannel] = valueChannel * _convertValues[nChannel];
+                            Debug.WriteLine(nChannel + " Adapter Value = " + this.BlockAdapterValues[nChannel]);
+                            _isBlockAdapter = _isBlockAdapter && (Math.Abs(this.BlockAdapterValues[nChannel] - _blockAdapterExpectedValues[nChannel]) < percison);
                         }
                     }
                         
-                    
+                        
+                    }
 
-                }
             }
-        }
+        
 
-        public void Dispose()
-        {
-            mE2010.OnData -= OnData;
-        }
+            public void Dispose()
+            {
+                mE2010.OnData -= OnData;
+            }
     }
 }

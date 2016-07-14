@@ -73,10 +73,8 @@ namespace LCard.Manager.ViewModels
                 e2020.OnData += UpdateData;
             StartDate = DateTime.UtcNow;
 
-            _deviceManager = new DeviceManager();
-            _deviceManager.IsBlockAdapter = Settings.Default.IsBlockAdapter;
-            _deviceManager.mE2010 = e2020;
-
+            _deviceManager = UnityConfig.GetConfiguredContainer().Resolve<IDeviceManager>();
+            
             if (!_deviceManager.mE2010.OpenLDevice())
             {
                 this.windowsFormsHostGrapData.Visibility = Visibility.Hidden;
@@ -85,7 +83,7 @@ namespace LCard.Manager.ViewModels
             {
                 this.windowsFormsHostGrapData.Visibility = Visibility.Visible;
             }
-            _deviceManager.StopDetectionLoop();
+
             LastUpdateTime = DateTime.MinValue;
             Settings.Default.PropertyChanged += DefaultOnPropertyChanged;
         }
