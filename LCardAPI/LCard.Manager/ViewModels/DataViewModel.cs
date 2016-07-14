@@ -65,7 +65,6 @@ namespace LCard.Manager.ViewModels
             this.windowsFormsHostGrapData.Child = zedGraphControlData;
             Capacity = Convert.ToInt16(windowsFormsHostGrapData.ActualWidth)-1;
             PrepareGraph();
-            CheckSettings();
 
             var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
             this.dataService = null;
@@ -114,45 +113,39 @@ namespace LCard.Manager.ViewModels
 
         private void ViewData()
         {
-            if (CheckSettings())
-            {
-                _deviceManager.StopDetectionLoop();
-                Thread.Sleep(3000);
-                var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
-                if (e2020.Inited == false) e2020.Init();
-                e2020.AdcRateInKhz = Settings.Default.InputRateInkHz;
-                e2020.InputRange = (ADC_INPUTV)Settings.Default.InputRange;
-                e2020.SetParameters();
-                e2020.SetDigitalIn(new bool[16]);
-                this.dataService = null;
-                if (e2020.OnData == null)
-                    e2020.OnData += UpdateData;
-                StartDate = DateTime.UtcNow;
-                e2020.StartReadData();
-            }
+            _deviceManager.StopDetectionLoop();
+            Thread.Sleep(3000);
+            var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
+            if (e2020.Inited == false) e2020.Init();
+            e2020.AdcRateInKhz = Settings.Default.InputRateInkHz;
+            e2020.InputRange = (ADC_INPUTV)Settings.Default.InputRange;
+            e2020.SetParameters();
+            e2020.SetDigitalIn(new bool[16]);
+            this.dataService = null;
+            if (e2020.OnData == null)
+                e2020.OnData += UpdateData;
+            StartDate = DateTime.UtcNow;
+            e2020.StartReadData();
         }
 
         private void WriteData()
         {
-            if (CheckSettings())
-            {
-                _deviceManager.StopDetectionLoop();
-                this.dataService = UnityConfig.GetConfiguredContainer().Resolve<IDataService>();
-                var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
-                if (e2020.Inited == false) e2020.Init();
-                e2020.AdcRateInKhz = Settings.Default.InputRateInkHz;
-                e2020.InputRange = (ADC_INPUTV)Settings.Default.InputRange;
-                e2020.SetParameters();
-                e2020.SetDigitalIn(new bool[16]);
-                if (e2020.OnData == null)
-                    e2020.OnData += UpdateData;
-                e2020.StartReadData();
-            }
+            _deviceManager.StopDetectionLoop();
+            this.dataService = UnityConfig.GetConfiguredContainer().Resolve<IDataService>();
+            var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
+            if (e2020.Inited == false) e2020.Init();
+            e2020.AdcRateInKhz = Settings.Default.InputRateInkHz;
+            e2020.InputRange = (ADC_INPUTV)Settings.Default.InputRange;
+            e2020.SetParameters();
+            e2020.SetDigitalIn(new bool[16]);
+            if (e2020.OnData == null)
+                e2020.OnData += UpdateData;
+            e2020.StartReadData();
         }
 
         private async void Stop()
         {
-            //if (CheckSettings())
+
             {
                 {
                     
@@ -346,7 +339,6 @@ namespace LCard.Manager.ViewModels
 
         private bool IsChannelEnabled(int nChannel)
         {
-            CheckSettings();
             bool res = false;
             switch (nChannel)
             {
@@ -366,15 +358,6 @@ namespace LCard.Manager.ViewModels
             return res;
         }
 
-        private bool CheckSettings()
-        {
-            if (SettingsViewModel.NumberSelectedChannels == 0)
-            {
-                Settings.Default.IsChannel1 = true;
-                Settings.Default.Save();
-            }
-            return true;
-        }
 
 
         private void ChannelEnabled_OnClick(object sender, RoutedEventArgs e)
