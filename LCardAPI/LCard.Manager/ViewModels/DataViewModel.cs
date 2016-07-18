@@ -46,8 +46,8 @@ namespace LCard.Manager.ViewModels
 
         private IDeviceManager _deviceManager;
 
-        Double maxY = Double.MinValue;
-        Double minY = Double.MaxValue;
+        double maxY = double.MinValue;
+        double minY = double.MaxValue;
 
         public DataViewModel(WindowsFormsHost windowsFormsHostGrapData, IDialogService dialogService)
         {
@@ -76,8 +76,6 @@ namespace LCard.Manager.ViewModels
             e2020.OnData += UpdateData;
             StartDate = DateTime.UtcNow;
 
-            
-            
             if (!_deviceManager.mE2010.OpenLDevice())
             {
                 this.windowsFormsHostGrapData.Visibility = Visibility.Hidden;
@@ -94,8 +92,7 @@ namespace LCard.Manager.ViewModels
 
         private void DefaultOnSettingsSaving(object sender, CancelEventArgs cancelEventArgs)
         {
-
-                UpdateCurveList();
+            UpdateCurveList();
         }
 
         private void DefaultOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -121,23 +118,19 @@ namespace LCard.Manager.ViewModels
 
         private void ViewData()
         {
-            Task.Run(() =>
-            {
-                maxY = Double.MinValue;
-                minY = Double.MaxValue;
-                _deviceManager.StopDetectionLoop();
-                Thread.Sleep(500);
-                var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
-                if (e2020.Inited == false) e2020.Init();
-                e2020.AdcRateInKhz = Settings.Default.InputRateInkHz;
-                e2020.InputRange = (ADC_INPUTV)Settings.Default.InputRange;
-                e2020.SetParameters();
-                e2020.SetDigitalIn(new bool[16]);
-                this.dataService = null;
-                StartDate = DateTime.UtcNow;
-                e2020.StartReadData();
-            });
-            
+            maxY = Double.MinValue;
+            minY = Double.MaxValue;
+            _deviceManager.StopDetectionLoop();
+            Thread.Sleep(400);
+            var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
+            if (e2020.Inited == false) e2020.Init();
+            e2020.AdcRateInKhz = Settings.Default.InputRateInkHz;
+            e2020.InputRange = (ADC_INPUTV)Settings.Default.InputRange;
+            e2020.SetParameters();
+            e2020.SetDigitalIn(new bool[16]);
+            this.dataService = null;
+            StartDate = DateTime.UtcNow;
+            e2020.StartReadData();
         }
 
         private void WriteData()
@@ -194,9 +187,12 @@ namespace LCard.Manager.ViewModels
 
             }
             this.dataService = null;
+            Thread.Sleep(100);
             _deviceManager.StartDetectionLoop();
 
         }
+
+
         private Task HotFixTask()
         {
             return Task.Delay(250);
@@ -205,13 +201,14 @@ namespace LCard.Manager.ViewModels
         private DateTime StartDate = DateTime.UtcNow;
         public void UpdateData(DataPacketPoco dataPacket)
         {
+            
             if (!_deviceManager.IsCheckingBlockAdapter)
             {
                 dataService?.AddPacket(dataPacket);
 
                 //if ((DateTime.UtcNow - LastUpdateTime).TotalSeconds > 5)
                 {
-                    Task.Factory.StartNew(() =>
+                    //Task.Factory.StartNew(() =>
                     {
                         Debug.WriteLine("block number = " + dataPacket.NumberBlock);
                         Debug.WriteLine("Timeout = " + dataPacket.Timeout);
@@ -266,7 +263,8 @@ namespace LCard.Manager.ViewModels
 
                         // Обновим сам график
                         zedGraphControlData.Invalidate();
-                    });
+                    }
+                    //);
 
                     LastUpdateTime = DateTime.UtcNow;
                 }

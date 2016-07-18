@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -10,21 +11,21 @@ using LCard.API.Data.E2010;
 using LCard.API.Interfaces;
 using LCard.Core.Poco;
 using LusbapiBridgeE2010;
-using LCard.Core.Extensions;
+using Newtonsoft.Json;
 
 namespace LCard.API.Modules
 {
     public class DeviceManager : IDeviceManager, IDisposable
     {
         public IE2010 mE2010 { get; set; }
-        private volatile bool _runDetectionLoop = false;
+        private volatile bool _runDetectionLoop;
         private bool bit0, bit1;
         SensorPoco[]  fileSensorPocos;
         private volatile bool _isCheckingBlockAdapter;
         private volatile bool _isBlockAdapter;
         private static bool _isFirstStart = true;
-        private double[] _convertValues = new[] {4.9, 1.9, 1.8, 1.0};
-        private double[] _blockAdapterExpectedValues = new[] { 12.234, 5.164, -4.963,  0};
+        private double[] _convertValues = {4.9, 1.9, 1.8, 1.0};
+        private double[] _blockAdapterExpectedValues = { 12.234, 5.164, -4.963,  0};
         private readonly double[] blockAdapterValues = new double[4];
 
         public DeviceManager()
@@ -82,7 +83,7 @@ namespace LCard.API.Modules
                                 bit0 = (index%4) > 1;
                                 bit1 = (index%4)%2 == 1;
                                 //remove splitter for channel
-                                if (bit0 != true || bit1 != false)
+                                if (bit0 != true || bit1)
                                 {
                                     mE2010.SetDigitalIn(
                                         new[]
@@ -168,7 +169,7 @@ namespace LCard.API.Modules
 
         public List<SensorPoco> GetAllSensorsFromConfig()
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<List<SensorPoco>>(System.IO.File.ReadAllText("sensors.txt", Encoding.UTF8));
+            return JsonConvert.DeserializeObject<List<SensorPoco>>(File.ReadAllText("sensors.txt", Encoding.UTF8));
         }
 
         public void GetAllLCardSensors()
@@ -201,7 +202,7 @@ namespace LCard.API.Modules
             ap.SynchroPars.IsBlockDataMarkerEnabled = 0x0;				// маркирование начала блока данных (удобно, например, при аналоговой синхронизации ввода по уровню) (для Rev.B и выше)
             ap.ChannelsQuantity = MODULE_CONSTANTS.ADC_CHANNELS_QUANTITY_E2010; 		// кол-во активных каналов
             // формируем управляющую таблицу 
-            ap.ControlTable = new ushort[(ushort)MODULE_CONSTANTS.MAX_CONTROL_TABLE_LENGTH_E2010];
+            ap.ControlTable = new ushort[MODULE_CONSTANTS.MAX_CONTROL_TABLE_LENGTH_E2010];
             for (i = 0x0; i < ap.ChannelsQuantity; i++)
             {
                 ap.ControlTable[i] = (ushort)i;
@@ -226,7 +227,7 @@ namespace LCard.API.Modules
             // сконфигурим входные каналы
             ap.InputRange = new ushort[MODULE_CONSTANTS.ADC_CHANNELS_QUANTITY_E2010];
             ap.InputSwitch = new ushort[MODULE_CONSTANTS.ADC_CHANNELS_QUANTITY_E2010];
-            for (i = 0x0; i < (ushort)MODULE_CONSTANTS.ADC_CHANNELS_QUANTITY_E2010; i++)
+            for (i = 0x0; i < MODULE_CONSTANTS.ADC_CHANNELS_QUANTITY_E2010; i++)
             {
                 ap.InputRange[i] = (ushort)ADC_INPUTV.ADC_INPUT_RANGE_3000mV_E2010;  	// входной диапазоне 3В
                 ap.InputSwitch[i] = (ushort)ADC_INPUT.ADC_INPUT_SIGNAL_E2010;			// источник входа - сигнал
@@ -262,9 +263,9 @@ namespace LCard.API.Modules
                     {
                         valueChannel += dataPacket.Datas[nChannel, dataN];
                     }
-                    valueChannel = valueChannel / (float)(dataPacket.DataSize / 10);
+                    valueChannel = valueChannel / (dataPacket.DataSize / 10);
 
-                    if (bit0 == false && bit1 == true)
+                    if (bit0 == false && bit1)
                     {
                            
                         if (fileSensorPocos.Any(s => Math.Abs(s.ValueIdentification - Convert.ToDecimal(valueChannel)) < 0.068m))
@@ -273,21 +274,20 @@ namespace LCard.API.Modules
                                 fileSensorPocos.FirstOrDefault( s => Math.Abs(s.ValueIdentification - Convert.ToDecimal(valueChannel)) < 0.068m);
                             if (sensorPoco != null)
                             {
-                                this.Sensors[nChannel].Name = (nChannel + 1) + " " + sensorPoco.Name;
-                                this.Sensors[nChannel].ValueConvert = sensorPoco.ValueConvert;
-                                this.Sensors[nChannel].ValueDiff = sensorPoco.ValueDiff;
-                                this.Sensors[nChannel].ValueIdentification = sensorPoco.ValueIdentification;
+                                Sensors[nChannel].Name = (nChannel + 1) + " " + sensorPoco.Name;
+                                Sensors[nChannel].ValueConvert = sensorPoco.ValueConvert;
+                                Sensors[nChannel].ValueDiff = sensorPoco.ValueDiff;
+                                Sensors[nChannel].ValueIdentification = sensorPoco.ValueIdentification;
                             }
                         }
                     }
 
-                    if (bit0 == true && bit1 == true)
+                    if (bit0 && bit1)
                     {
                         var percison = 0.5;
-                             
-                        this.BlockAdapterValues[nChannel] = valueChannel * _convertValues[nChannel];
-                        Debug.WriteLine(nChannel + " Adapter Value = " + this.BlockAdapterValues[nChannel]);
-                        _isBlockAdapter = _isBlockAdapter && (Math.Abs(this.BlockAdapterValues[nChannel] - _blockAdapterExpectedValues[nChannel]) < percison);
+                        BlockAdapterValues[nChannel] = valueChannel * _convertValues[nChannel];
+                        Debug.WriteLine(nChannel + " Adapter Value = " + BlockAdapterValues[nChannel]);
+                        _isBlockAdapter = _isBlockAdapter && (Math.Abs(BlockAdapterValues[nChannel] - _blockAdapterExpectedValues[nChannel]) < percison);
                     }
                 }
                         
