@@ -30,6 +30,10 @@ namespace LCard.API.Modules
         public DeviceManager()
         {
             Sensors = new SensorPoco[4];
+            for (int i = 0; i < Sensors.Count(); i++)
+            {
+                Sensors[i] = new SensorPoco {Name = (i+1) + " Канал"};
+            }
         }
 
         public SensorPoco[] Sensors { get; set; }
@@ -94,10 +98,13 @@ namespace LCard.API.Modules
                                             bit0, bit1
                                         });
                                 }
-                                Thread.Sleep(100);
 
-
-                                Thread.Sleep(5000);
+                                for (int i = 0; i < 20; i++)
+                                {
+                                    if(!_runDetectionLoop) break;
+                                    Thread.Sleep(250);
+                                }
+                                
 
 
 
@@ -242,53 +249,50 @@ namespace LCard.API.Modules
 
         private void OnData(DataPacketPoco dataPacket)
         {
-                lock (this)
+            lock (this)
+            {
+                if (_isCheckingBlockAdapter)
+                    _isBlockAdapter = true;
+
+
+                for (int nChannel = 0; nChannel < 4; nChannel++)
                 {
-                    if (_isCheckingBlockAdapter)
-                        _isBlockAdapter = true;
-
-
-                    for (int nChannel = 0; nChannel < 4; nChannel++)
+                    var valueChannel = 0f;
+                    for (int dataN = 0; dataN < dataPacket.DataSize / 10; dataN++)
                     {
-                        var valueChannel = 0f;
-                        for (int dataN = 0; dataN < dataPacket.DataSize / 10; dataN++)
-                        {
-                            valueChannel += dataPacket.Datas[nChannel, dataN];
-                        }
-                        valueChannel = valueChannel / (float)(dataPacket.DataSize / 10);
+                        valueChannel += dataPacket.Datas[nChannel, dataN];
+                    }
+                    valueChannel = valueChannel / (float)(dataPacket.DataSize / 10);
 
-                        if (bit0 == false && bit1 == true)
+                    if (bit0 == false && bit1 == true)
+                    {
+                           
+                        if (fileSensorPocos.Any(s => Math.Abs(s.ValueIdentification - Convert.ToDecimal(valueChannel)) < 0.068m))
                         {
-                            SensorPoco[] sensors = new SensorPoco[4];
-                            if (
-                                fileSensorPocos.Any(
-                                    s => Math.Abs(s.ValueIdentification - Convert.ToDecimal(valueChannel)) < 0.068m))
+                            SensorPoco sensorPoco =
+                                fileSensorPocos.FirstOrDefault( s => Math.Abs(s.ValueIdentification - Convert.ToDecimal(valueChannel)) < 0.068m);
+                            if (sensorPoco != null)
                             {
-                                sensors[nChannel] =
-                                    fileSensorPocos.First(
-                                        s =>
-                                            Math.Abs(s.ValueIdentification - Convert.ToDecimal(valueChannel)) <
-                                            0.068m);
+                                this.Sensors[nChannel].Name = (nChannel + 1) + " " + sensorPoco.Name;
+                                this.Sensors[nChannel].ValueConvert = sensorPoco.ValueConvert;
+                                this.Sensors[nChannel].ValueDiff = sensorPoco.ValueDiff;
+                                this.Sensors[nChannel].ValueIdentification = sensorPoco.ValueIdentification;
                             }
-                            else
-                            {
-                                sensors[nChannel] = new SensorPoco();
-                            }
-                            this.Sensors = sensors;
                         }
+                    }
 
-                        if (bit0 == true && bit1 == true)
-                        {
-                            var percison = 0.5;
+                    if (bit0 == true && bit1 == true)
+                    {
+                        var percison = 0.5;
                              
-                            this.BlockAdapterValues[nChannel] = valueChannel * _convertValues[nChannel];
-                            Debug.WriteLine(nChannel + " Adapter Value = " + this.BlockAdapterValues[nChannel]);
-                            _isBlockAdapter = _isBlockAdapter && (Math.Abs(this.BlockAdapterValues[nChannel] - _blockAdapterExpectedValues[nChannel]) < percison);
-                        }
+                        this.BlockAdapterValues[nChannel] = valueChannel * _convertValues[nChannel];
+                        Debug.WriteLine(nChannel + " Adapter Value = " + this.BlockAdapterValues[nChannel]);
+                        _isBlockAdapter = _isBlockAdapter && (Math.Abs(this.BlockAdapterValues[nChannel] - _blockAdapterExpectedValues[nChannel]) < percison);
                     }
+                }
                         
                         
-                    }
+            }
 
             }
         

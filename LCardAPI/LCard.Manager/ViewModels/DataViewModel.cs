@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,7 @@ namespace LCard.Manager.ViewModels
         public RelayCommand WriteDataCommand { get; private set; }
         public RelayCommand StopCommand { get; private set; }
         public RelayCommand ChannelEnabledCommand { get; private set; }
-
+        private LineItem[] ChannelGraphs = new LineItem[4];
         private readonly WindowsFormsHost windowsFormsHostGrapData;
         private readonly IDialogService dialogService;
         private readonly ZedGraphControl zedGraphControlData;
@@ -50,6 +51,7 @@ namespace LCard.Manager.ViewModels
 
         public DataViewModel(WindowsFormsHost windowsFormsHostGrapData, IDialogService dialogService)
         {
+            _deviceManager = UnityConfig.GetConfiguredContainer().Resolve<IDeviceManager>();
             ViewDataCommand = new RelayCommand(_ => ViewData());
             WriteDataCommand = new RelayCommand(_ => WriteData());
             StopCommand = new RelayCommand(_ => Stop());
@@ -74,7 +76,7 @@ namespace LCard.Manager.ViewModels
             e2020.OnData += UpdateData;
             StartDate = DateTime.UtcNow;
 
-            _deviceManager = UnityConfig.GetConfiguredContainer().Resolve<IDeviceManager>();
+            
             
             if (!_deviceManager.mE2010.OpenLDevice())
             {
@@ -87,14 +89,18 @@ namespace LCard.Manager.ViewModels
 
             LastUpdateTime = DateTime.MinValue;
             Settings.Default.PropertyChanged += DefaultOnPropertyChanged;
+            Settings.Default.SettingsSaving += DefaultOnSettingsSaving;
+        }
+
+        private void DefaultOnSettingsSaving(object sender, CancelEventArgs cancelEventArgs)
+        {
+
+                UpdateCurveList();
         }
 
         private void DefaultOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            if (propertyChangedEventArgs.PropertyName.Contains("IsChannel"))
-            {
-                UpdateCurveList();
-            }
+            
         }
 
         #region Graph Data
@@ -115,42 +121,48 @@ namespace LCard.Manager.ViewModels
 
         private void ViewData()
         {
-            maxY = Double.MinValue;
-            minY = Double.MaxValue;
-            _deviceManager.StopDetectionLoop();
-            Thread.Sleep(3000);
-            var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
-            if (e2020.Inited == false) e2020.Init();
-            e2020.AdcRateInKhz = Settings.Default.InputRateInkHz;
-            e2020.InputRange = (ADC_INPUTV)Settings.Default.InputRange;
-            e2020.SetParameters();
-            e2020.SetDigitalIn(new bool[16]);
-            this.dataService = null;
-            if (e2020.OnData == null)
-                e2020.OnData += UpdateData;
-            StartDate = DateTime.UtcNow;
-            e2020.StartReadData();
+            Task.Run(() =>
+            {
+                maxY = Double.MinValue;
+                minY = Double.MaxValue;
+                _deviceManager.StopDetectionLoop();
+                Thread.Sleep(500);
+                var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
+                if (e2020.Inited == false) e2020.Init();
+                e2020.AdcRateInKhz = Settings.Default.InputRateInkHz;
+                e2020.InputRange = (ADC_INPUTV)Settings.Default.InputRange;
+                e2020.SetParameters();
+                e2020.SetDigitalIn(new bool[16]);
+                this.dataService = null;
+                StartDate = DateTime.UtcNow;
+                e2020.StartReadData();
+            });
+            
         }
 
         private void WriteData()
         {
-            maxY = Double.MinValue;
-            minY = Double.MaxValue;
-            _deviceManager.StopDetectionLoop();
-            this.dataService = UnityConfig.GetConfiguredContainer().Resolve<IDataService>();
-            var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
-            if (e2020.Inited == false) e2020.Init();
-            e2020.AdcRateInKhz = Settings.Default.InputRateInkHz;
-            e2020.InputRange = (ADC_INPUTV)Settings.Default.InputRange;
-            e2020.SetParameters();
-            e2020.SetDigitalIn(new bool[16]);
-            if (e2020.OnData == null)
-                e2020.OnData += UpdateData;
-            e2020.StartReadData();
+            Task.Run(() =>
+            {
+                maxY = Double.MinValue;
+                minY = Double.MaxValue;
+                _deviceManager.StopDetectionLoop();
+                this.dataService = UnityConfig.GetConfiguredContainer().Resolve<IDataService>();
+                var e2020 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
+                if (e2020.Inited == false) e2020.Init();
+                e2020.AdcRateInKhz = Settings.Default.InputRateInkHz;
+                e2020.InputRange = (ADC_INPUTV) Settings.Default.InputRange;
+                e2020.SetParameters();
+                e2020.SetDigitalIn(new bool[16]);
+                if (e2020.OnData == null)
+                    e2020.OnData += UpdateData;
+                e2020.StartReadData();
+            });
         }
 
         private async void Stop()
         {
+            _deviceManager.StopDetectionLoop();
             UnityConfig.GetConfiguredContainer().Resolve<IE2010>().StopReadData();
 
             if (this.dataService != null)
@@ -190,33 +202,6 @@ namespace LCard.Manager.ViewModels
             return Task.Delay(250);
         }
 
-        private async void OnPublishCommand()
-        {
-            var controller = await this.dialogService.ShowProgressAsync("Запись данных", String.Format("Частота {0}, кГц; Число каналов: 4", Settings.Default.InputRateInkHz));
-            controller.SetCancelable(true);
-            int uploadCount = 0;
-            var matches = new[] {"1", "2", "3", "4", "5"};
-            foreach (var m in matches)
-            {
-                await UploadMatch(m);
-                if (controller.IsCanceled) break;
-                uploadCount++;
-                controller.SetProgress((double)uploadCount / matches.Length);
-            }
-            await controller.CloseAsync();
-            if (controller.IsCanceled)
-                await dialogService.ShowMessageAsync("Publishing", "Publish cancelled");
-            else
-                await dialogService.ShowMessageAsync("Publishing", "Publish successful");
-            this.windowsFormsHostGrapData.Visibility = Visibility.Visible;
-            this.dataService = null;
-        }
-
-        private Task UploadMatch(string matchViewModel)
-        {
-            return Task.Delay(1250);
-        }
-
         private DateTime StartDate = DateTime.UtcNow;
         public void UpdateData(DataPacketPoco dataPacket)
         {
@@ -228,12 +213,10 @@ namespace LCard.Manager.ViewModels
                 {
                     Task.Factory.StartNew(() =>
                     {
-                        Console.WriteLine("block number = " + dataPacket.NumberBlock);
-                        //if ((DateTime.Now - LastUpdateTime).TotalSeconds < 0.1)
-                        //    return;
-                        Console.WriteLine("Timeout = " + dataPacket.Timeout);
-                        Console.WriteLine("Timeout = " + (DateTime.UtcNow - StartDate).TotalMilliseconds);
-                        Console.WriteLine("DataSize = " + dataPacket.DataSize);
+                        Debug.WriteLine("block number = " + dataPacket.NumberBlock);
+                        Debug.WriteLine("Timeout = " + dataPacket.Timeout);
+                        Debug.WriteLine("Timeout = " + (DateTime.UtcNow - StartDate).TotalMilliseconds);
+                        Debug.WriteLine("DataSize = " + dataPacket.DataSize);
                         StartDate = DateTime.UtcNow;
                         LastUpdateTime = DateTime.Now;
                         var interCadrDelay = (double) 1024*1024/(_deviceManager.mE2010.InputRateInKhz*1000.0);
@@ -268,18 +251,14 @@ namespace LCard.Manager.ViewModels
                         graphPane.YAxis.Scale.Min = minY - ((maxY - minY)*0.1 + 0.03);
                         graphPane.YAxis.Scale.Max = maxY + ((maxY - minY)*0.1 + 0.03);
 
-                        int nChannel = 1;
+                        
                         foreach (var pane in zedGraphControlData.GraphPane.CurveList)
                         {
-                            if (_deviceManager.Sensors[nChannel - 1] != null && _deviceManager.IsBlockAdapter)
+                            int nChannel = (int)pane.Tag;
+                            if (_deviceManager.Sensors[nChannel] != null)
                             {
-                                pane.Label.Text = nChannel + " " + _deviceManager.Sensors[nChannel - 1].Name;
+                                pane.Label.Text = _deviceManager.Sensors[nChannel].Name;
                             }
-                            else
-                            {
-                                pane.Label.Text = "Канал - " + (nChannel);
-                            }
-                            nChannel++;
                         }
 
                         // Обновим оси
@@ -307,10 +286,14 @@ namespace LCard.Manager.ViewModels
             pane.XAxis.Title.Text = "Время, с";
             // Очистим список кривых на тот случай, если до этого сигналы уже были нарисованы
             pane.CurveList.Clear();
-            pane.AddCurve("Канал " + 1, datas[0], Color.Red, SymbolType.None);
-            pane.AddCurve("Канал " + 2, datas[1], Color.Green, SymbolType.None);
-            pane.AddCurve("Канал " + 3, datas[2], Color.Blue, SymbolType.None);
-            pane.AddCurve("Канал " + 4, datas[3], Color.Indigo, SymbolType.None);
+            ChannelGraphs[0] = pane.AddCurve(_deviceManager.Sensors[0].Name, datas[0], Color.Red, SymbolType.None);
+            ChannelGraphs[0].Tag = 0;
+            ChannelGraphs[1] = pane.AddCurve(_deviceManager.Sensors[1].Name, datas[1], Color.Green, SymbolType.None);
+            ChannelGraphs[1].Tag = 1;
+            ChannelGraphs[2] = pane.AddCurve(_deviceManager.Sensors[2].Name, datas[2], Color.Blue, SymbolType.None);
+            ChannelGraphs[2].Tag = 2;
+            ChannelGraphs[3] = pane.AddCurve(_deviceManager.Sensors[3].Name, datas[3], Color.Indigo, SymbolType.None);
+            ChannelGraphs[3].Tag = 3;
             UpdateCurveList();
             // Вызываем метод AxisChange (), чтобы обновить данные об осях. 
             zedGraphControlData.AxisChange();
@@ -323,18 +306,21 @@ namespace LCard.Manager.ViewModels
 
         private void UpdateCurveList()
         {
-            int j = 0;
-            foreach (var curve in zedGraphControlData.GraphPane.CurveList)
+            for(int j = 0; j < 4; j++)
             {
                 if (IsChannelEnabled(j))
                 {
-                    curve.IsVisible = true;
+                    if (!zedGraphControlData.GraphPane.CurveList.Contains(ChannelGraphs[j]))
+                    {
+                        zedGraphControlData.GraphPane.CurveList.Add(ChannelGraphs[j]);
+                        zedGraphControlData.Invalidate();
+                    }
                 }
                 else
                 {
-                    curve.IsVisible = false;
+                    zedGraphControlData.GraphPane.CurveList.Remove(ChannelGraphs[j]);
+                    zedGraphControlData.Invalidate();
                 }
-                j++;
             }
             
         }
@@ -358,21 +344,6 @@ namespace LCard.Manager.ViewModels
                     break;
             }
             return res;
-        }
-
-
-
-        private void ChannelEnabled_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (
-                Settings.Default.IsChannel1 == false &&
-                Settings.Default.IsChannel2 == false &&
-                Settings.Default.IsChannel3 == false &&
-                Settings.Default.IsChannel4 == false)
-            {
-
-            }
-            Settings.Default.Save();
         }
 
         private void ChannelEnabled()

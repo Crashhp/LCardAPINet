@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -64,21 +65,25 @@ namespace LCard.Manager.Views
 
         private void ToggleButton_OnChecked1(object sender, RoutedEventArgs e)
         {
+            Settings.Default.IsChannel1 = true;
             Default.Save();
         }
 
         private void ToggleButton_OnChecked2(object sender, RoutedEventArgs e)
         {
+            Settings.Default.IsChannel2 = true;
             Default.Save();
         }
 
         private void ToggleButton_OnChecked3(object sender, RoutedEventArgs e)
         {
+            Settings.Default.IsChannel3 = true;
             Default.Save();
         }
 
         private void ToggleButton_OnChecked4(object sender, RoutedEventArgs e)
         {
+            Settings.Default.IsChannel4 = true;
             Default.Save();
         }
 
