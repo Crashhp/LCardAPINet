@@ -18,7 +18,10 @@ using LCard.Core.Interfaces;
 using LCard.Core.Poco;
 using LCard.Manager.Properties;
 using LCard.Manager.Startup;
+using LiveCharts;
+using LiveCharts.Wpf;
 using ZedGraph;
+
 
 namespace LCard.Manager.ViewModels
 {
@@ -65,8 +68,7 @@ namespace LCard.Manager.ViewModels
             //
             this.windowsFormsHostGrapData = windowsFormsHostGrapData;
             this.dialogService = dialogService;
-            this.zedGraphControlData = new ZedGraphControl();
-            this.windowsFormsHostGrapData.Child = zedGraphControlData;
+            this.zedGraphControlData = (ZedGraphControl)this.windowsFormsHostGrapData.Child;
             Capacity = Convert.ToInt16(windowsFormsHostGrapData.ActualWidth)-1;
             PrepareGraph();
 
@@ -88,6 +90,7 @@ namespace LCard.Manager.ViewModels
             LastUpdateTime = DateTime.MinValue;
             Settings.Default.PropertyChanged += DefaultOnPropertyChanged;
             Settings.Default.SettingsSaving += DefaultOnSettingsSaving;
+            this.windowsFormsHostGrapData.InvalidateVisual();
         }
 
         private void DefaultOnSettingsSaving(object sender, CancelEventArgs cancelEventArgs)
