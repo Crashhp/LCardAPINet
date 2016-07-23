@@ -42,16 +42,6 @@ namespace LCard.Manager.Views
             Default.Save();
         }
 
-        private void ToggleButton_OnChecked(object sender, RoutedEventArgs e)
-        {
-            Default.Save();
-        }
-
-        private void ToggleButton_OnUnchecked(object sender, RoutedEventArgs e)
-        {
-            Default.Save();
-        }
-
         private int GetNumberOfActiveChannles()
         {
             return new[]
@@ -66,24 +56,28 @@ namespace LCard.Manager.Views
         private void ToggleButton_OnChecked1(object sender, RoutedEventArgs e)
         {
             Settings.Default.IsChannel1 = true;
+            ControlDynamicGraph.EnabelChannel(0);
             Default.Save();
         }
 
         private void ToggleButton_OnChecked2(object sender, RoutedEventArgs e)
         {
             Settings.Default.IsChannel2 = true;
+            ControlDynamicGraph.EnabelChannel(1);
             Default.Save();
         }
 
         private void ToggleButton_OnChecked3(object sender, RoutedEventArgs e)
         {
             Settings.Default.IsChannel3 = true;
+            ControlDynamicGraph.EnabelChannel(2);
             Default.Save();
         }
 
         private void ToggleButton_OnChecked4(object sender, RoutedEventArgs e)
         {
             Settings.Default.IsChannel4 = true;
+            ControlDynamicGraph.EnabelChannel(3);
             Default.Save();
         }
 
@@ -92,6 +86,10 @@ namespace LCard.Manager.Views
             if (GetNumberOfActiveChannles() == 0)
             {
                 Settings.Default.IsChannel1 = true;
+            }
+            else
+            {
+                ControlDynamicGraph.DisableChannel(0);
             }
             Default.Save();
         }
@@ -102,6 +100,10 @@ namespace LCard.Manager.Views
             {
                 Settings.Default.IsChannel2 = true;
             }
+            else
+            {
+                ControlDynamicGraph.DisableChannel(1);
+            }
             Default.Save();
         }
 
@@ -110,6 +112,10 @@ namespace LCard.Manager.Views
             if (GetNumberOfActiveChannles() == 0)
             {
                 Settings.Default.IsChannel3 = true;
+            }
+            else
+            {
+                ControlDynamicGraph.DisableChannel(2);
             }
             Default.Save();
         }
@@ -120,7 +126,26 @@ namespace LCard.Manager.Views
             {
                 Settings.Default.IsChannel4 = true;
             }
+            else
+            {
+                ControlDynamicGraph.DisableChannel(3);
+            }
             Default.Save();
+        }
+
+        private void View_OnClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Stop_OnClick(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void Write_OnClick(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

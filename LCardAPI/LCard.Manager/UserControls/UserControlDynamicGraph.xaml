@@ -17,10 +17,10 @@
         </Button>
         <lvc:CartesianChart Grid.Row="1" LegendLocation="Top">
             <lvc:CartesianChart.Series>
-                <lvc:LineSeries Values="{Binding ValuesChannel1}" PointGeometrySize="0"  StrokeThickness="2" Fill="Transparent" Title="{Binding NameChannel1}" />
-                <lvc:LineSeries Values="{Binding ValuesChannel2}" PointGeometrySize="0"  StrokeThickness="2" Fill="Transparent" Title="{Binding NameChannel2}" />
-                <lvc:LineSeries Values="{Binding ValuesChannel3}" PointGeometrySize="0"  StrokeThickness="2" Fill="Transparent" Title="{Binding NameChannel3}" />
-                <lvc:LineSeries Values="{Binding ValuesChannel4}" PointGeometrySize="0"  StrokeThickness="2" Fill="Transparent" Title="{Binding NameChannel4}" />
+                <lvc:LineSeries Name="LineSeriesChannel1" Values="{Binding ValuesChannel1}" PointGeometrySize="0"  StrokeThickness="2" Fill="Transparent" Title="{Binding NameChannel1}" />
+                <lvc:LineSeries Name="LineSeriesChannel2" Values="{Binding ValuesChannel2}" PointGeometrySize="0"  StrokeThickness="2" Fill="Transparent" Title="{Binding NameChannel2}" />
+                <lvc:LineSeries Name="LineSeriesChannel3" Values="{Binding ValuesChannel3}" PointGeometrySize="0"  StrokeThickness="2" Fill="Transparent" Title="{Binding NameChannel3}" />
+                <lvc:LineSeries Name="LineSeriesChannel4" Values="{Binding ValuesChannel4}" PointGeometrySize="0"  StrokeThickness="2" Fill="Transparent" Title="{Binding NameChannel4}" />
             </lvc:CartesianChart.Series>
             <lvc:CartesianChart.AxisX>
                 <lvc:Axis LabelFormatter="{Binding DateTimeFormatter}" 

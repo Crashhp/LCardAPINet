@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
@@ -12,6 +11,7 @@ using LCard.Core.Poco;
 using LCard.Manager.Startup;
 using LiveCharts;
 using LiveCharts.Configurations;
+using LiveCharts.Wpf;
 
 namespace LCard.Manager.UserControls
 {
@@ -35,7 +35,6 @@ namespace LCard.Manager.UserControls
         private IDeviceManager deviceManager = UnityConfig.GetConfiguredContainer().Resolve<IDeviceManager>();
         private IE2010 e2010 = UnityConfig.GetConfiguredContainer().Resolve<IE2010>();
         private int intervalInMs = 150;
-        private BlockingCollection<double>[] channelData = new BlockingCollection<double>[4];
         private long _lastUpdateTime;
         virtual public DateTime LastUpdateTime
         {
@@ -49,22 +48,13 @@ namespace LCard.Manager.UserControls
                 Interlocked.Exchange(ref _lastUpdateTime, value.Ticks);
             }
         }
-
+        private List<ChartValues<MeasureModel>> _channelValues = new List<ChartValues<MeasureModel>>(); 
+        private List<LineSeries> _channelLines = new List<LineSeries>(); 
         private volatile DataPacketPoco _lastDataPacketPoco = null;
 
         public UserControlDynamicGraph()
         {
             InitializeComponent();
-
-            //To handle live data easily, in this case we built a specialized type
-            //the MeasureModel class, it only contains 2 properties
-            //DateTime and Value
-            //We need to configure LiveCharts to handle MeasureModel class
-            //The next code configures MEasureModel  globally, this means
-            //that livecharts learns to plot MeasureModel and will use this config every time
-            //a ChartValues instance uses this type.
-            //this code ideally should only run once, when application starts is reccomended.
-            //you can configure series in many ways, learn more at http://lvcharts.net/App/examples/v1/wpf/Types%20and%20Configuration
 
             var mapper = Mappers.Xy<MeasureModel>()
                 .X(model => model.DateTime.Ticks)   //use DateTime.Ticks as X
@@ -79,6 +69,16 @@ namespace LCard.Manager.UserControls
             ValuesChannel2 = new ChartValues<MeasureModel>();
             ValuesChannel3 = new ChartValues<MeasureModel>();
             ValuesChannel4 = new ChartValues<MeasureModel>();
+
+            _channelValues.Add(ValuesChannel1);
+            _channelValues.Add(ValuesChannel2);
+            _channelValues.Add(ValuesChannel3);
+            _channelValues.Add(ValuesChannel4);
+
+            _channelLines.Add(LineSeriesChannel1);
+            _channelLines.Add(LineSeriesChannel2);
+            _channelLines.Add(LineSeriesChannel3);
+            _channelLines.Add(LineSeriesChannel4);
 
             UpdateChannelNames();
 
@@ -265,14 +265,22 @@ namespace LCard.Manager.UserControls
                 if (ValuesChannel3.Count > 30) ValuesChannel3.RemoveAt(0);
                 if (ValuesChannel4.Count > 30) ValuesChannel4.RemoveAt(0);
             }
-
-            
         }
 
         private void SetAxisLimits(DateTime now)
         {
             AxisMax = now.Ticks + TimeSpan.FromSeconds(1).Ticks; // lets force the axis to be 100ms ahead
             AxisMin = now.Ticks - TimeSpan.FromSeconds(8).Ticks; //we only care about the last 8 seconds
+        }
+
+        public void EnabelChannel(int nChannel)
+        {
+            _channelLines[nChannel].Visibility = Visibility.Visible;
+        }
+
+        public void DisableChannel(int nChannel)
+        {
+            _channelLines[nChannel].Visibility = Visibility.Hidden;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
