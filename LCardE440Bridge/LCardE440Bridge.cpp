@@ -1,7 +1,7 @@
 // This is the main DLL file.
 
 #include "stdafx.h"
-#include "E440Bridge.h"
+#include "LCardE440Bridge.h"
 
 namespace LCardE440Bridge
 {
@@ -160,7 +160,7 @@ namespace LCardE440Bridge
 
 	}
 
-	WORD E440Bridge::DllVersion()
+	DWORD E440Bridge::DllVersion()
 	{
 		return GetDllVersion();
 	}
@@ -179,9 +179,9 @@ namespace LCardE440Bridge
 		return false;
 	}
 
-	HANDLE E440Bridge::GetModuleHandle(void)
+	IntPtr E440Bridge::GetModuleHandleDevice(void)
 	{
-		return pModule->GetModuleHandle();
+		return IntPtr(pModule->GetModuleHandle());
 	}
 
 	String^ E440Bridge::GetModuleName()
@@ -230,7 +230,7 @@ namespace LCardE440Bridge
 	{
 		ADC_PARS_E440 adcParams;
 		M_ADC_PARS_E440 convertParams;
-		
+
 		if (pModule->GET_ADC_PARS(&adcParams))
 			convertParams = this->Convert(&adcParams);
 
@@ -240,7 +240,7 @@ namespace LCardE440Bridge
 	bool WINAPI E440Bridge::SET_ADC_PARS(M_ADC_PARS_E440 mAdcParams, int dataStep)
 	{
 		ADC_PARS_E440 adcParams = Convert(mAdcParams);
-		
+
 		return pModule->SET_ADC_PARS(&adcParams) != 0;
 	}
 
@@ -259,7 +259,7 @@ namespace LCardE440Bridge
 	//	return pModule->CloseLDevice();
 	//}
 
-	//bool E440Bridge::LowPowerMode(BOOL LowPowerFlag)
+	//bool E440Bridge::LowPowerMode(bool LowPowerFlag)
 	//{
 	//	return 0;
 	//}
@@ -268,13 +268,13 @@ namespace LCardE440Bridge
 	//{
 	//	return 0;
 	//}
-	
+
 	E440Bridge::~E440Bridge()
 	{
 		if (pModule)
 		{
 			pModule->STOP_ADC();
-			pModule->ReleaseLInstance();			
+			pModule->ReleaseLInstance();
 			pModule = NULL;
 		}
 	}

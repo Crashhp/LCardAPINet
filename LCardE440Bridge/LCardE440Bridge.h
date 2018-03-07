@@ -2,9 +2,12 @@
 
 #pragma once
 
-#include "Stdafx.h"
+using namespace System;
+#include "Lusbapi.h"
+#include "LusbapiTypes.h"
+#include "MLusbapiTypes.h"
 
-namespace LCardE440Bridge 
+namespace LCardE440Bridge
 {
 	//public enum LUsbSpeed
 	//{
@@ -29,15 +32,15 @@ namespace LCardE440Bridge
 
 	public ref class E440Bridge
 	{
-	
+
 	public:
 		E440Bridge();
 		virtual ~E440Bridge();
 
-		WORD WINAPI DllVersion();
+		DWORD WINAPI DllVersion();
 		bool WINAPI CreateInstance();
 		bool WINAPI OpenLDevice(WORD virtualSlot);
-		HANDLE WINAPI GetModuleHandle(void);
+		IntPtr GetModuleHandleDevice(void);
 		String^ WINAPI GetModuleName();
 		BYTE WINAPI GetUsbSpeed();
 		bool WINAPI LoadModule();
@@ -47,15 +50,15 @@ namespace LCardE440Bridge
 		bool WINAPI SET_ADC_PARS(M_ADC_PARS_E440 mAdcParams, int dataStep);
 		bool WINAPI E440Bridge::START_ADC(void);
 		bool WINAPI E440Bridge::STOP_ADC(void);
-		
+
 		//bool WINAPI CloseLDevice(void);
 		//bool WINAPI ReleaseLInstance(void);
-		//bool WINAPI LowPowerMode(BOOL lowPowerFlag);
+		//bool WINAPI LowPowerMode(bool lowPowerFlag);
 		//bool WINAPI GetLastErrorInfo(LAST_ERROR_INFO_LUSBAPI * const lastErrorInfo);
 
 	private:
 		ILE440* pModule;
-		
+
 		bool WINAPI ReleaseLInstance(void);
 
 		M_MODULE_DESCRIPTION_E440 Convert(MODULE_DESCRIPTION_E440 * const moduleDescription);
