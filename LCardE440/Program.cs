@@ -10,8 +10,9 @@ namespace LCardE440
     {
         static void Main(string[] args)
         {
-            E440 card = new E440(10, new TimeSpan(0, 2, 0));
-            card.ReadData();
+            E440 card = new E440(30, 60);]
+            AdcChannels 
+            card.InitDevice();
         }
     }
 }
