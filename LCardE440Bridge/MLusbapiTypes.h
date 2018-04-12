@@ -124,10 +124,10 @@ namespace LCardE440Bridge
 
 	public value struct IoRequest
 	{
-		cli::array<SHORT>^ Buffer;				// указатель на буфер данных
+		array<SHORT>^ Buffer;				// указатель на буфер данных
 		DWORD   NumberOfWordsToPass;			// кол-во отсчЄтов, которые требуетс€ передать
 		DWORD   NumberOfWordsPassed;			// реальное кол-во переданных отсчЄтов
-		NativeOverlapped Overlapped;			// дл€ синхронного запроса Ц NULL, а дл€ асинхроннного
+		NativeOverlapped^ Overlapped;			// дл€ синхронного запроса Ц NULL, а дл€ асинхроннного
 												// запроса Ц указатель на стандартную WinAPI
 												// структуру типа OVERLAPPED
 		DWORD   TimeOut;						// дл€ синхронного запроса - таймаут в мс

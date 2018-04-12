@@ -163,7 +163,7 @@ namespace LCardE440Bridge
 
 	}
 
-	int E440Bridge::InitDevice(double adcRate, int duration, int chNums[], int chRanges[], int count)
+	int E440Bridge::InitDevice(double adcRate, int duration, array<int>^ chNums, array<int>^ chRanges, int count)
 	{
 		if (GetDllVersion() != CURRENT_VERSION_LUSBAPI)
 			return 0x01;
@@ -185,9 +185,9 @@ namespace LCardE440Bridge
 
 		if (strcmp(moduleName, "E440") != 0)
 			return 0x06;
-		
+
 		BYTE Usb;
-		if(pModule->GetUsbSpeed(&Usb) == 0)
+		if (pModule->GetUsbSpeed(&Usb) == 0)
 			return 0x07;
 
 		if (pModule->LOAD_MODULE() == 0)
@@ -227,169 +227,105 @@ namespace LCardE440Bridge
 		if (pModule->SET_ADC_PARS(&adcParams) == 0)
 			return 0x12;
 
-		if (pModule->GET_ADC_PARS(&adcParams) == 0)
-			return 0x11;
-
 		AdcParams = Convert(&adcParams);
 
-		int count = adcRate * duration;
-		int kb = p.count / 1024;
+		int pCount = AdcParams.AdcRate * duration * 1000;
+		int numBlocks = pCount / 32;
+		_NDataBlock = 1;
+		_DataStep = pCount;
 
-		if (kb > 1)
-		{
-			// подсчитаем максимально доступный объем одного забора (< 64k для некоторых плат)
-			if (kb > 64)
-			{
-				for (i = 64; i > 0; i--)
+		if (numBlocks > 2047)
+			for (int i = 2048; i > 0; i--)
+				if (numBlocks % i == 0)
 				{
-					if (kb % i == 0)
-					{
-						// делится нацело!
-						NDataBlock = kb / i;
-						DataStep = i * 1024;
-						break;
-					}
+					_NDataBlock = numBlocks / i;
+					_DataStep = i * 32;
+					break;
 				}
-			}
-			else
-			{
-				NDataBlock = 1;
-				DataStep = p.count;	// <= 64k
-			}
-
-		ReadBuffer = new SHORT[2 * DataStep];
-		if (!ReadBuffer) AbortProgram(" Can not allocate memory\n");
 
 		return 0x00;
 	}
 
-	//int E440Bridge::ReadData()
-	//{
-	//	ReadBuffer = new SHORT[2 * DataStep];
-
-	//	hReadThread = CreateThread(0, 0x2000, ServiceReadThread, 0, 0, &ReadTid);
-
-	//	// цикл записи получаемых данных и ожидания окончания работы приложения
-	//	while (!IsReadThreadComplete)
-	//	{
-	//		if (OldCounter != Counter) { printf(" Counter %3u from %3u\r", Counter, NDataBlock); OldCounter = Counter; }
-	//	}
-
-	//	// ждём окончания работы потока ввода данных
-	//	WaitForSingleObject(hReadThread, INFINITE);
-	//}
-
-	//DWORD E440Bridge::ServiceReadThread()
-	//{
-	//	WORD i;
-	//	WORD RequestNumber;
-	//	DWORD FileBytesWritten;
-	//	// массив OVERLAPPED структур из двух элементов
-	//	OVERLAPPED ReadOv[2];
-	//	// массив структур с параметрами запроса на ввод/вывод данных
-	//	IO_REQUEST_LUSBAPI IoReq[2];
-
-	//	// остановим работу АЦП и одновременно сбросим USB-канал чтения данных
-	//	if (!pModule->STOP_ADC()) { ReadThreadErrorNumber = 0x1; IsReadThreadComplete = true; return 0x0; }
-
-	//	// формируем необходимые для сбора данных структуры
-	//	for (i = 0x0; i < 0x2; i++)
-	//	{
-	//		// инициализация структуры типа OVERLAPPED
-	//		ZeroMemory(&ReadOv[i], sizeof(OVERLAPPED));
-	//		// создаём событие для асинхронного запроса
-	//		ReadOv[i].hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-	//		// формируем структуру IoReq
-	//		IoReq[i].Buffer = ReadBuffer + i * 100000;
-	//		IoReq[i].NumberOfWordsToPass = 100000;
-	//		IoReq[i].NumberOfWordsPassed = 0x0;
-	//		IoReq[i].Overlapped = &ReadOv[i];
-	//		IoReq[i].TimeOut = (DWORD)(100000 / 30 + 1000);
-	//	}
-
-	//	// делаем предварительный запрос на ввод данных
-	//	RequestNumber = 0x0;
-	//	if (!pModule->ReadData(&IoReq[RequestNumber])) { CloseHandle(ReadOv[0].hEvent); CloseHandle(ReadOv[1].hEvent); ReadThreadErrorNumber = 0x2; IsReadThreadComplete = true; return 0x0; }
-
-	//	// запустим АЦП
-	//	if (pModule->START_ADC())
-	//	{
-	//		// цикл сбора данных
-	//		for (i = 0x1; i < NDataBlock; i++)
-	//		{
-	//			// сделаем запрос на очередную порцию данных
-	//			RequestNumber ^= 0x1;
-	//			if (!pModule->ReadData(&IoReq[RequestNumber])) { ReadThreadErrorNumber = 0x2; break; }
-	//			if (ReadThreadErrorNumber) break;
-
-	//			// ждём завершения операции сбора предыдущей порции данных
-	//			if (WaitForSingleObject(ReadOv[RequestNumber ^ 0x1].hEvent, IoReq[RequestNumber ^ 0x1].TimeOut) == WAIT_TIMEOUT) { ReadThreadErrorNumber = 0x3; break; }
-	//			if (ReadThreadErrorNumber) break;
-
-	//			short* data = IoReq[RequestNumber ^ 0x1].Buffer;
-
-	//			if (ReadThreadErrorNumber) break;
-	//			else Sleep(20);
-	//			Counter++;
-	//		}
-
-	//		// последняя порция данных
-	//		if (!ReadThreadErrorNumber)
-	//		{
-	//			RequestNumber ^= 0x1;
-	//			// ждём окончания операции сбора последней порции данных
-	//			if (WaitForSingleObject(ReadOv[RequestNumber ^ 0x1].hEvent, IoReq[RequestNumber ^ 0x1].TimeOut) == WAIT_TIMEOUT) ReadThreadErrorNumber = 0x3;
-
-	//			Counter++;
-	//		}
-	//	}
-	//	else { ReadThreadErrorNumber = 0x6; }
-
-	//	// остановим работу АЦП
-	//	if (!pModule->STOP_ADC()) ReadThreadErrorNumber = 0x1;
-	//	// прервём возможно незавершённый асинхронный запрос на приём данных
-	//	/*if (!CancelIo(ModuleHandle)) { ReadThreadErrorNumber = 0x7; }*/
-	//	// освободим все идентификаторы событий
-	//	for (i = 0x0; i < 0x2; i++) CloseHandle(ReadOv[i].hEvent);
-	//	// небольшая задержка
-	//	Sleep(100);
-	//	// установим флажок завершения работы потока сбора данных
-	//	IsReadThreadComplete = true;
-	//	// теперь можно спокойно выходить из потока
-	//	return 0x0;
-	//}
-
-	bool WINAPI E440Bridge::SetAdcParams(AdcParamsE440 mAdcParams)
+	int E440Bridge::ReadData()
 	{
-		ADC_PARS_E440 adcParams = Convert(mAdcParams);
+		_ReadBuffer = new short[2 * _DataStep];
+		_Data = gcnew array<short>(_NDataBlock * _DataStep);
 
-		return pModule->SET_ADC_PARS(&adcParams) != 0;
+		if (pModule->STOP_ADC() == 0)
+			return 0x13;
+
+		int RequestNumber;
+		IO_REQUEST_LUSBAPI ioRequest[2];
+		OVERLAPPED readOverlapped[2];
+
+		for (int i = 0; i < 2; i++)
+		{
+			readOverlapped[i].hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+			ioRequest[i].Buffer = _ReadBuffer + i * _DataStep;
+			ioRequest[i].NumberOfWordsToPass = _DataStep;
+			ioRequest[i].NumberOfWordsPassed = 0x0;
+			ioRequest[i].Overlapped = &readOverlapped[i];
+			ioRequest[i].TimeOut = (DWORD)(_DataStep / AdcParams.AdcRate + 1000);
+		}
+
+		RequestNumber = 0x0;
+		if (pModule->ReadData(&ioRequest[RequestNumber]) == 0)
+		{
+			CloseHandle(readOverlapped[0].hEvent);
+			CloseHandle(readOverlapped[1].hEvent);
+			return 0x14;
+		}
+
+		short* data;
+
+		if (pModule->START_ADC() != 0)
+		{
+			int i;
+			for (i = 1; i < _NDataBlock; i++)
+			{
+				RequestNumber ^= 0x1;
+				if (pModule->ReadData(&ioRequest[RequestNumber]) == 0)
+					return 0x14;
+
+				if (WaitForSingleObject(readOverlapped[RequestNumber ^ 0x1].hEvent, ioRequest[RequestNumber ^ 0x1].TimeOut) == WAIT_TIMEOUT)
+					return 0x15;
+
+				data = ioRequest[RequestNumber ^ 0x1].Buffer;
+				for (int j = 0; j < _DataStep; j++)
+					_Data[(i - 1) * _DataStep + j] = data[j];
+			}
+
+			RequestNumber ^= 0x1;
+
+			if (WaitForSingleObject(readOverlapped[RequestNumber ^ 0x1].hEvent, ioRequest[RequestNumber ^ 0x1].TimeOut) == WAIT_TIMEOUT)
+				return 0x15;
+
+			data = ioRequest[RequestNumber ^ 0x1].Buffer;
+			for (int j = 0; j < _DataStep; j++)
+				_Data[(i - 1) * _DataStep + j] = data[j];
+		}
+		else
+			return 0x16;
+
+		pModule->STOP_ADC();
+
+		if (CancelIo(_ModuleHandle) == 0)
+			return 0x17;
+
+		CloseHandle(readOverlapped[0].hEvent);
+		CloseHandle(readOverlapped[1].hEvent);
+
+		Sleep(100);
+
+		if (_ReadBuffer) { delete[] _ReadBuffer; _ReadBuffer = NULL; }
+
+		return 0x00;
 	}
 
-	bool WINAPI E440Bridge::StartAdc(void)
+	array<short>^ E440Bridge::GetResult()
 	{
-		return pModule->START_ADC() != 0;
+		return _Data;
 	}
-
-	bool WINAPI E440Bridge::StopAdc(void)
-	{
-		return pModule->STOP_ADC() != 0;
-	}
-
-	//bool E440Bridge::CloseLDevice(void)
-	//{
-	//	return pModule->CloseLDevice();
-	//}
-
-	//bool E440Bridge::LowPowerMode(bool LowPowerFlag)
-	//{
-	//	return 0;
-	//}
-
-	//bool E440Bridge::GetLastErrorInfo(LAST_ERROR_INFO_LUSBAPI * const LastErrorInfo)
-	//{
-	//	return 0;
-	//}
 
 	E440Bridge::~E440Bridge()
 	{
